@@ -10,7 +10,11 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/gl.h>
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>
+#endif
 #include <stdlib.h>
 
 class ImpressionistDoc;
@@ -18,12 +22,12 @@ class ImpressionistDoc;
 class PaintView : public Fl_Gl_Window
 {
 public:
-	PaintView(int x, int y, int w, int h, const char* l);
+	PaintView(int x, int y, int w, int h, const char *l);
 	void draw();
 	int handle(int event);
 
 	void refresh();
-	
+
 	void resizeWindow(int width, int height);
 
 	void SaveCurrentContent();
@@ -33,16 +37,15 @@ public:
 	ImpressionistDoc *m_pDoc;
 
 private:
-	GLvoid* m_pPaintBitstart;
-	int		m_nDrawWidth,
-			m_nDrawHeight,
-			m_nStartRow, 
-			m_nEndRow,
-			m_nStartCol, 
-			m_nEndCol,
-			m_nWindowWidth, 
-			m_nWindowHeight;
-
+	GLvoid *m_pPaintBitstart;
+	int m_nDrawWidth,
+		m_nDrawHeight,
+		m_nStartRow,
+		m_nEndRow,
+		m_nStartCol,
+		m_nEndCol,
+		m_nWindowWidth,
+		m_nWindowHeight;
 };
 
 #endif

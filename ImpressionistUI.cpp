@@ -392,10 +392,6 @@ ImpressionistUI::ImpressionistUI()
 	Fl_Group::current()->resizable(group);
 	m_mainWindow->end();
 
-	// init values
-
-	m_nSize = 10;
-
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
 	// Add a brush type choice to the dialog
@@ -407,6 +403,12 @@ ImpressionistUI::ImpressionistUI()
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void *)(this));
 	m_ClearCanvasButton->callback(cb_clear_canvas_button);
+
+	// init values
+	m_nSize = 10;
+	m_nWidth = 1;
+	m_nAngle = 0;
+	m_nAlpha = 1.0;
 
 	// Add brush size slider to the dialog
 	m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
@@ -429,31 +431,33 @@ ImpressionistUI::ImpressionistUI()
 	m_LineWidthSlider->minimum(1);
 	m_LineWidthSlider->maximum(40);
 	m_LineWidthSlider->step(1);
-	m_LineWidthSlider->value(m_nSize);
+	m_LineWidthSlider->value(m_nWidth);
 	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
 	m_LineWidthSlider->callback(cb_sizeSlides);
+	m_LineWidthSlider->deactivate();
 
 	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
 	m_LineAngleSlider->user_data((void *)(this)); // record self to be used by static callback functions
 	m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
 	m_LineAngleSlider->labelfont(FL_COURIER);
 	m_LineAngleSlider->labelsize(12);
-	m_LineAngleSlider->minimum(1);
-	m_LineAngleSlider->maximum(40);
+	m_LineAngleSlider->minimum(0);
+	m_LineAngleSlider->maximum(359);
 	m_LineAngleSlider->step(1);
-	m_LineAngleSlider->value(m_nSize);
+	m_LineAngleSlider->value(m_nAngle);
 	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
 	m_LineAngleSlider->callback(cb_sizeSlides);
+	m_LineAngleSlider->deactivate();
 
 	m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
 	m_AlphaSlider->user_data((void *)(this)); // record self to be used by static callback functions
 	m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
 	m_AlphaSlider->labelfont(FL_COURIER);
 	m_AlphaSlider->labelsize(12);
-	m_AlphaSlider->minimum(1);
-	m_AlphaSlider->maximum(40);
-	m_AlphaSlider->step(1);
-	m_AlphaSlider->value(m_nSize);
+	m_AlphaSlider->minimum(0.0);
+	m_AlphaSlider->maximum(1.0);
+	m_AlphaSlider->step(0.01);
+	m_AlphaSlider->value(m_nAlpha);
 	m_AlphaSlider->align(FL_ALIGN_RIGHT);
 	m_AlphaSlider->callback(cb_sizeSlides);
 

@@ -61,6 +61,9 @@ private:
 
 	// All attributes here
 	int m_nSize;
+	int m_nWidth;
+	int m_nAngle;
+	float m_nAlpha;
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];

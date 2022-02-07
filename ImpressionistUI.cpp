@@ -421,5 +421,41 @@ ImpressionistUI::ImpressionistUI()
 	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
 	m_BrushSizeSlider->callback(cb_sizeSlides);
 
+	m_LineWidthSlider = new Fl_Value_Slider(10, 110, 300, 20, "Line Width");
+	m_LineWidthSlider->user_data((void *)(this)); // record self to be used by static callback functions
+	m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineWidthSlider->labelfont(FL_COURIER);
+	m_LineWidthSlider->labelsize(12);
+	m_LineWidthSlider->minimum(1);
+	m_LineWidthSlider->maximum(40);
+	m_LineWidthSlider->step(1);
+	m_LineWidthSlider->value(m_nSize);
+	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
+	m_LineWidthSlider->callback(cb_sizeSlides);
+
+	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
+	m_LineAngleSlider->user_data((void *)(this)); // record self to be used by static callback functions
+	m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineAngleSlider->labelfont(FL_COURIER);
+	m_LineAngleSlider->labelsize(12);
+	m_LineAngleSlider->minimum(1);
+	m_LineAngleSlider->maximum(40);
+	m_LineAngleSlider->step(1);
+	m_LineAngleSlider->value(m_nSize);
+	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
+	m_LineAngleSlider->callback(cb_sizeSlides);
+
+	m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
+	m_AlphaSlider->user_data((void *)(this)); // record self to be used by static callback functions
+	m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
+	m_AlphaSlider->labelfont(FL_COURIER);
+	m_AlphaSlider->labelsize(12);
+	m_AlphaSlider->minimum(1);
+	m_AlphaSlider->maximum(40);
+	m_AlphaSlider->step(1);
+	m_AlphaSlider->value(m_nSize);
+	m_AlphaSlider->align(FL_ALIGN_RIGHT);
+	m_AlphaSlider->callback(cb_sizeSlides);
+
 	m_brushDialog->end();
 }

@@ -89,7 +89,7 @@
     <ClInclude Include="linebrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="circle.h">
+    <ClInclude Include="circleBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scatterline.h">

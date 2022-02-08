@@ -14,6 +14,8 @@
 using namespace std;
 extern float frand();
 
+#define PI 3.14159265358979323846
+
 
 ScatterCircleBrush::ScatterCircleBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
@@ -45,20 +47,18 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 	}
 
 	GLfloat x_pos, y_pos;
-	glBegin(GL_POINTS);
 	GLfloat angle;
 	GLubyte color[3];
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);
 	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (float)alpha);
 	int randNum = rand() % (30) + 30/radius;
 	for (int i = 0;i < randNum;i++) {
-	srand(target.x * target.y*time(NULL) % 400);
-	GLfloat xchange = (rand()*i+rand())%(radius)- radius/ 2;
-	GLfloat ychange = (rand()*i+rand())%(radius)- radius/ 2;
-	x_pos = target.x + xchange;
-	y_pos = target.y + ychange;
-	glVertex3f(x_pos, y_pos, 0.0f);
-	glEnd();
+		srand(target.x * target.y*time(NULL) % 40);
+		GLfloat xchange = (rand()*i+rand())%(radius)- radius/ 2;
+		GLfloat ychange = (rand()*i+rand())%(radius)- radius/ 2;
+		x_pos = target.x + xchange;
+		y_pos = target.y + ychange;
+		circle(x_pos, y_pos);
 	}
 }
 
@@ -69,3 +69,15 @@ void ScatterCircleBrush::BrushEnd(const Point source, const Point target)
 
 }
 
+void ScatterCircleBrush::circle(int target_x, int target_y) {
+	glBegin(GL_POLYGON);
+
+	for (int i = 0; i < 360; ++i) {
+		float theta = i * PI / 180;
+		glVertex2f(target_x + radius * cos(theta), target_y + radius * sin(theta));
+	}
+
+	glEnd();
+}
+
+#undef PI

@@ -12,12 +12,13 @@
 #include "linebrush.h"
 #include "scatterline.h"
 #include "ImpBrush.h"
-#include "circle.h"
+#include "circleBrush.h"
 #include "scattercircle.h"
 #include "scatterpoint.h"
 #include "traingle.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
+#include <iostream>
 
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
@@ -80,6 +81,13 @@ char* ImpressionistDoc::getImageName()
 void ImpressionistDoc::setBrushType(int type)
 {
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[type];
+}
+
+void ImpressionistDoc::setStrokeType(int type)
+{
+	// TODO
+	// m_pCurrentBrush = ImpBrush::c_pBrushes[type];
+	std::cout << "DO THIS NOW!" << std::endl;
 }
 
 //---------------------------------------------------------

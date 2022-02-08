@@ -261,6 +261,16 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget *o, void *v)
 	}
 }
 
+void ImpressionistUI::cb_strokeChoice(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
+
+	int type = (int)((size_t)v);
+
+	pDoc->setStrokeType(type);
+}
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas button is pushed
@@ -419,6 +429,12 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{"Traingle", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_TRAINGLE},
 	{0}};
 
+Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {
+	{"Slider/Right Mouse", FL_ALT + 's', (Fl_Callback*)ImpressionistUI::cb_strokeChoice, (void*)STROKE_SLIDER_OR_RIGHT_MOUSE},
+	{"Gradient", FL_ALT + 'g', (Fl_Callback*)ImpressionistUI::cb_strokeChoice, (void*)STROKE_GRADIENT},
+	{"Brush Direction", FL_ALT + 'b', (Fl_Callback*)ImpressionistUI::cb_strokeChoice, (void*)STROKE_BRUSH_DIRECTION},
+	{0} };
+
 //----------------------------------------------------
 // Constructor.  Creates all of the widgets.
 // Add new widgets here
@@ -456,6 +472,11 @@ ImpressionistUI::ImpressionistUI()
 	m_BrushTypeChoice->user_data((void *)(this)); // record self to be used by static callback functions
 	m_BrushTypeChoice->menu(brushTypeMenu);
 	m_BrushTypeChoice->callback(cb_brushChoice);
+
+	m_StrokeDirectionChoice = new Fl_Choice(115, 45, 150, 25, "&Stroke Direction");
+	m_StrokeDirectionChoice->user_data((void*)(this)); // record self to be used by static callback functions
+	m_StrokeDirectionChoice->menu(strokeDirectionMenu);
+	m_BrushTypeChoice->callback(cb_strokeChoice);
 
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void *)(this));

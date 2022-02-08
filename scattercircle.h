@@ -8,6 +8,7 @@ class ScatterCircleBrush : public ImpBrush
 	GLfloat alpha = 0;
 public:
 	ScatterCircleBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
+	void circle(int, int);
 	void BrushBegin(const Point source, const Point target);
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);

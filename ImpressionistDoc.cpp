@@ -12,7 +12,7 @@
 #include "linebrush.h"
 #include "scatterline.h"
 #include "ImpBrush.h"
-#include "circle.h"
+#include "circleBrush.h"
 #include "scattercircle.h"
 #include "scatterpoint.h"
 // Include individual brush headers here.

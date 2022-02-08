@@ -54,7 +54,13 @@ public:
 	// Interface to get attribute
 
 	int getSize();
+	int getWidth();
+	int getAngle();
+	GLfloat getAlpha();
+	void setWidth(int width);
 	void setSize(int size);
+	void setAngle(int angle);
+	void setAlpha(float alpha);
 
 private:
 	ImpressionistDoc *m_pDoc; // pointer to document to communicate with the document
@@ -63,7 +69,7 @@ private:
 	int m_nSize;
 	int m_nWidth;
 	int m_nAngle;
-	float m_nAlpha;
+	GLfloat m_nAlpha;
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];
@@ -82,6 +88,9 @@ private:
 	static void cb_brushChoice(Fl_Widget *o, void *v);
 	static void cb_clear_canvas_button(Fl_Widget *o, void *v);
 	static void cb_sizeSlides(Fl_Widget *o, void *v);
+	static void cb_widthSlides(Fl_Widget* o, void* v);
+	static void cb_alphaSlides(Fl_Widget* o, void* v);
+	static void cb_angleSlides(Fl_Widget* o, void* v);
 };
 
 #endif

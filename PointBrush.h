@@ -11,6 +11,7 @@
 
 class PointBrush : public ImpBrush
 {
+	GLfloat alpha = 0;
 public:
 	PointBrush( ImpressionistDoc* pDoc = NULL, char* name = NULL );
 

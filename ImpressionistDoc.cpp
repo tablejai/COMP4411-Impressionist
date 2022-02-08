@@ -9,9 +9,12 @@
 
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
-
+#include "linebrush.h"
+#include "scatterline.h"
 #include "ImpBrush.h"
-
+#include "circle.h"
+#include "scattercircle.h"
+#include "scatterpoint.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
 
@@ -36,15 +39,15 @@ ImpressionistDoc::ImpressionistDoc()
 
 	// Note: You should implement these 5 brushes.  They are set the same (PointBrush) for now
 	ImpBrush::c_pBrushes[BRUSH_LINES]				
-		= new PointBrush( this, "Lines" );
+		= new LineBrush( this, "Lines" );
 	ImpBrush::c_pBrushes[BRUSH_CIRCLES]				
-		= new PointBrush( this, "Circles" );
+		= new CircleBrush( this, "Circles" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_POINTS]	
-		= new PointBrush( this, "Scattered Points" );
+		= new ScatterPointBrush( this, "Scattered Points" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_LINES]		
-		= new PointBrush( this, "Scattered Lines" );
+		= new ScatterLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
-		= new PointBrush( this, "Scattered Circles" );
+		= new ScatterCircleBrush( this, "Scattered Circles" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
@@ -85,6 +88,21 @@ int ImpressionistDoc::getSize()
 	return m_pUI->getSize();
 }
 
+int	ImpressionistDoc::getWidth() {
+	return m_pUI->getWidth();
+}
+int	ImpressionistDoc::getAngle() {
+	return m_pUI->getAngle();
+}
+GLfloat	ImpressionistDoc::getAlpha() {
+	return m_pUI->getAlpha();
+}
+//void ImpressionistDoc::setWidth(int width) {
+//	//m_pUI->setSize(
+//}
+//void	setSize(int size);
+//void	setAngle(int angle);
+//void	setAlpha(float alpha);
 //---------------------------------------------------------
 // Load the specified image
 // This is called by the UI when the load image button is 

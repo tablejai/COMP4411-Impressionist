@@ -251,6 +251,14 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget *o, void *v)
 	int type = (int)((size_t)v);
 
 	pDoc->setBrushType(type);
+	if (type == 1 || type==4) {
+		pUI->m_LineAngleSlider->activate();
+		pUI->m_LineWidthSlider->activate();
+	}
+	else {
+		pUI->m_LineAngleSlider->deactivate();
+		pUI->m_LineWidthSlider->deactivate();
+	}
 }
 
 //------------------------------------------------------------
@@ -272,6 +280,20 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget *o, void *v)
 void ImpressionistUI::cb_sizeSlides(Fl_Widget *o, void *v)
 {
 	((ImpressionistUI *)(o->user_data()))->m_nSize = int(((Fl_Slider *)o)->value());
+}
+void ImpressionistUI::cb_widthSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nWidth = int(((Fl_Slider*)o)->value());
+}
+
+void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nAlpha = GLfloat(((Fl_Slider*)o)->value());
+}
+
+void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider*)o)->value());
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -323,7 +345,6 @@ int ImpressionistUI::getSize()
 {
 	return m_nSize;
 }
-
 //-------------------------------------------------
 // Set the brush size
 //-------------------------------------------------
@@ -334,6 +355,40 @@ void ImpressionistUI::setSize(int size)
 	if (size <= 40)
 		m_BrushSizeSlider->value(m_nSize);
 }
+
+// Return the brush width
+//------------------------------------------------
+int ImpressionistUI::getWidth()
+{
+	return m_nWidth;
+}
+void ImpressionistUI::setWidth(int width) {
+	m_nWidth = width;
+	if (width <= 40) {
+		m_LineWidthSlider->value(m_nWidth);
+	}
+}
+
+GLfloat ImpressionistUI::getAlpha() {
+	return m_nAlpha;
+}
+void ImpressionistUI::setAlpha(float alpha) {
+	 m_nAlpha = alpha;
+	 if (alpha <= 1) {
+		 m_AlphaSlider->value(m_nAlpha);
+
+	 }
+}
+int ImpressionistUI::getAngle() {
+	return m_nAngle;
+}
+void ImpressionistUI::setAngle(int angle) {
+	m_nAngle = angle;
+	if (angle <= 359) {
+		m_LineAngleSlider->value(m_nAngle);
+	}
+}
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -433,7 +488,7 @@ ImpressionistUI::ImpressionistUI()
 	m_LineWidthSlider->step(1);
 	m_LineWidthSlider->value(m_nWidth);
 	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-	m_LineWidthSlider->callback(cb_sizeSlides);
+	m_LineWidthSlider->callback(cb_widthSlides);
 	m_LineWidthSlider->deactivate();
 
 	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
@@ -446,7 +501,7 @@ ImpressionistUI::ImpressionistUI()
 	m_LineAngleSlider->step(1);
 	m_LineAngleSlider->value(m_nAngle);
 	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
-	m_LineAngleSlider->callback(cb_sizeSlides);
+	m_LineAngleSlider->callback(cb_angleSlides);
 	m_LineAngleSlider->deactivate();
 
 	m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
@@ -459,7 +514,6 @@ ImpressionistUI::ImpressionistUI()
 	m_AlphaSlider->step(0.01);
 	m_AlphaSlider->value(m_nAlpha);
 	m_AlphaSlider->align(FL_ALIGN_RIGHT);
-	m_AlphaSlider->callback(cb_sizeSlides);
-
+	m_AlphaSlider->callback(cb_alphaSlides);
 	m_brushDialog->end();
 }

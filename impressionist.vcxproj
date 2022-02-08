@@ -152,10 +152,14 @@
     <ClCompile Include="scatterline.cpp" />
     <ClCompile Include="scattercircle.cpp" />
     <ClCompile Include="scatterpoint.cpp" />
+    <ClCompile Include="traingle.cpp" />
+    <ClCompile Include="starbrush.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="circle.h" />
+    <ClInclude Include="traingle.h" />
+    <ClInclude Include="starbrush.h" />
     <ClInclude Include="scatterpoint.h" />
     <ClInclude Include="scattercircle.h" />
     <ClInclude Include="scatterline.h" />

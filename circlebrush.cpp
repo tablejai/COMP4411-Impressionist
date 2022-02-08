@@ -10,7 +10,7 @@
 #include "circleBrush.h"
 #include "math.h"
 #include <iostream>
-
+using namespace std;
 #define PI 3.14159265358979323846
 
 extern float frand();
@@ -30,6 +30,7 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 	alpha = pDoc->getAlpha()*pDoc->getAlpha()*pDoc->getAlpha();
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+	cout << "init circle" << endl;
 	glPointSize(radius);
 	BrushMove(source, target);
 }
@@ -48,7 +49,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);
 	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (GLfloat)alpha);
 	circle(target.x, target.y);
-	glEnd();
+
 }
 
 void CircleBrush::circle(int target_x, int target_y) {

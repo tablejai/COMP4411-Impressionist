@@ -276,7 +276,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
-    <ClInclude Include="circle.h" />
+    <ClInclude Include="circleBrush.h" />
     <ClInclude Include="traingle.h" />
     <ClInclude Include="starbrush.h" />
     <ClInclude Include="scatterpoint.h" />

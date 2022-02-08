@@ -21,6 +21,14 @@ enum
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
+enum
+{
+	STROKE_SLIDER_OR_RIGHT_MOUSE = 0,
+	STROKE_GRADIENT,
+	STROKE_BRUSH_DIRECTION,
+	NUM_STROKE_TYPE
+};
+
 class ImpressionistDoc; // Pre-declaring class
 
 class Point

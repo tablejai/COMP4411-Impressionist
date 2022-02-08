@@ -15,6 +15,7 @@
 #include "circleBrush.h"
 #include "scattercircle.h"
 #include "scatterpoint.h"
+#include "traingle.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
 #include <iostream>
@@ -49,7 +50,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatterLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
 		= new ScatterCircleBrush( this, "Scattered Circles" );
-
+	ImpBrush::c_pBrushes[BRUSH_TRAINGLE]
+		= new TraingleBrush(this, "Traingle");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 

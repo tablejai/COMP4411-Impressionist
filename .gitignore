@@ -274,3 +274,9 @@ API
 Training
 Blog
 About
+
+.DS_Store
+
+.vscode/
+
+build/

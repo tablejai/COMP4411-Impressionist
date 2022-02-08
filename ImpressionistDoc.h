@@ -9,6 +9,7 @@
 
 #include "impressionist.h"
 #include "bitmap.h"
+#include "ImageCursor.h"
 
 class ImpressionistUI;
 
@@ -52,9 +53,9 @@ public:
 
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;	
+	ImageCursor*        m_pCursor;
 	// Size of the brush.
 	int m_nSize;							
-
 	ImpressionistUI*	m_pUI;
 
 // Operations

@@ -259,6 +259,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="ImageCursor.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
     <ClCompile Include="ImpressionistDoc.cpp" />
@@ -277,6 +278,7 @@
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="circleBrush.h" />
+    <ClInclude Include="ImageCursor.h" />
     <ClInclude Include="traingle.h" />
     <ClInclude Include="starbrush.h" />
     <ClInclude Include="scatterpoint.h" />

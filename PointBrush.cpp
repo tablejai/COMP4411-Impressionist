@@ -8,6 +8,8 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "pointbrush.h"
+#include <iostream>
+using namespace std;
 
 extern float frand();
 
@@ -44,6 +46,7 @@ void PointBrush::BrushMove( const Point source, const Point target )
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);
 	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (float)alpha);
 	glBegin( GL_POINTS );
+	//cout << target.x << "," << target.y << endl;
 	glVertex2d( target.x, target.y );
 	glEnd();
 }

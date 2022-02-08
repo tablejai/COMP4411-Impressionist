@@ -28,13 +28,18 @@ class ImpressionistDoc;
 
 class OriginalView : public Fl_Gl_Window
 {
+static int		eventToDo;
+static int		isAnEvent;
+static Point	coord;
 public:
 	OriginalView(int x, int y, int w, int h, const char *l);
 
 	void draw();
 	void refresh();
-
 	void resizeWindow(int width, int height);
+	void triggerupdate();
+	int getHeight();
+	int getWidth();
 
 	ImpressionistDoc *m_pDoc;
 

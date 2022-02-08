@@ -27,7 +27,7 @@ void ScatterPointBrush::BrushBegin(const Point source, const Point target)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-
+	glDisable(GL_POINT_SMOOTH);
 	range = pDoc->getSize();
 	alpha = pDoc->getAlpha();
 	cout << "trigger begin" << endl;

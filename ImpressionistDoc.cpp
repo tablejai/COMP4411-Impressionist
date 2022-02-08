@@ -16,6 +16,8 @@
 #include "scattercircle.h"
 #include "scatterpoint.h"
 #include "traingle.h"
+#include "starbrush.h"
+#include "ImageCursor.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
 #include <iostream>
@@ -50,10 +52,14 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatterLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
 		= new ScatterCircleBrush( this, "Scattered Circles" );
+	ImpBrush::c_pBrushes[BRUSH_STAR]
+		= new StarBrush(this, "Star");
 	ImpBrush::c_pBrushes[BRUSH_TRAINGLE]
 		= new TraingleBrush(this, "Traingle");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
+	char name[50] = "ImageCursor";
+	m_pCursor = new ImageCursor{ this,name };
 
 }
 

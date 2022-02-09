@@ -11,6 +11,14 @@
 #include "ImpBrush.h"
 #include <iostream>
 using namespace std;
+
+
+#define LEFT_MOUSE_DOWN		1
+#define LEFT_MOUSE_DRAG		2
+#define LEFT_MOUSE_UP		3
+#define RIGHT_MOUSE_DOWN	4
+#define RIGHT_MOUSE_DRAG	5
+#define RIGHT_MOUSE_UP		6
 
 
 #define LEFT_MOUSE_DOWN		1
@@ -181,14 +189,18 @@ int PaintView::handle(int event)
 		else
 			eventToDo=LEFT_MOUSE_UP;
 		isAnEvent=1;
-		redraw();
+		redraw();
+		break;
+	case FL_MOVE:
+		coord.x = Fl::event_x();
+		coord.y = Fl::event_y();
+		//if(coord.x>0 && coord.x<= m_nWindowWidth && coord.y>0 && coord.y<= m_nWindowHeight)
+			m_pDoc->m_pCursor->setpos(coord.x,coord.y);
+		m_pDoc->m_pUI->m_origView->triggerupdate();
 		break;
 	case FL_MOVE:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
-		//if(coord.x>0 && coord.x<= m_nWindowWidth && coord.y>0 && coord.y<= m_nWindowHeight)
-			m_pDoc->m_pCursor->setpos(coord.x,coord.y);
-		m_pDoc->m_pUI->m_origView->triggerupdate();
 		break;
 	default:
 		return 0;

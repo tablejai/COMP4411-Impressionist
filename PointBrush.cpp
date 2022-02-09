@@ -42,6 +42,7 @@ void PointBrush::BrushMove( const Point source, const Point target )
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
+
 	GLubyte color[3];
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);
 	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (float)alpha);

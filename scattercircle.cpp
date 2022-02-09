@@ -45,7 +45,6 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-	if (source.y < 0 || source.x > m_nWindowWidth) return;
 
 
 	GLfloat x_pos, y_pos;

@@ -531,9 +531,9 @@ void ImpressionistUI::initBrushDialog() {
 
 void ImpressionistUI::initColorDialog(void) {
 	// color dialog definition
-	m_colorDialog = new Fl_Window(220, 225, "Color Dialog");
+	m_colorDialog = new Fl_Window(380, 300, "Color Selection");
 
-	m_ColorChooser = new Fl_Color_Chooser(0, 0, 200, 200, "Color Blending");
+	m_ColorChooser = new Fl_Color_Chooser(0, 0, 200, 225, "Color Blending");
 	m_ColorChooser->rgb(1.0, 1.0, 1.0);
 
 	m_colorDialog->end();

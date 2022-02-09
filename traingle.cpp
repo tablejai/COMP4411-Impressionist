@@ -51,7 +51,7 @@ void TraingleBrush::BrushMove(const Point source, const Point target)
 	if (pDoc == NULL) {
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
-	}			if (source.y < 0 || source.x > m_nWindowWidth) return;
+	}			
 
 	GLubyte color[3];
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);

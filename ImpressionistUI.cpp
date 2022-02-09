@@ -207,6 +207,11 @@ void ImpressionistUI::cb_brushes(Fl_Menu_ *o, void *v)
 	whoami(o)->m_brushDialog->show();
 }
 
+void ImpressionistUI::cb_colors(Fl_Menu_* o, void* v)
+{
+	whoami(o)->m_colorDialog->show();
+}
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas menu item is chosen
@@ -408,6 +413,12 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
 
+	{"&Colors...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_colors},
+	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+
+	{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
+	{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{0},
 
@@ -439,6 +450,95 @@ Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {
 // Constructor.  Creates all of the widgets.
 // Add new widgets here
 //----------------------------------------------------
+void ImpressionistUI::initBrushDialog() {
+	// brush dialog definition
+	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+
+	// Add a brush type choice to the dialog
+	m_BrushTypeChoice = new Fl_Choice(50, 10, 150, 25, "&Brush");
+	m_BrushTypeChoice->user_data((void*)(this)); // record self to be used by static callback functions
+	m_BrushTypeChoice->menu(brushTypeMenu);
+	m_BrushTypeChoice->callback(cb_brushChoice);
+
+	m_StrokeDirectionChoice = new Fl_Choice(115, 45, 150, 25, "&Stroke Direction");
+	m_StrokeDirectionChoice->user_data((void*)(this)); // record self to be used by static callback functions
+	m_StrokeDirectionChoice->menu(strokeDirectionMenu);
+	m_BrushTypeChoice->callback(cb_strokeChoice);
+
+	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
+	m_ClearCanvasButton->user_data((void*)(this));
+	m_ClearCanvasButton->callback(cb_clear_canvas_button);
+
+	// init values
+	m_nSize = 10;
+	m_nWidth = 1;
+	m_nAngle = 0;
+	m_nAlpha = 1.0;
+
+	// Add brush size slider to the dialog
+	m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
+	m_BrushSizeSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_BrushSizeSlider->type(FL_HOR_NICE_SLIDER);
+	m_BrushSizeSlider->labelfont(FL_COURIER);
+	m_BrushSizeSlider->labelsize(12);
+	m_BrushSizeSlider->minimum(1);
+	m_BrushSizeSlider->maximum(40);
+	m_BrushSizeSlider->step(1);
+	m_BrushSizeSlider->value(m_nSize);
+	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
+	m_BrushSizeSlider->callback(cb_sizeSlides);
+
+	m_LineWidthSlider = new Fl_Value_Slider(10, 110, 300, 20, "Line Width");
+	m_LineWidthSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineWidthSlider->labelfont(FL_COURIER);
+	m_LineWidthSlider->labelsize(12);
+	m_LineWidthSlider->minimum(1);
+	m_LineWidthSlider->maximum(40);
+	m_LineWidthSlider->step(1);
+	m_LineWidthSlider->value(m_nWidth);
+	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
+	m_LineWidthSlider->callback(cb_widthSlides);
+	m_LineWidthSlider->deactivate();
+
+	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
+	m_LineAngleSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineAngleSlider->labelfont(FL_COURIER);
+	m_LineAngleSlider->labelsize(12);
+	m_LineAngleSlider->minimum(0);
+	m_LineAngleSlider->maximum(359);
+	m_LineAngleSlider->step(1);
+	m_LineAngleSlider->value(m_nAngle);
+	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
+	m_LineAngleSlider->callback(cb_angleSlides);
+	m_LineAngleSlider->deactivate();
+
+	m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
+	m_AlphaSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
+	m_AlphaSlider->labelfont(FL_COURIER);
+	m_AlphaSlider->labelsize(12);
+	m_AlphaSlider->minimum(0.0);
+	m_AlphaSlider->maximum(1.0);
+	m_AlphaSlider->step(0.01);
+	m_AlphaSlider->value(m_nAlpha);
+	m_AlphaSlider->align(FL_ALIGN_RIGHT);
+	m_AlphaSlider->callback(cb_alphaSlides);
+
+	m_brushDialog->end();
+}
+
+void ImpressionistUI::initColorDialog(void) {
+	// color dialog definition
+	m_colorDialog = new Fl_Window(220, 225, "Color Dialog");
+
+	m_ColorChooser = new Fl_Color_Chooser(0, 0, 200, 200, "Color Blending");
+	m_ColorChooser->rgb(1.0, 1.0, 1.0);
+
+	m_colorDialog->end();
+}
+
 ImpressionistUI::ImpressionistUI()
 {
 	// Create the main window
@@ -465,78 +565,6 @@ ImpressionistUI::ImpressionistUI()
 	Fl_Group::current()->resizable(group);
 	m_mainWindow->end();
 
-	// brush dialog definition
-	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
-	// Add a brush type choice to the dialog
-	m_BrushTypeChoice = new Fl_Choice(50, 10, 150, 25, "&Brush");
-	m_BrushTypeChoice->user_data((void *)(this)); // record self to be used by static callback functions
-	m_BrushTypeChoice->menu(brushTypeMenu);
-	m_BrushTypeChoice->callback(cb_brushChoice);
-
-	m_StrokeDirectionChoice = new Fl_Choice(115, 45, 150, 25, "&Stroke Direction");
-	m_StrokeDirectionChoice->user_data((void*)(this)); // record self to be used by static callback functions
-	m_StrokeDirectionChoice->menu(strokeDirectionMenu);
-	m_BrushTypeChoice->callback(cb_strokeChoice);
-
-	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
-	m_ClearCanvasButton->user_data((void *)(this));
-	m_ClearCanvasButton->callback(cb_clear_canvas_button);
-
-	// init values
-	m_nSize = 10;
-	m_nWidth = 1;
-	m_nAngle = 0;
-	m_nAlpha = 1.0;
-
-	// Add brush size slider to the dialog
-	m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
-	m_BrushSizeSlider->user_data((void *)(this)); // record self to be used by static callback functions
-	m_BrushSizeSlider->type(FL_HOR_NICE_SLIDER);
-	m_BrushSizeSlider->labelfont(FL_COURIER);
-	m_BrushSizeSlider->labelsize(12);
-	m_BrushSizeSlider->minimum(1);
-	m_BrushSizeSlider->maximum(40);
-	m_BrushSizeSlider->step(1);
-	m_BrushSizeSlider->value(m_nSize);
-	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
-	m_BrushSizeSlider->callback(cb_sizeSlides);
-
-	m_LineWidthSlider = new Fl_Value_Slider(10, 110, 300, 20, "Line Width");
-	m_LineWidthSlider->user_data((void *)(this)); // record self to be used by static callback functions
-	m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
-	m_LineWidthSlider->labelfont(FL_COURIER);
-	m_LineWidthSlider->labelsize(12);
-	m_LineWidthSlider->minimum(1);
-	m_LineWidthSlider->maximum(40);
-	m_LineWidthSlider->step(1);
-	m_LineWidthSlider->value(m_nWidth);
-	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-	m_LineWidthSlider->callback(cb_widthSlides);
-	m_LineWidthSlider->deactivate();
-
-	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
-	m_LineAngleSlider->user_data((void *)(this)); // record self to be used by static callback functions
-	m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
-	m_LineAngleSlider->labelfont(FL_COURIER);
-	m_LineAngleSlider->labelsize(12);
-	m_LineAngleSlider->minimum(0);
-	m_LineAngleSlider->maximum(359);
-	m_LineAngleSlider->step(1);
-	m_LineAngleSlider->value(m_nAngle);
-	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
-	m_LineAngleSlider->callback(cb_angleSlides);
-	m_LineAngleSlider->deactivate();
-
-	m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
-	m_AlphaSlider->user_data((void *)(this)); // record self to be used by static callback functions
-	m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
-	m_AlphaSlider->labelfont(FL_COURIER);
-	m_AlphaSlider->labelsize(12);
-	m_AlphaSlider->minimum(0.0);
-	m_AlphaSlider->maximum(1.0);
-	m_AlphaSlider->step(0.01);
-	m_AlphaSlider->value(m_nAlpha);
-	m_AlphaSlider->align(FL_ALIGN_RIGHT);
-	m_AlphaSlider->callback(cb_alphaSlides);
-	m_brushDialog->end();
+	initBrushDialog();
+	initColorDialog();
 }

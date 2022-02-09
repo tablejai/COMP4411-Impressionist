@@ -30,7 +30,6 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 	alpha = pDoc->getAlpha()*pDoc->getAlpha()*pDoc->getAlpha();
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	cout << "init circle" << endl;
 	glPointSize(radius);
 	BrushMove(source, target);
 }
@@ -43,6 +42,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
+	if (source.y < 0 || source.x > m_nWindowWidth) return;
 	GLfloat x_pos , y_pos;
 	GLfloat angle;
 	GLubyte color[3];

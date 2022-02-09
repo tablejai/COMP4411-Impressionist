@@ -39,6 +39,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
+	if (source.y < 0 || source.x > m_nWindowWidth) return;
+
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
 	glRotatef(angle, 0.0, 0.0, 1.0);

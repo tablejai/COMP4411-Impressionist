@@ -198,10 +198,6 @@ int PaintView::handle(int event)
 			m_pDoc->m_pCursor->setpos(coord.x,coord.y);
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		break;
-	case FL_MOVE:
-		coord.x = Fl::event_x();
-		coord.y = Fl::event_y();
-		break;
 	default:
 		return 0;
 		break;

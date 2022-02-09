@@ -169,6 +169,8 @@ int PaintView::handle(int event)
 		else
 			eventToDo=LEFT_MOUSE_DOWN;
 		isAnEvent=1;
+		m_pDoc->m_pCursor->setpos(coord.x, coord.y);
+		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
 		break;
 	case FL_DRAG:
@@ -179,6 +181,9 @@ int PaintView::handle(int event)
 		else
 			eventToDo=LEFT_MOUSE_DRAG;
 		isAnEvent=1;
+		//if(coord.x>0 && coord.x<= m_nWindowWidth && coord.y>0 && coord.y<= m_nWindowHeight)
+		m_pDoc->m_pCursor->setpos(coord.x, coord.y);
+		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
 		break;
 	case FL_RELEASE:
@@ -189,6 +194,8 @@ int PaintView::handle(int event)
 		else
 			eventToDo=LEFT_MOUSE_UP;
 		isAnEvent=1;
+		m_pDoc->m_pCursor->setpos(coord.x, coord.y);
+		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
 		break;
 	case FL_MOVE:

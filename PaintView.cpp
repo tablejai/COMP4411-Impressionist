@@ -98,6 +98,7 @@ void PaintView::draw()
 
 	m_pPaintBitstart = m_pDoc->m_ucPainting + 
 		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+	m_pUndoBitstart = m_pDoc->m_undoBitMap + 3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 
 	m_nDrawWidth	= drawWidth;
 	m_nDrawHeight	= drawHeight;
@@ -126,6 +127,7 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
+			SavePreviousData(m_pUndoBitstart);
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);
 			break;
@@ -153,6 +155,11 @@ void PaintView::draw()
 			break;
 		}
 	}
+	if (drawstate==UNDO) {
+		RestorePreviousData(m_pUndoBitstart);
+		SynchronizeContent(m_pUndoBitstart, m_pPaintBitstart);
+		drawstate = DO;
+	}
 
 	glFlush();
 
@@ -170,14 +177,14 @@ int PaintView::handle(int event)
 	{
 	case FL_ENTER:
 	    redraw();
-
 		if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
 			mouseVec.y = coord.y - oldcoord.y;
 			oldcoord = coord;
 
-		}		break;
+		}		
+		break;
 	case FL_PUSH:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
@@ -189,7 +196,6 @@ int PaintView::handle(int event)
 		m_pDoc->m_pCursor->setpos(coord.x, coord.y);
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
-
 		if (abs(coord.x - oldcoord.x) >0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
@@ -281,7 +287,16 @@ void PaintView::resizeWindow(int width, int height)
 {
 	resize(x(), y(), width, height);
 }
+void PaintView::undo() {
+	if (m_pUndoBitstart != nullptr) {
+		cout << "undo bit" << endl;
+		drawstate = UNDO;
+		redraw();
+		return;
+	}
+	//cout << "it did not return " << endl;
 
+}
 void PaintView::SaveCurrentContent()
 {
 	// Tell openGL to read from the front buffer when capturing
@@ -293,15 +308,45 @@ void PaintView::SaveCurrentContent()
 	
 	glReadPixels( 0, 
 				  m_nWindowHeight - m_nDrawHeight, 
-				  m_nDrawWidth, 
-				  m_nDrawHeight, 
-				  GL_RGB, 
-				  GL_UNSIGNED_BYTE,
-				  m_pPaintBitstart);
-
+			  m_nDrawWidth, 
+			  m_nDrawHeight, 
+			  GL_RGB, 
+			  GL_UNSIGNED_BYTE,
+		  m_pPaintBitstart);
 
 }
+void PaintView::SavePreviousData(GLvoid* data) {
+	if (data == nullptr) {
+		cout << "isnull" << endl;
+		return;
+	}
+	cout << "save previous data" << endl;
+	glReadBuffer(GL_FRONT);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glReadPixels(0,
+		m_nWindowHeight - m_nDrawHeight,
+		m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		data);
 
+}
+void PaintView::RestorePreviousData(GLvoid* data) {
+	glDrawBuffer(GL_BACK);
+//	cout << "restore previous data" << endl;
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glDrawPixels(m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		data);
+}
 
 void PaintView::RestoreContent()
 {
@@ -317,6 +362,12 @@ void PaintView::RestoreContent()
 				  GL_RGB, 
 				  GL_UNSIGNED_BYTE, 
 				  m_pPaintBitstart);
-
-//	glDrawBuffer(GL_FRONT);
+}
+#define Map(A,i,j)  *((char*)A+(i+ 3 * (m_pDoc->m_nPaintWidth)*j))
+void PaintView::SynchronizeContent(GLvoid* source, GLvoid* target) {
+for (int i = 0;i < m_pDoc->m_nPaintWidth*3;i++) {
+	for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
+		Map(target,i,j) = Map(source,i,j);
+	}
+}
 }

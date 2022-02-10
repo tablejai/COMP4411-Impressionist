@@ -45,6 +45,7 @@ public:
 	Fl_Slider *m_LineAngleSlider;
 	Fl_Slider *m_AlphaSlider;
 	Fl_Button *m_ClearCanvasButton;
+	Fl_Button* m_UndoCanvasButton;
 
 	// for color dialog
 	Fl_Window* m_colorDialog;
@@ -98,6 +99,7 @@ private:
 	static void cb_brushChoice(Fl_Widget *o, void *v);
 	static void cb_strokeChoice(Fl_Widget* o, void* v);
 	static void cb_clear_canvas_button(Fl_Widget *o, void *v);
+	static void cb_undo_canvas_button(Fl_Widget* o, void* v);
 	static void cb_sizeSlides(Fl_Widget *o, void *v);
 	static void cb_widthSlides(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);

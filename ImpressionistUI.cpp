@@ -287,6 +287,11 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget *o, void *v)
 
 	pDoc->clearCanvas();
 }
+void ImpressionistUI::cb_undo_canvas_button(Fl_Widget* o, void* v) {
+	PaintView* paintView = ((ImpressionistUI*)(o->user_data()))->m_paintView;
+	if(paintView !=nullptr)
+		paintView->undo();
+}
 
 //-----------------------------------------------------------
 // Updates the brush size to use from the value of the size
@@ -469,6 +474,11 @@ void ImpressionistUI::initBrushDialog() {
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void*)(this));
 	m_ClearCanvasButton->callback(cb_clear_canvas_button);
+
+	m_UndoCanvasButton = new Fl_Button(270, 40, 120, 25, "&Undo Canvas");
+	m_UndoCanvasButton->user_data((void*)(this));
+	m_UndoCanvasButton->callback(cb_undo_canvas_button);
+
 
 	// init values
 	m_nSize = 10;

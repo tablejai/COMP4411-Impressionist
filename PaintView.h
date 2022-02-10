@@ -21,6 +21,10 @@ class ImpressionistDoc;
 extern Point    coord;
 extern Point	oldcoord;
 extern Point    mouseVec;
+typedef enum {
+UNDO,
+DO
+} ReDrawState;
 class PaintView : public Fl_Gl_Window
 {
 public:
@@ -33,13 +37,17 @@ public:
 	void resizeWindow(int width, int height);
 
 	void SaveCurrentContent();
-
+	void SavePreviousData(GLvoid*);
+	void SynchronizeContent(GLvoid*, GLvoid*);
+	void RestorePreviousData(GLvoid*);
 	void RestoreContent();
-
+	void undo();
 	ImpressionistDoc *m_pDoc;
 
 private:
 	GLvoid *m_pPaintBitstart;
+	GLvoid* m_pUndoBitstart;
+	ReDrawState drawstate;
 	int m_nDrawWidth,
 		m_nDrawHeight,
 		m_nStartRow,

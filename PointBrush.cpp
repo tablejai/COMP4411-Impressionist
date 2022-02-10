@@ -26,9 +26,15 @@ void PointBrush::BrushBegin( const Point source, const Point target )
 	int size = pDoc->getSize();
 	alpha = pDoc->getAlpha();
 	glDisable(GL_POINT_SMOOTH);
+	initReverseData();
 	glPointSize( (float)size );
 
 	BrushMove( source, target );
+}
+void PointBrush::updateReverData() {
+	/*for (int i = -size;i < size;i++) {
+
+	}*/
 }
 
 void PointBrush::BrushMove( const Point source, const Point target )

@@ -76,6 +76,7 @@ public:
 
 	// get Doc to communicate with it
 	ImpressionistDoc *GetDocument(void);
+	void initReverseData();
 
 	// Return the name of the brush (not used in this version).
 	char *BrushName(void);

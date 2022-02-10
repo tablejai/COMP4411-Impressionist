@@ -71,7 +71,12 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
 	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
-		angle = -(atan((double)mouseVec.y / mouseVec.x)/M_PI*180);
+		angle = (-(int)(atan((double)mouseVec.y / mouseVec.x)/M_PI*180) + 360)%360;
+		angle = (315<=angle&&angle<360 || 0 <= angle && angle < 45) ? 0 :
+				(45 < angle && angle < 135) ? 90:
+			    (135 < angle && angle < 225) ? 180:
+				(225 < angle && angle < 315) ? 270:0;
+		;
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 

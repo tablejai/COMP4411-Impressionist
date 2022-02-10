@@ -135,7 +135,6 @@ void PaintView::draw()
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target);
-
 			SaveCurrentContent();
 			RestoreContent();
 			break;
@@ -172,7 +171,7 @@ int PaintView::handle(int event)
 	case FL_ENTER:
 	    redraw();
 
-		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
 			mouseVec.y = coord.y - oldcoord.y;
@@ -191,7 +190,7 @@ int PaintView::handle(int event)
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
 
-		if (abs(coord.x - oldcoord.x) >1 && abs(coord.y - oldcoord.y) > 1)
+		if (abs(coord.x - oldcoord.x) >0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
 			mouseVec.y = coord.y - oldcoord.y;
@@ -212,7 +211,7 @@ int PaintView::handle(int event)
 
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
-		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
 			mouseVec.y = coord.y - oldcoord.y;
@@ -233,7 +232,7 @@ int PaintView::handle(int event)
 
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
-		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
 			mouseVec.y = coord.y - oldcoord.y;
@@ -297,8 +296,10 @@ void PaintView::SaveCurrentContent()
 				  m_nDrawWidth, 
 				  m_nDrawHeight, 
 				  GL_RGB, 
-				  GL_UNSIGNED_BYTE, 
-				  m_pPaintBitstart );
+				  GL_UNSIGNED_BYTE,
+				  m_pPaintBitstart);
+
+
 }
 
 

@@ -10,8 +10,17 @@
 #include "impressionist.h"
 #include "bitmap.h"
 #include "ImageCursor.h"
+#include "vector"
 
 class ImpressionistUI;
+
+typedef struct {
+	int x;
+	int y;
+	GLubyte color[3];
+} ColorData;
+
+
 
 class ImpressionistDoc 
 {
@@ -56,6 +65,7 @@ public:
 	 StrokeDir         c_pStrokes;
 
 	ImageCursor*        m_pCursor;
+	std::vector<ColorData> reverseData;
 	// Size of the brush.
 	int m_nSize;							
 	ImpressionistUI*	m_pUI;

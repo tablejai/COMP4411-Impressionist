@@ -270,10 +270,11 @@ void ImpressionistUI::cb_strokeChoice(Fl_Widget* o, void* v)
 {
 	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
 	ImpressionistDoc* pDoc = pUI->getDocument();
-
 	int type = (int)((size_t)v);
-
 	pDoc->setStrokeType(type);
+	if (type == STROKE_SLIDER_OR_RIGHT_MOUSE) {
+		((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider*)o)->value());
+	}
 }
 
 //------------------------------------------------------------

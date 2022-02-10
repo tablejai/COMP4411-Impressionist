@@ -18,7 +18,9 @@
 #include <stdlib.h>
 
 class ImpressionistDoc;
-
+extern Point    coord;
+extern Point	oldcoord;
+extern Point    mouseVec;
 class PaintView : public Fl_Gl_Window
 {
 public:
@@ -47,5 +49,6 @@ private:
 		m_nWindowWidth,
 		m_nWindowHeight;
 };
+
 
 #endif

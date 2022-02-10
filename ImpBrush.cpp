@@ -12,6 +12,7 @@
 int			ImpBrush::c_nBrushCount	= 0;
 ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 
+
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 

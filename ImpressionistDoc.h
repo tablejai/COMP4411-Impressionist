@@ -53,6 +53,8 @@ public:
 
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;	
+	 StrokeDir         c_pStrokes;
+
 	ImageCursor*        m_pCursor;
 	// Size of the brush.
 	int m_nSize;							

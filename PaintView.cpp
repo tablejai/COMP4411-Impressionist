@@ -44,7 +44,10 @@ using namespace std;
 
 static int		eventToDo;
 static int		isAnEvent=0;
-static Point	coord;
+Point	coord;
+Point	oldcoord;
+Point mouseVec;
+
 
 PaintView::PaintView(int			x, 
 					 int			y, 
@@ -118,20 +121,20 @@ void PaintView::draw()
 
 		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
 		Point target( coord.x, m_nWindowHeight - coord.y );
-		
+
 		// This is the event handler
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
+			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);
 			break;
 		case LEFT_MOUSE_DRAG:
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
+			m_pDoc->m_pCurrentBrush->BrushMove( source, target);
 			break;
 		case LEFT_MOUSE_UP:
-			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
+			m_pDoc->m_pCurrentBrush->BrushEnd( source, target);
 
 			SaveCurrentContent();
 			RestoreContent();
@@ -168,7 +171,14 @@ int PaintView::handle(int event)
 	{
 	case FL_ENTER:
 	    redraw();
-		break;
+
+		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		{
+			mouseVec.x = coord.x - oldcoord.x;
+			mouseVec.y = coord.y - oldcoord.y;
+			oldcoord = coord;
+
+		}		break;
 	case FL_PUSH:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
@@ -178,9 +188,16 @@ int PaintView::handle(int event)
 			eventToDo=LEFT_MOUSE_DOWN;
 		isAnEvent=1;
 		m_pDoc->m_pCursor->setpos(coord.x, coord.y);
-
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
+
+		if (abs(coord.x - oldcoord.x) >1 && abs(coord.y - oldcoord.y) > 1)
+		{
+			mouseVec.x = coord.x - oldcoord.x;
+			mouseVec.y = coord.y - oldcoord.y;
+			oldcoord = coord;
+
+		}
 		break;
 	case FL_DRAG:
 		coord.x = Fl::event_x();
@@ -195,6 +212,14 @@ int PaintView::handle(int event)
 
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
+		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		{
+			mouseVec.x = coord.x - oldcoord.x;
+			mouseVec.y = coord.y - oldcoord.y;
+			oldcoord = coord;
+
+		}
+	
 		break;
 	case FL_RELEASE:
 		coord.x = Fl::event_x();
@@ -208,6 +233,13 @@ int PaintView::handle(int event)
 
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
+		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		{
+			mouseVec.x = coord.x - oldcoord.x;
+			mouseVec.y = coord.y - oldcoord.y;
+			oldcoord = coord;
+
+		}
 
 		break;
 
@@ -221,7 +253,14 @@ int PaintView::handle(int event)
 
 			m_pDoc->m_pCursor->setpos(coord.x,coord.y);
 
-		m_pDoc->m_pUI->m_origView->triggerupdate();
+		m_pDoc->m_pUI->m_origView->triggerupdate();	
+		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
+		{
+			mouseVec.x = coord.x - oldcoord.x;
+			mouseVec.y = coord.y - oldcoord.y;
+			oldcoord = coord;
+
+		}
 
 		break;
 	default:
@@ -229,7 +268,6 @@ int PaintView::handle(int event)
 		break;
 
 	}
-
 
 
 	return 1;

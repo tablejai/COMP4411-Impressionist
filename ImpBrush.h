@@ -23,13 +23,13 @@ enum
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
-enum
+typedef enum
 {
 	STROKE_SLIDER_OR_RIGHT_MOUSE = 0,
 	STROKE_GRADIENT,
 	STROKE_BRUSH_DIRECTION,
 	NUM_STROKE_TYPE
-};
+} StrokeDir;
 
 class ImpressionistDoc; // Pre-declaring class
 
@@ -45,6 +45,20 @@ public:
 
 	int x, y;
 };
+class Vec2
+{
+public:
+	Vec2() {};
+	Vec2(float xx, float yy)
+	{
+		x = xx;
+		y = yy;
+	};
+
+	float x, y;
+};
+#define RGB_TO_INTENSITY(R,G,B)  ( 0.299*R + 0.587*G + 0.144*B)
+
 
 class ImpBrush
 {

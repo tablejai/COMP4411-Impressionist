@@ -91,9 +91,8 @@ void ImpressionistDoc::setBrushType(int type)
 
 void ImpressionistDoc::setStrokeType(int type)
 {
-	// TODO
-	// m_pCurrentBrush = ImpBrush::c_pBrushes[type];
-	std::cout << "DO THIS NOW!" << std::endl;
+	c_pStrokes = (StrokeDir)type;
+	std::cout << "Stroke direction: "<< c_pStrokes << std::endl;
 }
 
 //---------------------------------------------------------

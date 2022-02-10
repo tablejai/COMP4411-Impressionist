@@ -8,6 +8,8 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "linebrush.h"
+#include <math.h>
+#include "PaintView.h"
 #include <iostream>
 using namespace std;
 
@@ -29,7 +31,34 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 
 	
 }
+double LineBrush::meanfilter(const Point source) {
+	ImpressionistDoc* pDoc = GetDocument();
+	double meanintensity =0;
+	GLubyte color[3];
+	// did not handle 5 edge
+	for (int i = -1;i < 2;i++) {
+		for (int j = -1;j < 2;j++) {
+			Point temp;
+			temp.x = source.x + i;
+			temp.y = source.y + j;
+			memcpy(color, pDoc->GetOriginalPixel(temp), 3);
+			meanintensity += RGB_TO_INTENSITY(color[0], color[1], color[2]);
+		}
+	}
+	return meanintensity / 9;
 
+}
+double LineBrush::getGradientAngle(const Point source) {
+	ImpressionistDoc* pDoc = GetDocument();
+	Point tempR(source.x+1,source.y);
+	Point tempD(source.x, source.y-1);
+	double intensity = meanfilter(source);
+	double intensity1 = meanfilter(tempR);
+	double intensity2 = meanfilter(tempD);
+	double gradientx = (intensity1 - intensity) / 2;
+	double gradienty = (intensity - intensity2) / 2;
+	return atan( gradienty/ gradientx);
+}
 void LineBrush::BrushMove(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
@@ -41,13 +70,24 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
+	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
+		angle = -(atan((double)mouseVec.y / mouseVec.x)/M_PI*180);
+	}
+	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
+
+		angle = getGradientAngle(source)/M_PI*180+90;
+	}
 	glRotatef(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_POLYGON);
 	GLubyte color[3];
 	memcpy(color, pDoc->GetOriginalPixel(source), 3);
 	glColor4f(color[0]/255.0f, color[1]/255.0f, color[2]/255.0f, (float)alpha);
-    cout << (int)color[0] << "," << (int)color[1]<<","<< (int)color[2]<<","<<alpha<< endl;
+    //cout << (int)color[0] << "," << (int)color[1]<<","<< (int)color[2]<<","<<alpha<< endl;
+	//cout << coord.x<<"," << coord.y << "|" << oldcoord.x << "," << oldcoord.y<<"|" << mouseVec.x<<","<< mouseVec.y << endl;
+
+
 	cout << angle << endl;
+	cout << source.x << "|" << source.y << endl;
 	glVertex2d(- width/2, - height/2);
 	glVertex2d( - width / 2,  height / 2);
 	glVertex2d( + width / 2,  height / 2);

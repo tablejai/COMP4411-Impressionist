@@ -10,6 +10,8 @@ class ScatterLineBrush : public ImpBrush
 	GLfloat angle = 0;
 public:
 	ScatterLineBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
+	double meanfilter(const Point source);
+	double getGradientAngle(const Point source);
 	void BrushBegin(const Point source, const Point target);
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);

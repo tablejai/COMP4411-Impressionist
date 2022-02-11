@@ -46,8 +46,9 @@ void ImpBrush::SetColor (const Point source)
 	ImpressionistDoc* pDoc = GetDocument();
 
 	GLubyte color[3];
-	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
-	glColor3ubv( color );
+	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 ); 
+	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
+	//glColor3ubv( color );
 }
 
 void ImpBrush::initReverseData(){

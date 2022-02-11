@@ -49,9 +49,7 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 
 	GLfloat x_pos, y_pos;
 	GLfloat angle;
-	GLubyte color[3];
-	memcpy(color, pDoc->GetOriginalPixel(source), 3);
-	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (float)alpha);
+	SetColor(source);
 	int randNum = rand() % (30) + 30/radius;
 	for (int i = 0;i < randNum;i++) {
 		srand(target.x * target.y*time(NULL) % 40);

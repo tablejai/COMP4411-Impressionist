@@ -44,9 +44,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	}
 	GLfloat x_pos , y_pos;
 	GLfloat angle;
-	GLubyte color[3];
-	memcpy(color, pDoc->GetOriginalPixel(source), 3);
-	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (GLfloat)alpha);
+	SetColor(source);
 	circle(target.x, target.y);
 
 }

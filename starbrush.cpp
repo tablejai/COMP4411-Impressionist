@@ -58,9 +58,7 @@ void StarBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	GLubyte color[3];
-	memcpy(color, pDoc->GetOriginalPixel(source), 3);
-	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, (float)alpha);
+	SetColor(source);
 	stardraw(target);
 }
 

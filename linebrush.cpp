@@ -84,12 +84,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	glRotatef(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_POLYGON);
-	GLubyte color[3];
-	memcpy(color, pDoc->GetOriginalPixel(source), 3);
-	glColor4f(color[0]/255.0f, color[1]/255.0f, color[2]/255.0f, (float)alpha);
-    //cout << (int)color[0] << "," << (int)color[1]<<","<< (int)color[2]<<","<<alpha<< endl;
-	//cout << coord.x<<"," << coord.y << "|" << oldcoord.x << "," << oldcoord.y<<"|" << mouseVec.x<<","<< mouseVec.y << endl;
-
+	SetColor(source);
 
 	cout << angle << endl;
 	cout << source.x << "|" << source.y << endl;

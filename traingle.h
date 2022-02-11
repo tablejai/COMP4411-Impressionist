@@ -6,7 +6,6 @@
 
 class TraingleBrush : public ImpBrush
 {
-	GLfloat alpha = 0;
 	GLfloat size = 0;
 public:
 	TraingleBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);

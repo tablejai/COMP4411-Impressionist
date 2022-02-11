@@ -5,7 +5,6 @@
 class ScatterPointBrush : public ImpBrush
 {
 	int range = 10;
-	GLfloat alpha = 0;
 public:
 	ScatterPointBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
 	void BrushBegin(const Point source, const Point target);

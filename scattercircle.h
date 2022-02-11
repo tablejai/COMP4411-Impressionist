@@ -5,7 +5,6 @@
 class ScatterCircleBrush : public ImpBrush
 {
 	int radius = 10;
-	GLfloat alpha = 0;
 public:
 	ScatterCircleBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
 	void circle(int, int);

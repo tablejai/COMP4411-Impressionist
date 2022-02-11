@@ -54,9 +54,7 @@ void ScatterPointBrush::BrushMove(const Point source, const Point target)
 	for (int i = -range;i <= range;i++) {
 		for (int j = -range;j <= range;j++) {
 			Point pt = {source.x+i,source.y+j};
-			GLubyte color[3];
-			memcpy(color, pDoc->GetOriginalPixel(pt), 3);
-			glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
+			SetColor(source);
 			int display = (abs((int)mt())) % 10;
 			if (display<1) {
 				glVertex3f(target.x + i, target.y + j, 0.0f);

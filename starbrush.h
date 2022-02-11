@@ -11,7 +11,6 @@
 
 class StarBrush : public ImpBrush
 {
-	GLfloat alpha = 0;
 	GLfloat size = 0;
 public:
 	StarBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);

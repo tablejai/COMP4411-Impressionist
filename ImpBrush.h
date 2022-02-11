@@ -84,6 +84,8 @@ public:
 	static int c_nBrushCount;	  // How many brushes we have,
 	static ImpBrush **c_pBrushes; // and what they are.
 
+	GLfloat alpha = 0;
+
 private:
 	ImpressionistDoc *m_pDoc;
 

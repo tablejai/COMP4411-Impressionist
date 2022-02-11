@@ -6,7 +6,6 @@
 class CircleBrush : public ImpBrush
 {
 	GLfloat radius = 4;
-	GLfloat alpha = 0;
 public:
 	CircleBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
 	void circle(int, int);

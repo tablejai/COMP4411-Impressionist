@@ -8,6 +8,7 @@
 //
 
 #include <stdlib.h>
+#include <FL/fl_Color_Chooser.h>
 
 // Each brush type has an associated constant.
 enum

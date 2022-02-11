@@ -44,10 +44,17 @@ char* ImpBrush::BrushName(void)
 void ImpBrush::SetColor (const Point source)
 {
 	ImpressionistDoc* pDoc = GetDocument();
+	ImpressionistUI* dlg = pDoc->m_pUI;
+	double r_mult, g_mult, b_mult;
+	Fl_Color_Chooser* colorChooser = dlg->m_ColorChooser;
+
+	r_mult = colorChooser->r();
+	g_mult = colorChooser->g();
+	b_mult = colorChooser->b();
 
 	GLubyte color[3];
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 ); 
-	glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
+	glColor4f(color[0] / 255.0f * r_mult, color[1] / 255.0f * g_mult, color[2] / 255.0f * b_mult, alpha);
 	//glColor3ubv( color );
 }
 

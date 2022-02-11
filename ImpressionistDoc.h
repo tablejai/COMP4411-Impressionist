@@ -50,7 +50,6 @@ public:
 	void	setAlpha(float alpha);
 	void    meanfilter();
 	char*	getImageName();					// get the current image name
-	
 
 // Attributes
 public:

@@ -25,42 +25,42 @@ OriginalView::OriginalView(int			x,
 
 }
 void OriginalView::blendImage() {
-
-	float alpha = 1;
+	float alpha = 1.0;
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glPointSize((float)1);
+	glBegin(GL_POINTS);
 	for (int i = 0;i < m_pDoc->m_nWMap1;i++) {
 		for (int j = 0;j < m_pDoc->m_nHMap1;j++) {
 			GLubyte color[3];
 			for (int k = 0;k < 3;k++) {
 				color[k] = Map(m_pDoc->m_uctempBitmap1, i*3+k, j, m_pDoc->m_nWMap1);
 			}
-			glBegin(GL_POINTS);
-			glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
+		glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
 			glVertex2d(i, j+ m_pDoc->m_nHeight - m_pDoc->m_nHMap1);
-			glEnd();
 		}
-	alpha -= 0.5/m_pDoc->m_nWMap1;
+	alpha -= 1.0 /m_pDoc->m_nWMap1;
 	}
 	alpha = 0;
 	for (int i = 0;i < m_pDoc->m_nWMap2;i++) {
 		for (int j = 0;j < m_pDoc->m_nHMap2;j++) {
 			GLubyte color[3];
 			for (int k = 0;k < 3;k++) {
-				color[k] = Map(m_pDoc->m_uctempBitmap2, i + k, j, m_pDoc->m_nWMap2);
+				color[k] = Map(m_pDoc->m_uctempBitmap2, i*3 + k, j, m_pDoc->m_nWMap2);
 			}
-		glBegin(GL_POINTS);
 		glColor4f(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, alpha);
-			glVertex2d(i+ m_pDoc->m_nWMap1/2, j+ m_pDoc->m_nHeight - m_pDoc->m_nHMap2);
-		glEnd();
+			glVertex2d(i+ m_pDoc->m_nWMap1/2, j);
 	}
-	alpha += 0.5 / m_pDoc->m_nWMap2;
+	alpha += 1.0 / m_pDoc->m_nWMap2;
 	}
+	glEnd();
+
 }
 
 void OriginalView::draw()
 {
+
 	if(!valid())
 	{
 		glClearColor(0.7f, 0.7f, 0.7f, 1.0);
@@ -101,10 +101,7 @@ void OriginalView::draw()
 			startrow = 0;
 
 
-		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
-
-		// just copy image to GLwindow conceptually
-		
+		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);		
 		if (state==BLEND_VIEW) {
 			blendImage();
 		}
@@ -122,6 +119,7 @@ void OriginalView::draw()
 	glFlush();
 
 }
+
 
 void OriginalView::refresh()
 {

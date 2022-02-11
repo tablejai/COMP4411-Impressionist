@@ -300,20 +300,22 @@ void ImpressionistUI::cb_undo_canvas_button(Fl_Widget* o, void* v) {
 	if(paintView !=nullptr)
 		paintView->undo();
 }
-void ImpressionistUI::cb_load_blend_doc(Fl_Widget* o, void* v) {
+void ImpressionistUI::cb_load_blend_doc1(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
 	 ((Fl_Widget*)o)->label(newfile);
 	cout << "open new file:" << newfile << endl;
-	if (newfile != NULL)
-	{
-		if (pDoc->m_uctempBitmap1 == nullptr) {
-			pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap1, pDoc->m_nWMap1, pDoc->m_nHMap1);
-		}
-		else {
-			pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap2, pDoc->m_nWMap2, pDoc->m_nHMap2);
-		}
-	}
+	if(newfile!="")
+	pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap1, pDoc->m_nWMap1, pDoc->m_nHMap1);
+	
+}
+void ImpressionistUI::cb_load_blend_doc2(Fl_Widget* o, void* v) {
+	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	((Fl_Widget*)o)->label(newfile);
+	cout << "open new file:" << newfile << endl;
+	if (newfile != "")
+	pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap2, pDoc->m_nWMap2, pDoc->m_nHMap2);
 }
 void ImpressionistUI::cb_confirm_load(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
@@ -582,10 +584,10 @@ void ImpressionistUI::initBlendDialog(void) {
 	m_blendDialog = new Fl_Window(380, 300, "Blend Selection");
 	m_LoadButton1 = new Fl_Button(0, 0, 100, 50, "&Load Image 1");
 	m_LoadButton1->user_data((void*)(this));
-	m_LoadButton1->callback(cb_load_blend_doc);
+	m_LoadButton1->callback(cb_load_blend_doc1);
 	m_LoadButton2 = new Fl_Button(0,60,100, 50, "&Load Image 2");
 	m_LoadButton2->user_data((void*)(this));
-	m_LoadButton2->callback(cb_load_blend_doc);
+	m_LoadButton2->callback(cb_load_blend_doc2);
 	m_LoadEnter = new Fl_Button(0, 120, 100, 50, "&Enter");
 	m_LoadEnter->user_data((void*)(this));
 	m_LoadEnter->callback(cb_confirm_load);

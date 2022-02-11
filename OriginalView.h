@@ -45,6 +45,7 @@ public:
 	int getHeight();
 	int getWidth();
 	void blendImage();
+
 	Blend state;
 	ImpressionistDoc *m_pDoc;
 

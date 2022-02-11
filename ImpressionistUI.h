@@ -105,7 +105,8 @@ private:
 	static void cb_brushChoice(Fl_Widget *o, void *v);
 	static void cb_strokeChoice(Fl_Widget* o, void* v);
 	static void cb_clear_canvas_button(Fl_Widget *o, void *v);
-	static void cb_load_blend_doc(Fl_Widget* o, void* v);
+	static void cb_load_blend_doc1(Fl_Widget* o, void* v);
+	static void cb_load_blend_doc2(Fl_Widget* o, void* v);
 	static void cb_undo_canvas_button(Fl_Widget* o, void* v);
 	static void cb_sizeSlides(Fl_Widget *o, void *v);
 	static void cb_widthSlides(Fl_Widget* o, void* v);

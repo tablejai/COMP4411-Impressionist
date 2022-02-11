@@ -29,8 +29,8 @@ void ImageCursor::drawcursor() {
 	glBegin(GL_POINTS);
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex2d(x, m_pDoc->m_pUI->m_origView->getHeight() - y);
-//	cout << m_pDoc->m_pCursor->getx() << "," << m_pDoc->m_pCursor->gety() << endl;
 	glEnd();
+
 }
 int ImageCursor::getx() {
 	return x;

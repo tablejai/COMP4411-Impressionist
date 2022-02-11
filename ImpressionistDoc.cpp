@@ -21,7 +21,7 @@
 // Include individual brush headers here.
 #include "PointBrush.h"
 #include <iostream>
-
+using namespace std;
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -34,7 +34,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 	m_undoBitMap = NULL;
-
+	m_uctempBitmap1 = NULL;
+	m_uctempBitmap2 = NULL;
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
 	ImpBrush::c_pBrushes	= new ImpBrush* [ImpBrush::c_nBrushCount];
@@ -163,8 +164,9 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// display it on origView
 	m_pUI->m_origView->resizeWindow(width, height);	
-	m_pUI->m_origView->refresh();
+	m_pUI->m_origView->state = NORMAL_VIEW;
 
+	m_pUI->m_origView->refresh();
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);	
 	m_pUI->m_paintView->refresh();
@@ -174,6 +176,66 @@ int ImpressionistDoc::loadImage(char *iname)
 }
 
 
+
+void ImpressionistDoc::clearImage(unsigned char*& img) {
+	delete[] img;
+	img = nullptr;
+}
+int ImpressionistDoc::loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth,int& mpheight) {
+	// try to open the image to read
+	unsigned char* data;
+	int				width,
+		height;
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+	// reflect the fact of loading the new image
+	mpwidth = width;
+	mpheight = height;
+	cout << "the width and height:" << mpwidth << "," << mpheight<<"|" << (bitmap== m_uctempBitmap1) << endl;
+	// release old storage
+	if (bitmap) delete[] bitmap;
+	bitmap = data;
+	return 1;
+}
+
+int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, unsigned char* img2, int width2, int height2) {
+
+	// reflect the fact of loading the new image
+	m_nWidth = width1+width2-width1/2;
+	m_nPaintWidth = width1 + width2 - width1 / 2;
+	m_nHeight = max(height1,height2);
+	m_nPaintHeight = max(height1, height2);
+	// release old storage
+	if (m_ucBitmap) delete[] m_ucBitmap;
+	if (m_ucPainting) delete[] m_ucPainting;
+	if (m_undoBitMap) delete[] m_undoBitMap;
+	int width = m_nWidth;
+	int height = m_nHeight;
+
+	cout << "allocate w" << width1 << "allocate h" << height1 << endl;
+	cout << "allocate w2 " << width2 << "allocate h2 " << height2 << endl;
+
+	m_ucBitmap = new unsigned char[width * height * 3];
+	memset(m_ucBitmap, 0, width * height * 3);
+	m_ucPainting = new unsigned char[width * height * 3];
+	memset(m_ucPainting, 0, width * height * 3);
+	m_undoBitMap = new unsigned char[width * height * 3];
+	memset(m_undoBitMap, 0, width * height * 3);
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		width * 2,
+		height + 25);
+	m_pUI->m_origView->resizeWindow(width, height);
+	m_pUI->m_origView->state = BLEND_VIEW;
+	m_pUI->m_origView->refresh();
+	m_pUI->m_paintView->resizeWindow(width, height);
+	m_pUI->m_paintView->refresh();
+	return 1;
+}
 //----------------------------------------------------------------
 // Save the specified image
 // This is called by the UI when the save image menu button is 

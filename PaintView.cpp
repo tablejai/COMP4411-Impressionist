@@ -363,11 +363,10 @@ void PaintView::RestoreContent()
 				  GL_UNSIGNED_BYTE, 
 				  m_pPaintBitstart);
 }
-#define Map(A,i,j)  *((char*)A+(i+ 3 * (m_pDoc->m_nPaintWidth)*j))
 void PaintView::SynchronizeContent(GLvoid* source, GLvoid* target) {
 for (int i = 0;i < m_pDoc->m_nPaintWidth*3;i++) {
 	for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
-		Map(target,i,j) = Map(source,i,j);
+		Map(target,i,j,m_pDoc->m_nPaintWidth) = Map(source,i,j,m_pDoc->m_nPaintWidth);
 	}
 }
 }

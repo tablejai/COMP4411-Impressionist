@@ -25,6 +25,10 @@
 #include "ImpBrush.h"
 
 class ImpressionistDoc;
+typedef enum {
+ NORMAL_VIEW,
+ BLEND_VIEW
+}Blend;
 
 class OriginalView : public Fl_Gl_Window
 {
@@ -40,7 +44,8 @@ public:
 	void triggerupdate();
 	int getHeight();
 	int getWidth();
-
+	void blendImage();
+	Blend state;
 	ImpressionistDoc *m_pDoc;
 
 private:

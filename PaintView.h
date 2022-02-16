@@ -36,16 +36,26 @@ public:
 
 	void resizeWindow(int width, int height);
 
-	void SaveCurrentContent();
+	void SaveCurrentContent(GLenum mode);
 	void SavePreviousData(GLvoid*);
+	void SavePreviousDataOpacity(GLvoid*);
+	void RestorePreviousDataOpacity(GLvoid* );
 	void SynchronizeContent(GLvoid*, GLvoid*);
 	void RestorePreviousData(GLvoid*);
-	void RestoreContent();
+	void RestoreContent(GLenum mode);
+	void transparent(GLvoid*,GLvoid*);
+	void CombineMap(GLvoid*, GLvoid*);
+	void DrawData(GLvoid*, GLenum,int);
+	void RGB_TO_RGBA(GLvoid* , unsigned char*&  , int , int , int );
 	void undo();
 	ImpressionistDoc *m_pDoc;
+	bool initPaint;
 
 private:
 	GLvoid *m_pPaintBitstart;
+	GLvoid* m_pBrushstart;
+	unsigned char* rgbaBitMap=nullptr;
+	GLvoid* m_pImageShawdow;
 	GLvoid* m_pUndoBitstart;
 	ReDrawState drawstate;
 	int m_nDrawWidth,

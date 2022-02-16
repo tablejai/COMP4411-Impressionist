@@ -58,8 +58,8 @@ void ImpBrush::SetColor (const Point source)
 	//glColor3ubv( color );
 }
 
+
 void ImpBrush::initReverseData(){
 	ImpressionistDoc* pDoc = GetDocument();
 	pDoc->reverseData.clear();
-
 }

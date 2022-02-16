@@ -11,7 +11,7 @@
 #include <FL/fl_Color_Chooser.h>
 
 // Each brush type has an associated constant.
-enum
+typedef enum
 {
 	BRUSH_POINTS = 0,
 	BRUSH_LINES,
@@ -22,7 +22,7 @@ enum
 	BRUSH_TRAINGLE,
 	BRUSH_STAR,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
-};
+} BrushType;
 
 typedef enum
 {

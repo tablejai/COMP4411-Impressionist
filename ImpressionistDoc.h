@@ -25,6 +25,8 @@ typedef enum {
 	BLEND_MODE
 } Mode;
 #define Map(A,i,j,W)  *((char*)A+(i+ 3 * (W)*j))
+#define Map4(A,i,j,W)  *((char*)A+(i+ 4 * (W)*j))
+
 
 class ImpressionistDoc 
 {

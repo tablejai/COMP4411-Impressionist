@@ -56,11 +56,38 @@ PaintView::PaintView(int			x,
 					 const char*	l)
 						: Fl_Gl_Window(x,y,w,h,l)
 {
+
+
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
+	initPaint = false;
+
+   
 
 }
+void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, int a) {
 
+	if (w > 0 && h > 0) {
+		RGBA = new unsigned char[w * h * 4];
+		memset(RGBA, 0, w * h * 4);
+		for (int j = 0;j < h;j++) {
+			int id = 0;
+			for (int i = 0; i < w * 4;i++) {
+				int index = i % 4;
+				if (index < 3)
+					Map4(RGBA, i, j, w) = Map(data, id, j, w);
+				else {
+					Map4(RGBA, i, j, w) = (char)a;
+					id--;
+				}
+				id++;
+			}
+		}
+	}
+	cout << w << "," << h << endl;
+	cout << "rgb to rgba" << endl;
+
+}
 
 void PaintView::draw()
 {
@@ -81,7 +108,6 @@ void PaintView::draw()
 
 		glClear( GL_COLOR_BUFFER_BIT );
 	}
-
 	Point scrollpos;// = GetScrollPosition();
 	scrollpos.x = 0;
 	scrollpos.y	= 0;
@@ -107,12 +133,14 @@ void PaintView::draw()
 	m_nEndRow		= startrow + drawHeight;
 	m_nStartCol		= scrollpos.x;
 	m_nEndCol		= m_nStartCol + drawWidth;
-
+	
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
-		RestoreContent();
+		RestoreContent(GL_BACK);
 
 	}
+	if(rgbaBitMap==nullptr)
+	RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, 90);
 
 	if ( m_pDoc->m_ucPainting && isAnEvent) 
 	{
@@ -128,17 +156,40 @@ void PaintView::draw()
 		{
 		case LEFT_MOUSE_DOWN:
 			SavePreviousData(m_pUndoBitstart);
+			glClear(GL_FRONT_AND_BACK);
+			RestorePreviousData(m_pPaintBitstart);
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);
+			SaveCurrentContent(GL_BACK);
+			glClear(GL_COLOR_BUFFER_BIT);
+			RestorePreviousData(m_pPaintBitstart);
+			DrawData(rgbaBitMap, GL_BACK,0);
+
 			break;
 		case LEFT_MOUSE_DRAG:
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
+			glClear(GL_FRONT_AND_BACK);
+			RestorePreviousData(m_pPaintBitstart);
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target);
+			SaveCurrentContent(GL_BACK);
+			glClear(GL_COLOR_BUFFER_BIT);
+			RestorePreviousData(m_pPaintBitstart);
+			DrawData(rgbaBitMap, GL_BACK,0);
+
+
+		//	SaveCurrentContent(GL_BACK);
+		
+		
+
 			break;
 		case LEFT_MOUSE_UP:
+			glClear(GL_FRONT_AND_BACK);
+			RestorePreviousData(m_pPaintBitstart);
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target);
-			SaveCurrentContent();
-			RestoreContent();
+			SaveCurrentContent(GL_BACK);
+	        glClear(GL_COLOR_BUFFER_BIT);
+			RestorePreviousData(m_pPaintBitstart);
+			DrawData(rgbaBitMap, GL_BACK,0);
 			break;
 		case RIGHT_MOUSE_DOWN:
 
@@ -157,7 +208,8 @@ void PaintView::draw()
 	}
 	if (drawstate==UNDO) {
 		RestorePreviousData(m_pUndoBitstart);
-		SynchronizeContent(m_pUndoBitstart, m_pPaintBitstart);
+		SaveCurrentContent(GL_BACK);
+		//SynchronizeContent(m_pUndoBitstart, m_pPaintBitstart);
 		drawstate = DO;
 	}
 
@@ -168,6 +220,14 @@ void PaintView::draw()
 	glDrawBuffer(GL_BACK);
 	#endif // !MESA
 
+}
+void PaintView::transparent(GLvoid* source,GLvoid*target) {
+	for (int i = 0;i < m_pDoc->m_nPaintWidth * 3;i++) {
+		for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
+			Map(source, i, j, m_pDoc->m_nPaintWidth) = Map(source, i, j, m_pDoc->m_nPaintWidth) * 0.8 + ceil(Map(target, i, j, m_pDoc->m_nPaintWidth) * 0.2);
+		}
+	}
+	
 }
 
 
@@ -204,17 +264,17 @@ int PaintView::handle(int event)
 
 		}
 		break;
-	case FL_DRAG:
+	case FL_DRAG: {
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
-		if (Fl::event_button()>1)
-			eventToDo=RIGHT_MOUSE_DRAG;
+		if (Fl::event_button() > 1)
+			eventToDo = RIGHT_MOUSE_DRAG;
 		else
-			eventToDo=LEFT_MOUSE_DRAG;
-		isAnEvent=1;
+			eventToDo = LEFT_MOUSE_DRAG;
+		isAnEvent = 1;
 		if (coord.x > 0 && coord.x <= m_nWindowWidth && coord.y > 0 && coord.y <= m_nWindowHeight)
 			m_pDoc->m_pCursor->setpos(coord.x, coord.y);
-
+	
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		redraw();
 		if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
@@ -224,8 +284,9 @@ int PaintView::handle(int event)
 			oldcoord = coord;
 
 		}
-	
+
 		break;
+	}
 	case FL_RELEASE:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
@@ -248,17 +309,32 @@ int PaintView::handle(int event)
 
 		break;
 
-	case FL_MOVE:
+	case FL_MOVE: {
 
 		coord.x = Fl::event_x();
 
 		coord.y = Fl::event_y();
 
-		if(coord.x>0 && coord.x<= m_nWindowWidth && coord.y>0 && coord.y<= m_nWindowHeight)
+		if (coord.x > 0 && coord.x <= m_nWindowWidth && coord.y > 0 && coord.y <= m_nWindowHeight)
 
-			m_pDoc->m_pCursor->setpos(coord.x,coord.y);
+			m_pDoc->m_pCursor->setpos(coord.x, coord.y);
+		/*DEBUG start*/
+		Point target(coord.x, m_nWindowHeight - coord.y);
+		glReadBuffer(GL_FRONT);
 
-		m_pDoc->m_pUI->m_origView->triggerupdate();	
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+		unsigned char b[3];
+		glReadPixels(target.x,
+			target.y,
+			1,
+			1,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			b);
+		cout << (int)b[0] << "," << (int)b[1] << "," << (int)b[2] << "|" << endl;
+		/*DEBUG end*/
+		m_pDoc->m_pUI->m_origView->triggerupdate();
 		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
 		{
 			mouseVec.x = coord.x - oldcoord.x;
@@ -267,7 +343,7 @@ int PaintView::handle(int event)
 
 		}
 
-		break;
+		break;}
 	default:
 		return 0;
 		break;
@@ -297,11 +373,11 @@ void PaintView::undo() {
 	//cout << "it did not return " << endl;
 
 }
-void PaintView::SaveCurrentContent()
+void PaintView::SaveCurrentContent(GLenum mode)
 {
 	// Tell openGL to read from the front buffer when capturing
 	// out paint strokes
-	glReadBuffer(GL_FRONT);
+	glReadBuffer(mode);
 
 	glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 	glPixelStorei( GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth );
@@ -315,6 +391,7 @@ void PaintView::SaveCurrentContent()
 		  m_pPaintBitstart);
 
 }
+
 void PaintView::SavePreviousData(GLvoid* data) {
 	if (data == nullptr) {
 		cout << "isnull" << endl;
@@ -333,6 +410,43 @@ void PaintView::SavePreviousData(GLvoid* data) {
 		data);
 
 }
+
+void PaintView::SavePreviousDataOpacity(GLvoid* data) {
+	if (data == nullptr) {
+		cout << "isnull" << endl;
+		return;
+	}
+	cout << "save previous data" << endl;
+	glReadBuffer(GL_FRONT);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glReadPixels(0,
+		m_nWindowHeight - m_nDrawHeight,
+		m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		data);
+
+
+}
+
+
+void PaintView::RestorePreviousDataOpacity(GLvoid* data) {
+	glDrawBuffer(GL_BACK);
+	//	cout << "restore previous data" << endl;
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glDrawPixels(m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		data);
+
+}
 void PaintView::RestorePreviousData(GLvoid* data) {
 	glDrawBuffer(GL_BACK);
 //	cout << "restore previous data" << endl;
@@ -347,10 +461,26 @@ void PaintView::RestorePreviousData(GLvoid* data) {
 		GL_UNSIGNED_BYTE,
 		data);
 }
+void PaintView::DrawData(GLvoid* data,GLenum mode, int opacity=0) {
+	glDrawBuffer(mode);
+	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glDrawPixels(m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		data);
+}
+void PaintView::CombineMap(GLvoid* background, GLvoid* target) {
 
-void PaintView::RestoreContent()
+
+
+}
+
+void PaintView::RestoreContent(GLenum mode)
 {
-	glDrawBuffer(GL_BACK);
+	glDrawBuffer(mode);
 
 	glClear( GL_COLOR_BUFFER_BIT );
 

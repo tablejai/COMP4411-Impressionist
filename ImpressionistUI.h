@@ -44,6 +44,7 @@ public:
 	Fl_Slider *m_LineWidthSlider;
 	Fl_Slider *m_LineAngleSlider;
 	Fl_Slider *m_AlphaSlider;
+	Fl_Slider* m_BackGroundSlider;
 	Fl_Button *m_ClearCanvasButton;
 	Fl_Button* m_UndoCanvasButton;
 	Fl_Button* m_LoadButton1;
@@ -70,6 +71,8 @@ public:
 	int getWidth();
 	int getAngle();
 	GLfloat getAlpha();
+	GLfloat getBackGroundAlpha();
+	void setBackGroundAlpha(float alpha);
 	void setWidth(int width);
 	void setSize(int size);
 	void setAngle(int angle);
@@ -83,6 +86,7 @@ private:
 	int m_nWidth;
 	int m_nAngle;
 	GLfloat m_nAlpha;
+	GLfloat m_nBackGroundAlpha;
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];
@@ -109,6 +113,7 @@ private:
 	static void cb_load_blend_doc2(Fl_Widget* o, void* v);
 	static void cb_undo_canvas_button(Fl_Widget* o, void* v);
 	static void cb_sizeSlides(Fl_Widget *o, void *v);
+	static void cb_backgroundalphaSlides(Fl_Widget* o, void* v);
 	static void cb_widthSlides(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_angleSlides(Fl_Widget* o, void* v);

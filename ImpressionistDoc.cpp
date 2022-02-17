@@ -34,6 +34,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 	m_undoBitMap = NULL;
+	m_rgbaBitMap = NULL;
+	m_rgbaBrush = NULL;
 	m_uctempBitmap1 = NULL;
 	m_uctempBitmap2 = NULL;
 	// create one instance of each brush
@@ -146,6 +148,8 @@ int ImpressionistDoc::loadImage(char *iname)
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
 	if ( m_ucPainting ) delete [] m_ucPainting;
+	if (m_rgbaBitMap) delete[] m_rgbaBitMap;
+	if (m_rgbaBrush) delete[] m_rgbaBrush;
 	if (m_undoBitMap) delete[] m_undoBitMap;
 
 
@@ -154,8 +158,12 @@ int ImpressionistDoc::loadImage(char *iname)
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
 	memset(m_ucPainting, 0, width*height*3);
-	m_undoBitMap = new unsigned char[width * height * 3];
-	memset(m_undoBitMap, 0, width * height * 3);
+	m_rgbaBitMap = new unsigned char[width * height * 4];
+	memset(m_rgbaBitMap, 0, width * height * 4);
+	m_rgbaBrush = new unsigned char[width * height * 4];
+	memset(m_rgbaBrush, 0, width * height * 4);
+	m_undoBitMap = new unsigned char[width * height * 4];
+	memset(m_undoBitMap, 0, width * height * 4);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
@@ -169,6 +177,9 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_origView->refresh();
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);	
+	updateBackGroundAlpha();
+	m_pUI->m_paintView->resetBackGround();
+	m_pUI->m_paintView->resetBrush();
 	m_pUI->m_paintView->refresh();
 
 
@@ -176,6 +187,13 @@ int ImpressionistDoc::loadImage(char *iname)
 }
 
 
+
+
+void ImpressionistDoc::updateBackGroundAlpha() {
+	cout << "alpha" << m_pUI->getBackGroundAlpha() << endl;
+	m_pUI->m_paintView->updateBackGroundAlpha(m_pUI->getBackGroundAlpha());
+	m_pUI->m_paintView->refresh();
+}
 
 void ImpressionistDoc::clearImage(unsigned char*& img) {
 	delete[] img;
@@ -248,6 +266,8 @@ int ImpressionistDoc::saveImage(char *iname)
 
 	return 1;
 }
+
+
 
 //----------------------------------------------------------------
 // Clear the drawing canvas

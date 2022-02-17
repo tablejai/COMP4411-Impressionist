@@ -23,7 +23,7 @@ void PointBrush::BrushBegin( const Point source, const Point target )
 
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-	int size = pDoc->getSize();
+	 size = pDoc->getSize();
 	alpha = pDoc->getAlpha();
 	glDisable(GL_POINT_SMOOTH);
 	initReverseData();
@@ -39,6 +39,7 @@ void PointBrush::updateReverData() {
 
 void PointBrush::BrushMove( const Point source, const Point target )
 {
+	glPointSize((float)size);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();

@@ -38,6 +38,8 @@ void ScatterCircleBrush::BrushBegin(const Point source, const Point target)
 
 void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 {
+	glPointSize(radius);
+
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 

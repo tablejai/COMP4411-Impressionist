@@ -23,8 +23,11 @@ extern Point	oldcoord;
 extern Point    mouseVec;
 typedef enum {
 UNDO,
-DO
-} ReDrawState;
+DO} ReDrawState;
+typedef enum {
+NONCOVER,
+COVER
+} PaintMode;
 class PaintView : public Fl_Gl_Window
 {
 public:
@@ -35,26 +38,35 @@ public:
 	void refresh();
 
 	void resizeWindow(int width, int height);
-
+	void refreshPaintView();
+	
 	void SaveCurrentContent(GLenum mode);
+	void SavePreviousDataRGBA(GLvoid*, GLenum);
 	void SavePreviousData(GLvoid*);
-	void SavePreviousDataOpacity(GLvoid*);
-	void RestorePreviousDataOpacity(GLvoid* );
+	void RestorePreviousDataRGBA(GLvoid* ,GLenum);
+	void AddPreviousDataRGBA(GLvoid*, GLenum);
+	void AddPreviousDataRGBA(GLvoid*, GLenum, PaintMode);
 	void SynchronizeContent(GLvoid*, GLvoid*);
+	void SynchronizeContentRGBA(GLvoid*, GLvoid*);
 	void RestorePreviousData(GLvoid*);
 	void RestoreContent(GLenum mode);
 	void transparent(GLvoid*,GLvoid*);
-	void CombineMap(GLvoid*, GLvoid*);
-	void DrawData(GLvoid*, GLenum,int);
-	void RGB_TO_RGBA(GLvoid* , unsigned char*&  , int , int , int );
+	void clearColorBuffer(GLenum);
+	void resetBackGround();
+	void resetBrush();
+	void updateBackGroundAlpha(float);
+	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );
+	void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);
 	void undo();
 	ImpressionistDoc *m_pDoc;
 	bool initPaint;
 
 private:
 	GLvoid *m_pPaintBitstart;
-	GLvoid* m_pBrushstart;
+//	GLvoid* m_pBrushstart;
 	unsigned char* rgbaBitMap=nullptr;
+	unsigned char* rgbaBrush = nullptr;
+	float backgroundalpha;
 	GLvoid* m_pImageShawdow;
 	GLvoid* m_pUndoBitstart;
 	ReDrawState drawstate;

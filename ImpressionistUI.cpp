@@ -339,6 +339,11 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_nAlpha = GLfloat(((Fl_Slider*)o)->value());
 }
+void ImpressionistUI::cb_backgroundalphaSlides(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_nBackGroundAlpha = GLfloat(((Fl_Slider*)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_pDoc->updateBackGroundAlpha();
+
+}
 
 void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
 {
@@ -428,6 +433,16 @@ void ImpressionistUI::setAlpha(float alpha) {
 
 	 }
 }
+GLfloat ImpressionistUI::getBackGroundAlpha() {
+	return m_nBackGroundAlpha;
+}
+void ImpressionistUI::setBackGroundAlpha(float alpha) {
+	m_nBackGroundAlpha = alpha;
+	if (alpha <= 1) {
+		m_BackGroundSlider->value(m_nBackGroundAlpha);
+
+	}
+}
 int ImpressionistUI::getAngle() {
 	return m_nAngle;
 }
@@ -514,6 +529,7 @@ void ImpressionistUI::initBrushDialog() {
 	m_nWidth = 1;
 	m_nAngle = 0;
 	m_nAlpha = 1.0;
+	m_nBackGroundAlpha = 0.5;
 
 	// Add brush size slider to the dialog
 	m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
@@ -565,6 +581,19 @@ void ImpressionistUI::initBrushDialog() {
 	m_AlphaSlider->value(m_nAlpha);
 	m_AlphaSlider->align(FL_ALIGN_RIGHT);
 	m_AlphaSlider->callback(cb_alphaSlides);
+
+	m_BackGroundSlider = new Fl_Value_Slider(10, 210, 300, 20, "BackGround Alpha");
+	m_BackGroundSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_BackGroundSlider->type(FL_HOR_NICE_SLIDER);
+	m_BackGroundSlider->labelfont(FL_COURIER);
+	m_BackGroundSlider->labelsize(12);
+	m_BackGroundSlider->minimum(0.0);
+	m_BackGroundSlider->maximum(1.0);
+	m_BackGroundSlider->step(0.01);
+	m_BackGroundSlider->value(m_nBackGroundAlpha);
+	m_BackGroundSlider->align(FL_ALIGN_RIGHT);
+	m_BackGroundSlider->callback(cb_backgroundalphaSlides);
+
 
 	m_brushDialog->end();
 }

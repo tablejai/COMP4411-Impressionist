@@ -45,6 +45,7 @@ public:
 	int		getSize();						// get the UI size
 	int		getWidth();
 	int		getAngle();
+	void   updateBackGroundAlpha();
 	GLfloat		getAlpha();
 	void	setWidth(int width);
 	void	setSize(int size);
@@ -66,6 +67,8 @@ public:
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;
+	unsigned char* m_rgbaBitMap;
+	unsigned char* m_rgbaBrush;
 	unsigned char* m_undoBitMap;
 	unsigned char* m_uctempBitmap1;
 	unsigned char* m_uctempBitmap2;

@@ -65,7 +65,7 @@ PaintView::PaintView(int			x,
    
 
 }
-void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, int a) {
+void PaintView::INIT_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, int a) {
 
 	if (w > 0 && h > 0) {
 		RGBA = new unsigned char[w * h * 4];
@@ -88,6 +88,28 @@ void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, in
 	cout << "rgb to rgba" << endl;
 
 }
+
+void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w , int h, int a) {
+	if (w > 0 && h > 0) {
+		for (int j = 0;j < h;j++) {
+			int id = 0;
+			for (int i = 0; i < w * 4;i++) {
+				int index = i % 4;
+				if (index < 3)
+					Map4(RGBA, i, j, w) = Map(data, id, j, w);
+				else {
+					Map4(RGBA, i, j, w) = (char)a;
+					id--;
+				}
+				id++;
+			}
+		}
+	}
+
+
+}
+
+
 
 void PaintView::draw()
 {
@@ -124,23 +146,34 @@ void PaintView::draw()
 
 	m_pPaintBitstart = m_pDoc->m_ucPainting + 
 		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-	m_pUndoBitstart = m_pDoc->m_undoBitMap + 3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+	m_pUndoBitstart = m_pDoc->m_undoBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 
 	m_nDrawWidth	= drawWidth;
 	m_nDrawHeight	= drawHeight;
-
 	m_nStartRow		= startrow;
 	m_nEndRow		= startrow + drawHeight;
 	m_nStartCol		= scrollpos.x;
 	m_nEndCol		= m_nStartCol + drawWidth;
-	
-	if ( m_pDoc->m_ucPainting && !isAnEvent) 
-	{
-		RestoreContent(GL_BACK);
+
+	if (!rgbaBitMap) {
+		rgbaBitMap = m_pDoc->m_rgbaBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+		clearColorBuffer(GL_BACK);
+		RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha*255);
+		AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
 
 	}
-	if(rgbaBitMap==nullptr)
-	RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, 90);
+	else
+		RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
+
+	if (!rgbaBrush) {
+		rgbaBrush  = m_pDoc->m_rgbaBrush + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+	}
+	if ( m_pDoc->m_ucPainting && !isAnEvent)
+	{
+		refreshPaintView();
+
+	}
+
 
 	if ( m_pDoc->m_ucPainting && isAnEvent) 
 	{
@@ -155,41 +188,38 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
-			SavePreviousData(m_pUndoBitstart);
-			glClear(GL_FRONT_AND_BACK);
-			RestorePreviousData(m_pPaintBitstart);
+			SynchronizeContentRGBA(rgbaBrush,m_pUndoBitstart);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);
-			SaveCurrentContent(GL_BACK);
-			glClear(GL_COLOR_BUFFER_BIT);
-			RestorePreviousData(m_pPaintBitstart);
-			DrawData(rgbaBitMap, GL_BACK,0);
+			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);//should draw to back
+			SavePreviousDataRGBA(rgbaBrush,GL_BACK);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 
+		
 			break;
 		case LEFT_MOUSE_DRAG:
 			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			glClear(GL_FRONT_AND_BACK);
-			RestorePreviousData(m_pPaintBitstart);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target);
-			SaveCurrentContent(GL_BACK);
-			glClear(GL_COLOR_BUFFER_BIT);
-			RestorePreviousData(m_pPaintBitstart);
-			DrawData(rgbaBitMap, GL_BACK,0);
-
-
-		//	SaveCurrentContent(GL_BACK);
-		
-		
+			SavePreviousDataRGBA(rgbaBrush,GL_BACK);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 
 			break;
 		case LEFT_MOUSE_UP:
-			glClear(GL_FRONT_AND_BACK);
-			RestorePreviousData(m_pPaintBitstart);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK);
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target);
-			SaveCurrentContent(GL_BACK);
-	        glClear(GL_COLOR_BUFFER_BIT);
-			RestorePreviousData(m_pPaintBitstart);
-			DrawData(rgbaBitMap, GL_BACK,0);
+			SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+
 			break;
 		case RIGHT_MOUSE_DOWN:
 
@@ -207,11 +237,13 @@ void PaintView::draw()
 		}
 	}
 	if (drawstate==UNDO) {
-		RestorePreviousData(m_pUndoBitstart);
-		SaveCurrentContent(GL_BACK);
-		//SynchronizeContent(m_pUndoBitstart, m_pPaintBitstart);
+		clearColorBuffer(GL_BACK);
+		SynchronizeContentRGBA(m_pUndoBitstart, rgbaBrush);
+		AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+		AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 		drawstate = DO;
 	}
+	
 
 	glFlush();
 
@@ -229,7 +261,25 @@ void PaintView::transparent(GLvoid* source,GLvoid*target) {
 	}
 	
 }
+void PaintView::refreshPaintView() {
+	clearColorBuffer(GL_BACK);
+	AddPreviousDataRGBA(rgbaBrush, GL_BACK);
+	SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+	clearColorBuffer(GL_BACK);
+	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+	AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+}
 
+void PaintView::resetBackGround() {
+	rgbaBitMap = nullptr;
+}
+void PaintView::resetBrush() {
+	rgbaBrush = nullptr;
+}
+
+void PaintView::updateBackGroundAlpha(float alpha) {
+	backgroundalpha = alpha;
+}
 
 int PaintView::handle(int event)
 {
@@ -410,14 +460,13 @@ void PaintView::SavePreviousData(GLvoid* data) {
 		data);
 
 }
-
-void PaintView::SavePreviousDataOpacity(GLvoid* data) {
+void PaintView::SavePreviousDataRGBA(GLvoid* data,GLenum mode) {
 	if (data == nullptr) {
 		cout << "isnull" << endl;
 		return;
 	}
-	cout << "save previous data" << endl;
-	glReadBuffer(GL_FRONT);
+	//cout << "save previous data [RGBA]" << endl;
+	glReadBuffer(mode);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
 	glReadPixels(0,
@@ -428,25 +477,8 @@ void PaintView::SavePreviousDataOpacity(GLvoid* data) {
 		GL_UNSIGNED_BYTE,
 		data);
 
-
 }
 
-
-void PaintView::RestorePreviousDataOpacity(GLvoid* data) {
-	glDrawBuffer(GL_BACK);
-	//	cout << "restore previous data" << endl;
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
-	glDrawPixels(m_nDrawWidth,
-		m_nDrawHeight,
-		GL_RGBA,
-		GL_UNSIGNED_BYTE,
-		data);
-
-}
 void PaintView::RestorePreviousData(GLvoid* data) {
 	glDrawBuffer(GL_BACK);
 //	cout << "restore previous data" << endl;
@@ -461,19 +493,70 @@ void PaintView::RestorePreviousData(GLvoid* data) {
 		GL_UNSIGNED_BYTE,
 		data);
 }
-void PaintView::DrawData(GLvoid* data,GLenum mode, int opacity=0) {
+
+
+
+
+
+void PaintView::RestorePreviousDataRGBA(GLvoid* data,GLenum mode) {
+	glDrawBuffer(mode);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	AddPreviousDataRGBA(data, mode);
+}
+
+void PaintView::AddPreviousDataRGBA(GLvoid* data, GLenum mode) {
 	glDrawBuffer(mode);
 	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
-	glDrawPixels(m_nDrawWidth,
-		m_nDrawHeight,
-		GL_RGBA,
-		GL_UNSIGNED_BYTE,
-		data);
-}
-void PaintView::CombineMap(GLvoid* background, GLvoid* target) {
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+		glDrawPixels(m_nDrawWidth,
+			m_nDrawHeight,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			data);
 
+}
+void PaintView::AddPreviousDataRGBA(GLvoid* data, GLenum mode, PaintMode ptMode) {
+	glDrawBuffer(mode);
+
+	if (ptMode == COVER) {
+		glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+		glDrawPixels(m_nDrawWidth,
+			m_nDrawHeight,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			data);
+	}
+	else {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glPointSize(1);
+		glBegin(GL_POINTS);
+		for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
+			for (int i = 0;i < m_pDoc->m_nPaintWidth;i++) {
+			GLbyte r = Map4(data, i*4, j, m_pDoc->m_nPaintWidth);
+			GLbyte g = Map4(data, i * 4+1, j, m_pDoc->m_nPaintWidth);
+			GLbyte b = Map4(data, i * 4 + 2, j, m_pDoc->m_nPaintWidth);
+			GLbyte a = Map4(data, i * 4 + 3, j, m_pDoc->m_nPaintWidth);
+			glColor4ub(r,g,b,a);
+			glVertex2d(i,j);
+			}
+		}
+		glEnd();
+		glDisable(GL_BLEND);
+
+	}
+}
+void PaintView::clearColorBuffer( GLenum buffer) {
+	glDrawBuffer(buffer);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glClearColor(0,0,0,0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_BLEND);
 
 
 }
@@ -499,4 +582,11 @@ for (int i = 0;i < m_pDoc->m_nPaintWidth*3;i++) {
 		Map(target,i,j,m_pDoc->m_nPaintWidth) = Map(source,i,j,m_pDoc->m_nPaintWidth);
 	}
 }
+}
+void PaintView::SynchronizeContentRGBA(GLvoid* source, GLvoid* target) {
+	for (int i = 0;i < m_pDoc->m_nPaintWidth * 4;i++) {
+		for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
+			Map4(target, i, j, m_pDoc->m_nPaintWidth) = Map4(source, i, j, m_pDoc->m_nPaintWidth);
+		}
+	}
 }

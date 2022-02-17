@@ -38,6 +38,8 @@ void ScatterPointBrush::BrushBegin(const Point source, const Point target)
 
 void ScatterPointBrush::BrushMove(const Point source, const Point target)
 {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 

@@ -47,8 +47,7 @@ double ScatterLineBrush::getGradientAngle(const Point source) {
 
 void ScatterLineBrush::BrushBegin(const Point source, const Point target)
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
@@ -63,7 +62,8 @@ void ScatterLineBrush::BrushBegin(const Point source, const Point target)
 
 void ScatterLineBrush::BrushMove(const Point source, const Point target)
 {
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 

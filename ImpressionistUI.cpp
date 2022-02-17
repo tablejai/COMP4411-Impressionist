@@ -10,6 +10,8 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
+#include <sstream>      // std::stringstream
+#include <string>
 #include <iostream>
 using namespace std;
 
@@ -300,22 +302,44 @@ void ImpressionistUI::cb_undo_canvas_button(Fl_Widget* o, void* v) {
 	if(paintView !=nullptr)
 		paintView->undo();
 }
+string ImpressionistUI::pathToFileName(char* name) {
+	int i = 0;
+	stringstream ss(name);
+	string temp;
+	while (getline(ss, temp,'\/')) {
+		cout << temp << endl;
+	}
+	cout << temp << endl;
+	return temp ;
+}
 void ImpressionistUI::cb_load_blend_doc1(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
-	 ((Fl_Widget*)o)->label(newfile);
 	cout << "open new file:" << newfile << endl;
+
 	if(newfile!="")
 	pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap1, pDoc->m_nWMap1, pDoc->m_nHMap1);
+	;
+	char* fileName = new char[100];
+	strcpy(fileName, pathToFileName(newfile).c_str());
+	cout << fileName << endl;
+	((Fl_Widget*)o)->label(fileName);
+
+
 	
 }
 void ImpressionistUI::cb_load_blend_doc2(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
-	((Fl_Widget*)o)->label(newfile);
+//	((Fl_Widget*)o)->label(newfile);
 	cout << "open new file:" << newfile << endl;
 	if (newfile != "")
 	pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap2, pDoc->m_nWMap2, pDoc->m_nHMap2);
+	char* fileName = new char[100];
+	strcpy(fileName, pathToFileName(newfile).c_str());
+	cout << fileName << endl;
+	((Fl_Widget*)o)->label(fileName);
+
 }
 void ImpressionistUI::cb_confirm_load(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
@@ -611,10 +635,10 @@ void ImpressionistUI::initColorDialog(void) {
 void ImpressionistUI::initBlendDialog(void) {
 	// blend dialog definition
 	m_blendDialog = new Fl_Window(380, 300, "Blend Selection");
-	m_LoadButton1 = new Fl_Button(0, 0, 100, 50, "&Load Image 1");
+	m_LoadButton1 = new Fl_Button(0, 0, 200, 50, "&Load Image 1");
 	m_LoadButton1->user_data((void*)(this));
 	m_LoadButton1->callback(cb_load_blend_doc1);
-	m_LoadButton2 = new Fl_Button(0,60,100, 50, "&Load Image 2");
+	m_LoadButton2 = new Fl_Button(0,60,200, 50, "&Load Image 2");
 	m_LoadButton2->user_data((void*)(this));
 	m_LoadButton2->callback(cb_load_blend_doc2);
 	m_LoadEnter = new Fl_Button(0, 120, 100, 50, "&Enter");

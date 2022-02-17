@@ -231,6 +231,10 @@ int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, uns
 	if (m_ucBitmap) delete[] m_ucBitmap;
 	if (m_ucPainting) delete[] m_ucPainting;
 	if (m_undoBitMap) delete[] m_undoBitMap;
+	if (m_rgbaBitMap) delete[] m_rgbaBitMap;
+	 m_rgbaBitMap = nullptr;
+	if (m_rgbaBrush) delete[] m_rgbaBrush;
+	m_rgbaBrush = nullptr;
 	int width = m_nWidth;
 	int height = m_nHeight;
 
@@ -251,6 +255,8 @@ int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, uns
 	m_pUI->m_origView->state = BLEND_VIEW;
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->resizeWindow(width, height);
+	m_pUI->m_paintView->resetBackGround();
+	m_pUI->m_paintView->resetBrush();
 	m_pUI->m_paintView->refresh();
 	return 1;
 }
@@ -278,14 +284,25 @@ int ImpressionistDoc::clearCanvas()
 {
 
 	// Release old storage
+	if (m_rgbaBitMap) {
+		delete[] m_rgbaBitMap;
+		m_rgbaBitMap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 4];
+		memset(m_rgbaBitMap, 0, m_nPaintWidth * m_nPaintHeight * 4);
+		m_pUI->m_paintView->refresh();
+	}
+	if (m_rgbaBrush) {
+		delete[] m_rgbaBrush;
+		m_rgbaBrush = new unsigned char[m_nPaintWidth * m_nPaintHeight * 4];
+		memset(m_rgbaBrush, 0, m_nPaintWidth * m_nPaintHeight * 4);
+		m_pUI->m_paintView->refresh();
+
+	}
 	if ( m_ucPainting ) 
 	{
 		delete [] m_ucPainting;
-
 		// allocate space for draw view
 		m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
 		memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
-
 		// refresh paint view as well	
 		m_pUI->m_paintView->refresh();
 	}

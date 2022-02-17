@@ -16,7 +16,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Light_Button.H>
 #include <FL/fl_Color_Chooser.h>
-
+#include <string>
 #include "Impressionist.h"
 #include "OriginalView.h"
 #include "PaintView.h"
@@ -77,7 +77,6 @@ public:
 	void setSize(int size);
 	void setAngle(int angle);
 	void setAlpha(float alpha);
-
 private:
 	ImpressionistDoc *m_pDoc; // pointer to document to communicate with the document
 
@@ -117,6 +116,7 @@ private:
 	static void cb_widthSlides(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_angleSlides(Fl_Widget* o, void* v);
+	static std::string pathToFileName(char *);
 	void initBrushDialog(void);
 	void initColorDialog(void);
 	void initBlendDialog(void);

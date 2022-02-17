@@ -20,16 +20,17 @@ PointBrush::PointBrush( ImpressionistDoc* pDoc, char* name ) :
 
 void PointBrush::BrushBegin( const Point source, const Point target )
 {
-
+	
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 	 size = pDoc->getSize();
 	alpha = pDoc->getAlpha();
-	glDisable(GL_POINT_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glDisable(GL_POINT_SMOOTH);
 	initReverseData();
 	glPointSize( (float)size );
-
-	BrushMove( source, target );
+	BrushMove(source, target);
 }
 void PointBrush::updateReverData() {
 	/*for (int i = -size;i < size;i++) {
@@ -38,10 +39,12 @@ void PointBrush::updateReverData() {
 }
 
 void PointBrush::BrushMove( const Point source, const Point target )
-{
-	glPointSize((float)size);
+{    
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDrawBuffer(GL_BACK);
+	glPointSize((float)size);
+	
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
 
@@ -49,8 +52,6 @@ void PointBrush::BrushMove( const Point source, const Point target )
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
-
-
 	glBegin( GL_POINTS );
 	SetColor(source);
 	glVertex2d( target.x, target.y );

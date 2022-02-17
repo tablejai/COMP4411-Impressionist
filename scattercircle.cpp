@@ -24,25 +24,22 @@ ScatterCircleBrush::ScatterCircleBrush(ImpressionistDoc* pDoc, char* name) :
 
 void ScatterCircleBrush::BrushBegin(const Point source, const Point target)
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 	radius = pDoc->getSize();
 	alpha = pDoc->getAlpha()*pDoc->getAlpha()* pDoc->getAlpha();
-	glEnable(GL_POINT_SMOOTH);
-	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	glPointSize(radius);
+
 	BrushMove(source, target);
 }
 
 void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 {
-	glPointSize(radius);
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glPointSize(1);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-
 	if (pDoc == NULL) {
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
@@ -66,7 +63,6 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 void ScatterCircleBrush::BrushEnd(const Point source, const Point target)
 {
 	cout << "triggerend scattercircle" << endl;
-	glDisable(GL_POINT_SMOOTH);
 
 }
 

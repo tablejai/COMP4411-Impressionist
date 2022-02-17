@@ -24,18 +24,17 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	radius = pDoc->getSize();
 	alpha = pDoc->getAlpha()*pDoc->getAlpha()*pDoc->getAlpha();
-	glEnable(GL_POINT_SMOOTH);
-	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	glPointSize(radius);
-	BrushMove(source, target);
+	//BrushMove(source, target);
 }
 
 void CircleBrush::BrushMove(const Point source, const Point target)
 {
+	glPointSize(1);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 	if (pDoc == NULL) {

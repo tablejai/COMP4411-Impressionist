@@ -108,162 +108,167 @@ void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w , int h, in
 
 
 }
+void PaintView::RGBA_TO_RGB(GLvoid* data, unsigned char* RGB, int w, int h, int a) {
+	if (w > 0 && h > 0) {
+		for (int j = 0;j < h;j++) {
+			int id = 0;
+			for (int i = 0; i < w * 3;i++) {
+				int index = i % 3;
+				if (index == 2) {
+					Map(RGB, i, j, w) = Map4(data, id, j,w);
+					id++;
+				}
+				id++;
+			}
+		}
+	}
+
+
+}
 
 
 
 void PaintView::draw()
 {
-	#ifndef MESA
-	// To avoid flicker on some machines.
-	glDrawBuffer(GL_FRONT_AND_BACK);
-	#endif // !MESA
+#ifndef MESA
+		// To avoid flicker on some machines.
+		glDrawBuffer(GL_FRONT_AND_BACK);
+#endif // !MESA
 
-	if(!valid())
-	{
-
-		glClearColor(0.7f, 0.7f, 0.7f, 1.0);
-
-		// We're only using 2-D, so turn off depth 
-		glDisable( GL_DEPTH_TEST );
-
-		ortho();
-
-		glClear( GL_COLOR_BUFFER_BIT );
-	}
-	Point scrollpos;// = GetScrollPosition();
-	scrollpos.x = 0;
-	scrollpos.y	= 0;
-
-	m_nWindowWidth	= w();
-	m_nWindowHeight	= h();
-
-	int drawWidth, drawHeight;
-	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
-	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
-
-	int startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
-	if ( startrow < 0 ) startrow = 0;
-
-	m_pPaintBitstart = m_pDoc->m_ucPainting + 
-		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-	m_pUndoBitstart = m_pDoc->m_undoBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-
-	m_nDrawWidth	= drawWidth;
-	m_nDrawHeight	= drawHeight;
-	m_nStartRow		= startrow;
-	m_nEndRow		= startrow + drawHeight;
-	m_nStartCol		= scrollpos.x;
-	m_nEndCol		= m_nStartCol + drawWidth;
-
-	if (!rgbaBitMap) {
-		rgbaBitMap = m_pDoc->m_rgbaBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-		clearColorBuffer(GL_BACK);
-		RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha*255);
-		AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
-
-	}
-	else
-		RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
-
-	if (!rgbaBrush) {
-		rgbaBrush  = m_pDoc->m_rgbaBrush + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-	}
-	if ( m_pDoc->m_ucPainting && !isAnEvent)
-	{
-		refreshPaintView();
-
-	}
-
-
-	if ( m_pDoc->m_ucPainting && isAnEvent) 
-	{
-
-		// Clear it after processing.
-		isAnEvent	= 0;	
-
-		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
-		Point target( coord.x, m_nWindowHeight - coord.y );
-
-		// This is the event handler
-		switch (eventToDo) 
+		if (!valid())
 		{
-		case LEFT_MOUSE_DOWN:
-			SynchronizeContentRGBA(rgbaBrush,m_pUndoBitstart);
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
-			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			m_pDoc->m_pCurrentBrush->BrushBegin( source, target);//should draw to back
-			SavePreviousDataRGBA(rgbaBrush,GL_BACK);
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 
-		
-			break;
-		case LEFT_MOUSE_DRAG:
-			if (source.y < 0 || source.x > m_nWindowWidth) return;
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
-			m_pDoc->m_pCurrentBrush->BrushMove( source, target);
-			SavePreviousDataRGBA(rgbaBrush,GL_BACK);
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+			glClearColor(0.7f, 0.7f, 0.7f, 1.0);
 
-			break;
-		case LEFT_MOUSE_UP:
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK);
-			m_pDoc->m_pCurrentBrush->BrushEnd( source, target);
-			SavePreviousDataRGBA(rgbaBrush, GL_BACK);
-			clearColorBuffer(GL_BACK);
-			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
-			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+			// We're only using 2-D, so turn off depth 
+			glDisable(GL_DEPTH_TEST);
 
-			break;
-		case RIGHT_MOUSE_DOWN:
+			ortho();
 
-			break;
-		case RIGHT_MOUSE_DRAG:
-
-			break;
-		case RIGHT_MOUSE_UP:
-
-			break;
-
-		default:
-			printf("Unknown event!!\n");		
-			break;
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
-	}
-	if (drawstate==UNDO) {
-		clearColorBuffer(GL_BACK);
-		SynchronizeContentRGBA(m_pUndoBitstart, rgbaBrush);
-		AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
-		AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
-		drawstate = DO;
-	}
-	
+		Point scrollpos;// = GetScrollPosition();
+		scrollpos.x = 0;
+		scrollpos.y = 0;
 
-	glFlush();
+		m_nWindowWidth = w();
+		m_nWindowHeight = h();
 
-	#ifndef MESA
-	// To avoid flicker on some machines.
-	glDrawBuffer(GL_BACK);
-	#endif // !MESA
+		int drawWidth, drawHeight;
+		drawWidth = min(m_nWindowWidth, m_pDoc->m_nPaintWidth);
+		drawHeight = min(m_nWindowHeight, m_pDoc->m_nPaintHeight);
+
+		int startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
+		if (startrow < 0) startrow = 0;
+
+		m_pPaintBitstart = m_pDoc->m_ucPainting +
+			3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+		m_pUndoBitstart = m_pDoc->m_undoBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+
+		m_nDrawWidth = drawWidth;
+		m_nDrawHeight = drawHeight;
+		m_nStartRow = startrow;
+		m_nEndRow = startrow + drawHeight;
+		m_nStartCol = scrollpos.x;
+		m_nEndCol = m_nStartCol + drawWidth;
+
+		if (!rgbaBitMap&& m_pDoc->m_rgbaBitMap) {
+			rgbaBitMap = m_pDoc->m_rgbaBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+			clearColorBuffer(GL_BACK);
+			RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
+			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+		}
+		else if(rgbaBitMap)
+			RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
+
+		if (!rgbaBrush && m_pDoc->m_rgbaBrush) {
+			rgbaBrush = m_pDoc->m_rgbaBrush + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+		}
+		if (m_pDoc->m_ucPainting && m_pDoc->m_rgbaBitMap && m_pDoc->m_rgbaBrush && !isAnEvent)
+		{
+			refreshPaintView();
+		}
+		if (m_pDoc->m_ucPainting && m_pDoc->m_rgbaBitMap && m_pDoc->m_rgbaBrush && isAnEvent)
+		{
+
+			// Clear it after processing.
+			isAnEvent = 0;
+
+			Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
+			Point target(coord.x, m_nWindowHeight - coord.y);
+			// This is the event handler
+			switch (eventToDo)
+			{
+			case LEFT_MOUSE_DOWN:
+				SynchronizeContentRGBA(rgbaBrush, m_pUndoBitstart);
+			//	clearColorBuffer(GL_BACK);
+				RestorePreviousDataRGBA(rgbaBrush,GL_BACK);
+				if (source.y < 0 || source.x > m_nWindowWidth) return;
+				m_pDoc->m_pCurrentBrush->BrushBegin(source, target);//should draw to back
+				SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+				clearColorBuffer(GL_BACK);
+				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+				break;
+			case LEFT_MOUSE_DRAG:
+				if (source.y < 0 || source.x > m_nWindowWidth) return;
+				//clearColorBuffer(GL_BACK);
+				//AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+				RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
+				m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+				SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+				clearColorBuffer(GL_BACK);
+				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+
+				break;
+			case LEFT_MOUSE_UP:
+				//clearColorBuffer(GL_BACK);
+				//AddPreviousDataRGBA(rgbaBrush, GL_BACK);
+				RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
+				m_pDoc->m_pCurrentBrush->BrushEnd(source, target);
+				SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+				clearColorBuffer(GL_BACK);
+				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+
+				break;
+			case RIGHT_MOUSE_DOWN:
+
+				break;
+			case RIGHT_MOUSE_DRAG:
+
+				break;
+			case RIGHT_MOUSE_UP:
+
+				break;
+
+			default:
+				printf("Unknown event!!\n");
+				break;
+			}
+		}
+		if (drawstate == UNDO) {
+			//clearColorBuffer(GL_BACK);
+			SynchronizeContentRGBA(m_pUndoBitstart, rgbaBrush);
+			clearColorBuffer(GL_BACK);
+			AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+			AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+			drawstate = DO;
+		}
+
+		glFlush();
+
+#ifndef MESA
+		// To avoid flicker on some machines.
+		glDrawBuffer(GL_BACK);
+#endif // !MESA
 
 }
-void PaintView::transparent(GLvoid* source,GLvoid*target) {
-	for (int i = 0;i < m_pDoc->m_nPaintWidth * 3;i++) {
-		for (int j = 0;j < m_pDoc->m_nPaintHeight;j++) {
-			Map(source, i, j, m_pDoc->m_nPaintWidth) = Map(source, i, j, m_pDoc->m_nPaintWidth) * 0.8 + ceil(Map(target, i, j, m_pDoc->m_nPaintWidth) * 0.2);
-		}
-	}
-	
-}
+
 void PaintView::refreshPaintView() {
-	clearColorBuffer(GL_BACK);
-	AddPreviousDataRGBA(rgbaBrush, GL_BACK);
+	//clearColorBuffer(GL_BACK);
+	RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
 	SavePreviousDataRGBA(rgbaBrush, GL_BACK);
 	clearColorBuffer(GL_BACK);
 	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
@@ -423,6 +428,17 @@ void PaintView::undo() {
 	//cout << "it did not return " << endl;
 
 }
+//void PaintView::clearView() {
+//	drawstate = CLEAR;
+//	m_pPaintBitstart = nullptr;
+//	m_pUndoBitstart = nullptr;
+//	rgbaBitMap = nullptr;
+//	rgbaBrush = nullptr;
+//	redraw();
+//}
+void PaintView::setstate(ReDrawState state) {
+	drawstate = state;
+}
 void PaintView::SaveCurrentContent(GLenum mode)
 {
 	// Tell openGL to read from the front buffer when capturing
@@ -499,27 +515,24 @@ void PaintView::RestorePreviousData(GLvoid* data) {
 
 
 void PaintView::RestorePreviousDataRGBA(GLvoid* data,GLenum mode) {
-	glDrawBuffer(mode);
+	glDrawBuffer(GL_BACK);
+	//	cout << "restore previous data" << endl;
+	//glClear(GL_COLOR_BUFFER_BIT);
 
-	glClear(GL_COLOR_BUFFER_BIT);
-	AddPreviousDataRGBA(data, mode);
-}
-
-void PaintView::AddPreviousDataRGBA(GLvoid* data, GLenum mode) {
-	glDrawBuffer(mode);
 	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
-		glDrawPixels(m_nDrawWidth,
-			m_nDrawHeight,
-			GL_RGBA,
-			GL_UNSIGNED_BYTE,
-			data);
-
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glDrawPixels(m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		data);
 }
+
+
 void PaintView::AddPreviousDataRGBA(GLvoid* data, GLenum mode, PaintMode ptMode) {
 	glDrawBuffer(mode);
-
+	if(data!=nullptr)
 	if (ptMode == COVER) {
 		glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -554,9 +567,9 @@ void PaintView::clearColorBuffer( GLenum buffer) {
 	glDrawBuffer(buffer);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClearColor(0,0,0,0);
+	glClearColor(0,0,0,0); //dont put 0
 	glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 
 
 }

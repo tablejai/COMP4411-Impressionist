@@ -23,7 +23,11 @@ extern Point	oldcoord;
 extern Point    mouseVec;
 typedef enum {
 UNDO,
-DO} ReDrawState;
+CLEAR,
+LOAD,
+BLEND,
+DO
+} ReDrawState;
 typedef enum {
 NONCOVER,
 COVER
@@ -36,27 +40,26 @@ public:
 	int handle(int event);
 
 	void refresh();
-
+	//void clearView();
 	void resizeWindow(int width, int height);
 	void refreshPaintView();
-	
+	void setstate(ReDrawState);
 	void SaveCurrentContent(GLenum mode);
 	void SavePreviousDataRGBA(GLvoid*, GLenum);
 	void SavePreviousData(GLvoid*);
 	void RestorePreviousDataRGBA(GLvoid* ,GLenum);
-	void AddPreviousDataRGBA(GLvoid*, GLenum);
 	void AddPreviousDataRGBA(GLvoid*, GLenum, PaintMode);
 	void SynchronizeContent(GLvoid*, GLvoid*);
 	void SynchronizeContentRGBA(GLvoid*, GLvoid*);
 	void RestorePreviousData(GLvoid*);
 	void RestoreContent(GLenum mode);
-	void transparent(GLvoid*,GLvoid*);
 	void clearColorBuffer(GLenum);
 	void resetBackGround();
 	void resetBrush();
 	void updateBackGroundAlpha(float);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );
 	void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);
+	void RGBA_TO_RGB(GLvoid*, unsigned char*, int, int, int);
 	void undo();
 	ImpressionistDoc *m_pDoc;
 	bool initPaint;

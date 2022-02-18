@@ -35,7 +35,8 @@ public:
 
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
 
-	int		loadImage(char *iname);			// called by the UI to load image
+	int		loadImage(char *name);			// called by the UI to load image
+	int     loadAlphaImage(char* name);
 	int		loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth, int& mpheight);
 	int		blendImage(unsigned char* ,int,int,unsigned char* ,int ,int);
 	int		saveImage(char *iname);			// called by the UI to save image
@@ -64,6 +65,8 @@ public:
 	// Dimensions of the paint window.
 	int				m_nPaintWidth, 
 					m_nPaintHeight;	
+	int				m_nAlphaWidth;
+	int				m_nAlphaHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;
@@ -72,6 +75,8 @@ public:
 	unsigned char* m_undoBitMap;
 	unsigned char* m_uctempBitmap1;
 	unsigned char* m_uctempBitmap2;
+	unsigned char* m_uAlphaMap;
+
 
 
 

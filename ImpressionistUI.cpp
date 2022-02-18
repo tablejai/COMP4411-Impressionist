@@ -192,6 +192,14 @@ void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	whoami(o)->m_blendDialog->show();
 
 }
+void ImpressionistUI::cb_load_alpha_image(Fl_Menu_* o, void* v) {
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL)
+	{
+		pDoc->loadAlphaImage(newfile);
+	}
+}
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
 // This is called by the UI when the save image menu item is chosen
@@ -483,6 +491,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&File", 0, 0, 0, FL_SUBMENU},
 	{"&Load Image...", FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image},
 	{"&Load Blending Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_blend_image},
+	{"&Load Alpha Mapped Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_alpha_image},
 	{"&Save Image...", FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image},
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
@@ -512,6 +521,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{"Scattered Circles", FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
 	{"Star", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_STAR},
 	{"Traingle", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_TRAINGLE},
+	{"Alpha Map Brush", FL_ALT + 'g', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_ALPHAMAP},
 	{0}};
 
 Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {

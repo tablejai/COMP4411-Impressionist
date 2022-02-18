@@ -160,3 +160,5 @@ void writeBMP(char*				iname,
 
 	fclose(outFile);
 } 
+
+

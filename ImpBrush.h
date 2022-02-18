@@ -21,6 +21,7 @@ typedef enum
 	BRUSH_SCATTERED_CIRCLES,
 	BRUSH_TRAINGLE,
 	BRUSH_STAR,
+	BRUSH_ALPHAMAP,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 } BrushType;
 

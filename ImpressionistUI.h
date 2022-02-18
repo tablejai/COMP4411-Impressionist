@@ -116,6 +116,7 @@ private:
 	static void cb_widthSlides(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_angleSlides(Fl_Widget* o, void* v);
+	static void cb_load_alpha_image(Fl_Menu_* , void* );
 	static std::string pathToFileName(char *);
 	void initBrushDialog(void);
 	void initColorDialog(void);

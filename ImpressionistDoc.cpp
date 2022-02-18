@@ -18,6 +18,7 @@
 #include "traingle.h"
 #include "starbrush.h"
 #include "ImageCursor.h"
+#include "AlphaMapBrush.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
 #include <iostream>
@@ -34,6 +35,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 	m_undoBitMap = NULL;
+	m_uAlphaMap = NULL;
 	m_rgbaBitMap = NULL;
 	m_rgbaBrush = NULL;
 	m_uctempBitmap1 = NULL;
@@ -59,6 +61,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new StarBrush(this, "Star");
 	ImpBrush::c_pBrushes[BRUSH_TRAINGLE]
 		= new TraingleBrush(this, "Traingle");
+	ImpBrush::c_pBrushes[BRUSH_ALPHAMAP]
+		= new AlphaBrush(this, "Alpha Map Brush");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";
@@ -186,6 +190,26 @@ int ImpressionistDoc::loadImage(char *iname)
 	return 1;
 }
 
+int ImpressionistDoc::loadAlphaImage(char* name) {
+	// try to open the image to read
+	unsigned char* data;
+	int				width,
+		height;
+
+	if ((data = readBMP(name, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+	m_nAlphaWidth = width;
+	m_nAlphaHeight = height;
+	if (m_uAlphaMap) delete[] m_uAlphaMap;
+	m_uAlphaMap = data;
+	((AlphaBrush*)ImpBrush::c_pBrushes[BRUSH_ALPHAMAP])->updateAlphaImageBrush(m_uAlphaMap, m_nAlphaWidth, m_nAlphaHeight);
+
+	return 1;
+
+}
 
 
 

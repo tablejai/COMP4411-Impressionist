@@ -35,6 +35,7 @@ public:
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth, int& mpheight);
+	void	saveOldImage(void);
 	int		blendImage(unsigned char* ,int,int,unsigned char* ,int ,int);
 	int		saveImage(char *iname);			// called by the UI to save image
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -56,6 +57,7 @@ public:
 	// Dimensions of original window.
 	int				m_nWidth, 
 					m_nHeight;
+	int oldPaintWidth, oldPaintHeight;
 	int				m_nWMap1, m_nHMap1;
 	int				m_nWMap2, m_nHMap2;
 	// Dimensions of the paint window.
@@ -67,6 +69,8 @@ public:
 	unsigned char* m_undoBitMap;
 	unsigned char* m_uctempBitmap1;
 	unsigned char* m_uctempBitmap2;
+	unsigned char* temp_m_ucPainting;
+	bool loadingMuralImage = false;
 
 
 

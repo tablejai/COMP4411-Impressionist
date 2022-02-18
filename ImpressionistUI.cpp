@@ -183,6 +183,20 @@ void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 		pDoc->loadImage(newfile);
 	}
 }
+
+void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL)
+	{
+		pDoc->loadingMuralImage = true;
+		pDoc->saveOldImage();
+		pDoc->loadImage(newfile);
+	}
+}
+
 void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 	pDoc->clearImage(pDoc->m_uctempBitmap1);
@@ -452,7 +466,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
 
 	{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
-	{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+	{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas},
+	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image, 0, FL_MENU_DIVIDER},
 
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{0},
@@ -473,6 +488,8 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{"Scattered Circles", FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
 	{"Star", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_STAR},
 	{"Traingle", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_TRAINGLE},
+	{"Blurring", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_BLURRRING},
+	{"Sharpening", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_SHARPENING},
 	{0}};
 
 Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {

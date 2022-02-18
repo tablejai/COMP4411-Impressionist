@@ -17,6 +17,7 @@
 #include "scatterpoint.h"
 #include "traingle.h"
 #include "starbrush.h"
+#include "BlurringBrush.h"
 #include "ImageCursor.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
@@ -57,6 +58,10 @@ ImpressionistDoc::ImpressionistDoc()
 		= new StarBrush(this, "Star");
 	ImpBrush::c_pBrushes[BRUSH_TRAINGLE]
 		= new TraingleBrush(this, "Traingle");
+	ImpBrush::c_pBrushes[BRUSH_BLURRRING]
+		= new BlurringBrush(this, "Blurring");
+	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
+		= new TraingleBrush(this, "Sharpening");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";
@@ -124,6 +129,16 @@ GLfloat	ImpressionistDoc::getAlpha() {
 // This is called by the UI when the load image button is 
 // pressed.
 //---------------------------------------------------------
+void ImpressionistDoc::saveOldImage() {
+	if (temp_m_ucPainting) {
+		oldPaintWidth = m_nPaintWidth;
+		oldPaintHeight = m_nPaintHeight;
+		temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 3];
+		memcpy(temp_m_ucPainting, m_ucPainting, oldPaintWidth * oldPaintHeight * 3);
+	}
+}
+
+
 int ImpressionistDoc::loadImage(char *iname) 
 {
 	// try to open the image to read
@@ -137,6 +152,7 @@ int ImpressionistDoc::loadImage(char *iname)
 		return 0;
 	}
 
+
 	// reflect the fact of loading the new image
 	m_nWidth		= width;
 	m_nPaintWidth	= width;
@@ -144,16 +160,19 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_nPaintHeight	= height;
 
 	// release old storage
-	if ( m_ucBitmap ) delete [] m_ucBitmap;
-	if ( m_ucPainting ) delete [] m_ucPainting;
+	if (m_ucPainting) delete[] m_ucPainting;
+	if (m_ucBitmap) delete[] m_ucBitmap;
 	if (m_undoBitMap) delete[] m_undoBitMap;
-
 
 	m_ucBitmap		= data;
 
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
 	memset(m_ucPainting, 0, width*height*3);
+	if (loadingMuralImage) {
+		memcpy(m_ucPainting, temp_m_ucPainting, oldPaintHeight * oldPaintWidth * 3);
+		loadingMuralImage = false;
+	}
 	m_undoBitMap = new unsigned char[width * height * 3];
 	memset(m_undoBitMap, 0, width * height * 3);
 

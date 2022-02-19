@@ -16,7 +16,7 @@ ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
-					m_pBrushName(name)
+					m_pBrushName(name), bmode(NORMALMODE)
 {
 }
 
@@ -62,4 +62,7 @@ void ImpBrush::SetColor (const Point source)
 void ImpBrush::initReverseData(){
 	ImpressionistDoc* pDoc = GetDocument();
 	pDoc->reverseData.clear();
+}
+void ImpBrush::setBrushMode(BrushMode mode) {
+	bmode = mode;
 }

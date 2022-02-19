@@ -10,6 +10,7 @@
 #include "circleBrush.h"
 #include "math.h"
 #include <iostream>
+#include <random>
 using namespace std;
 #define PI 3.14159265358979323846
 
@@ -37,6 +38,13 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
+	auto seed = mt19937{random_device()()};
+	mt19937 mt(seed);
+	int realRadius;
+	if (bmode == NORMALMODE)
+		realRadius = radius;
+	else
+		realRadius = radius + ((int)mt()) % 4;
 	if (pDoc == NULL) {
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
@@ -44,11 +52,10 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	GLfloat x_pos , y_pos;
 	GLfloat angle;
 	SetColor(source);
-	circle(target.x, target.y);
-
+	circle(target.x, target.y, realRadius);
 }
 
-void CircleBrush::circle(int target_x, int target_y) {
+void CircleBrush::circle(int target_x, int target_y,int radius) {
 	glBegin(GL_POLYGON);
 
 	for (int i = 0; i < 360; ++i) {

@@ -32,7 +32,10 @@ typedef enum
 	STROKE_BRUSH_DIRECTION,
 	NUM_STROKE_TYPE
 } StrokeDir;
-
+typedef enum {
+RANDOMMODE,
+NORMALMODE
+}BrushMode;
 class ImpressionistDoc; // Pre-declaring class
 
 class Point
@@ -79,7 +82,7 @@ public:
 	// get Doc to communicate with it
 	ImpressionistDoc *GetDocument(void);
 	void initReverseData();
-
+	void setBrushMode(BrushMode);
 	// Return the name of the brush (not used in this version).
 	char *BrushName(void);
 
@@ -87,6 +90,7 @@ public:
 	static ImpBrush **c_pBrushes; // and what they are.
 
 	GLfloat alpha = 0;
+	BrushMode bmode;
 
 private:
 	ImpressionistDoc *m_pDoc;

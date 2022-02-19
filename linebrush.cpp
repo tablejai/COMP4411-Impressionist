@@ -11,6 +11,7 @@
 #include <math.h>
 #include "PaintView.h"
 #include <iostream>
+#include <random>
 using namespace std;
 
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) : ImpBrush(pDoc, name)
@@ -68,10 +69,29 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	double realwidth = 0;
+	double realheight = 0;
+	int angledelta = 0;
+	if (bmode == NORMALMODE) {
+		realwidth = width;
+		realheight = height;
+		angledelta = 0;
+	}
+	else
+	{
+		int temp = (width > 1) ? (width / 2) : width;
+		realwidth = width + (abs((int)mt())) % (temp);
+		temp = (height > 1) ? (height / 2) : height;
+		realheight = height + (abs((int)mt())) % (temp);
+		angledelta = ((int)mt()) % (40);
+	}
+
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
 	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
-		angle = (-(int)(atan((double)mouseVec.y / mouseVec.x)/M_PI*180) + 360)%360;
+		angle = (-(int)(atan((double)mouseVec.y / mouseVec.x)/M_PI*180) + 360+ angledelta)%360;
 		angle = (315<=angle&&angle<360 || 0 <= angle && angle < 45) ? 0 :
 				(45 < angle && angle < 135) ? 90:
 			    (135 < angle && angle < 225) ? 180:
@@ -80,7 +100,10 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 
-		angle = getGradientAngle(source)/M_PI*180+90;
+		angle = getGradientAngle(source)/M_PI*180+90+angledelta;
+	}
+	else {
+		angle = angledelta;
 	}
 	glRotatef(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_POLYGON);
@@ -88,10 +111,10 @@ void LineBrush::BrushMove(const Point source, const Point target)
 
 	//cout << angle << endl;
 	//cout << source.x << "|" << source.y << endl;
-	glVertex2d(- width/2, - height/2);
-	glVertex2d( - width / 2,  height / 2);
-	glVertex2d( + width / 2,  height / 2);
-	glVertex2d( + width / 2,  - height / 2);
+	glVertex2d(-realwidth /2, -realheight /2);
+	glVertex2d( -realwidth / 2, realheight / 2);
+	glVertex2d( +realwidth / 2, realheight / 2);
+	glVertex2d( +realwidth / 2,  -realheight / 2);
 
 	glEnd();
 	glPopMatrix();

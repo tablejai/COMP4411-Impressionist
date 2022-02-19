@@ -10,6 +10,8 @@
 #include "scatterline.h"
 #include "math.h"
 #include "time.h"
+#include <random>
+using namespace std;
 extern float frand();
 
 ScatterLineBrush::ScatterLineBrush(ImpressionistDoc* pDoc, char* name) :ImpBrush(pDoc, name)
@@ -71,30 +73,49 @@ void ScatterLineBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	double realwidth, realheight;
+	int angledelta;
+	if (bmode == NORMALMODE) {
+		realwidth = width;
+		realheight = height;
+		angledelta = 0;
+	}
+	else
+	{
+		int temp = (width > 1) ? (width / 2) : width;
+		realwidth = width + ((int)mt()) % (temp);
+		temp = (height > 1) ? (height / 2) : height;
+		realheight = height + ((int)mt()) % (temp);
+		angledelta = ((int)mt()) % (40);
+	}
 	srand(time(NULL));
 	int randNum = rand() % (5)+3;
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
 	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
-		angle = -(atan((double)mouseVec.y / mouseVec.x) / M_PI * 180);
+		angle = -((atan((double)mouseVec.y / mouseVec.x)) / M_PI * 180)+ angledelta;
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 
-		angle = getGradientAngle(source) / M_PI * 180 + 90;
+		angle = getGradientAngle(source) / M_PI * 180 + 90+ angledelta;
+	}
+	else {
+		angle = angledelta;
 	}
 	glRotatef(angle, 0.0, 0.0, 1.0);
 
 	for (int i = 0;i < randNum;i++) {
 		srand(target.x*target.y%400);
-		double xchange = rand()%(int)width-width/2;
-		double ychange = rand()%(int)width-width / 2;
+		double xchange = rand()%(int)realwidth - realwidth /2;
+		double ychange = rand()%(int)realwidth - realwidth / 2;
 		glBegin(GL_POLYGON);
 		SetColor(source);
-		glVertex2d( xchange - width / 2,  ychange - height / 2);
-		glVertex2d( xchange - width / 2,  ychange +height / 2);
-		glVertex2d( xchange + width / 2,  ychange+ height / 2);
-		glVertex2d( xchange + width / 2,  ychange - height / 2);
+		glVertex2d( xchange - realwidth / 2,  ychange - realheight / 2);
+		glVertex2d( xchange - realwidth / 2,  ychange + realheight / 2);
+		glVertex2d( xchange + realwidth / 2,  ychange+ realheight / 2);
+		glVertex2d( xchange + realwidth / 2,  ychange - realheight / 2);
 		glEnd();
 	}
 	glPopMatrix();

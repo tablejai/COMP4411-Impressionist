@@ -7,7 +7,7 @@ class ScatterCircleBrush : public ImpBrush
 	int radius = 10;
 public:
 	ScatterCircleBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
-	void circle(int, int);
+	void circle(int, int,int);
 	void BrushBegin(const Point source, const Point target);
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);

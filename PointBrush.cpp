@@ -9,6 +9,7 @@
 #include "impressionistUI.h"
 #include "pointbrush.h"
 #include <iostream>
+#include <random>
 using namespace std;
 
 extern float frand();
@@ -43,8 +44,12 @@ void PointBrush::BrushMove( const Point source, const Point target )
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawBuffer(GL_BACK);
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	if(bmode==NORMALMODE)
 	glPointSize((float)size);
-	
+	else
+	glPointSize((float)size+((int)mt())%4);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
 

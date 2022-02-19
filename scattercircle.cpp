@@ -11,6 +11,7 @@
 #include "math.h"
 #include "time.h"
 #include <iostream>
+#include <random>
 using namespace std;
 extern float frand();
 
@@ -44,19 +45,24 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-
-
 	GLfloat x_pos, y_pos;
 	GLfloat angle;
 	SetColor(source);
-	int randNum = rand() % (30) + 30/radius;
+	int realRadius;
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	if (bmode == NORMALMODE)
+		realRadius = radius;
+	else
+		realRadius = radius + ((int)mt()) % 4;
+	int randNum = rand() % (30) + 30/ realRadius;
 	for (int i = 0;i < randNum;i++) {
 		srand(target.x * target.y*time(NULL) % 40);
-		GLfloat xchange = (rand()*i+rand())%(radius)- radius/ 2;
-		GLfloat ychange = (rand()*i+rand())%(radius)- radius/ 2;
+		GLfloat xchange = (rand()*i+rand())%(realRadius)-realRadius / 2;
+		GLfloat ychange = (rand()*i+rand())%(realRadius)-realRadius / 2;
 		x_pos = target.x + xchange;
 		y_pos = target.y + ychange;
-		circle(x_pos, y_pos);
+		circle(x_pos, y_pos, realRadius);
 	}
 }
 
@@ -66,7 +72,7 @@ void ScatterCircleBrush::BrushEnd(const Point source, const Point target)
 
 }
 
-void ScatterCircleBrush::circle(int target_x, int target_y) {
+void ScatterCircleBrush::circle(int target_x, int target_y,int radius) {
 	glBegin(GL_POLYGON);
 
 	for (int i = 0; i < 360; ++i) {

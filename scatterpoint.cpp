@@ -42,13 +42,12 @@ void ScatterPointBrush::BrushMove(const Point source, const Point target)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
 	if (pDoc == NULL) {
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-	auto seed = mt19937{ random_device()() };
-	mt19937 mt(seed);
 	if (bmode == NORMALMODE) {
 		glPointSize((float)1.0);
 	}

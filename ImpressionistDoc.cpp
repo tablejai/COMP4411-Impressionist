@@ -46,6 +46,24 @@ void RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w, int h, int a) {
 
 }
 
+void RGBA_TO_RGB(GLvoid* data, unsigned char* RGB, int w, int h, int a) {
+	if (w > 0 && h > 0) {
+		for (int j = 0;j < h;j++) {
+			int id = 0;
+			for (int i = 0; i < w * 3;i++) {
+				int index = i % 3;
+				if (index == 2) {
+					Map(RGB, i, j, w) = Map4(data, id, j, w);
+					id++;
+				}
+				id++;
+			}
+		}
+	}
+
+
+}
+
 ImpressionistDoc::ImpressionistDoc() 
 {
 	// Set NULL image name as init. 
@@ -58,6 +76,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_uAlphaMap = NULL;
 	m_rgbaBitMap = NULL;
 	m_rgbaBrush = NULL;
+	m_ucGradeint = NULL;
 	m_uctempBitmap1 = NULL;
 	m_uctempBitmap2 = NULL;
 	// create one instance of each brush
@@ -93,8 +112,6 @@ ImpressionistDoc::ImpressionistDoc()
 	m_pCursor = new ImageCursor{ this,name };
 
 }
-
-
 //---------------------------------------------------------
 // Set the current UI 
 //---------------------------------------------------------
@@ -163,7 +180,20 @@ void ImpressionistDoc::saveOldImage() {
 	}
 }
 
-
+int ImpressionistDoc::loadGradientImage(char* name)
+{
+	unsigned char* data;
+	int width, height;
+	if ((data = readBMP(name, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+	m_nGradientWidth = width;
+	m_nGradientHeight = height;
+	if (m_ucGradeint) delete[] m_ucGradeint;
+	m_ucGradeint = data;
+}
 int ImpressionistDoc::loadImage(char *iname) 
 {
 	// try to open the image to read
@@ -219,8 +249,6 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->resetBackGround();
 	m_pUI->m_paintView->resetBrush();
 	m_pUI->m_paintView->refresh();
-
-
 	return 1;
 }
 

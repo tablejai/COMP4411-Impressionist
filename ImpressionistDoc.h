@@ -28,6 +28,7 @@ typedef enum {
 #define Map4(A,i,j,W)  *((char*)A+(i+ 4 * (W)*j))
 
 void RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w, int h, int a);
+void RGBA_TO_RGB(GLvoid* data, unsigned char* RGB, int w, int h, int a);
 class ImpressionistDoc 
 {
 public:
@@ -44,6 +45,7 @@ public:
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	void	setStrokeType(int type);
+	int    loadGradientImage(char* name);
 	int		getSize();						// get the UI size
 	int		getWidth();
 	int		getAngle();
@@ -69,9 +71,12 @@ public:
 					m_nPaintHeight;	
 	int				m_nAlphaWidth;
 	int				m_nAlphaHeight;
+	int				m_nGradientWidth;
+	int				m_nGradientHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;
+	unsigned char* m_ucGradeint;
 	unsigned char* m_rgbaBitMap;
 	unsigned char* m_rgbaBrush;
 	unsigned char* m_undoBitMap;

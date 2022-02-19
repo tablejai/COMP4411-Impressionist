@@ -37,12 +37,20 @@ double LineBrush::meanfilter(const Point source) {
 	double meanintensity =0;
 	GLubyte color[3];
 	// did not handle 5 edge
+	GradientMode mode = pDoc->m_pUI->m_paintView->getGradientMode();
 	for (int i = -1;i < 2;i++) {
 		for (int j = -1;j < 2;j++) {
 			Point temp;
 			temp.x = source.x + i;
 			temp.y = source.y + j;
-			memcpy(color, pDoc->GetOriginalPixel(temp), 3);
+			if (mode == DEFUALT)
+				memcpy(color, pDoc->GetOriginalPixel(temp),3);
+			else if (mode == CUSTOM) {
+				
+				color[0] = Map(pDoc->m_ucGradeint, 3 * temp.x, temp.y, pDoc->m_nGradientWidth);
+				color[1] = Map(pDoc->m_ucGradeint, 3 * temp.x+1, temp.y, pDoc->m_nGradientWidth);
+				color[2] = Map(pDoc->m_ucGradeint, 3 * temp.x+2, temp.y, pDoc->m_nGradientWidth);
+			}
 			meanintensity += RGB_TO_INTENSITY(color[0], color[1], color[2]);
 		}
 	}

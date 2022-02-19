@@ -76,7 +76,7 @@ void BlurringBrush::BlurringKernel(const Point source, const Point target) {
 
 	KernelSetColor(target, rSum, gSum, bSum);
 
-	dlg->m_paintView->RestoreContent();
+	dlg->m_paintView->RestoreContent(GL_BACK);
 }
 
 void BlurringBrush::KernelSetColor(const Point target, const int r, const int g, const int b) {

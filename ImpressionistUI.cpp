@@ -185,6 +185,14 @@ void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 		pDoc->loadImage(newfile);
 	}
 }
+void ImpressionistUI::cb_load_gradient_image(Fl_Menu_* o, void* v) {
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL)
+	{
+		pDoc->loadGradientImage(newfile);
+	}
+}
 
 void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 {
@@ -327,6 +335,26 @@ void ImpressionistUI::cb_undo_canvas_button(Fl_Widget* o, void* v) {
 	PaintView* paintView = ((ImpressionistUI*)(o->user_data()))->m_paintView;
 	if(paintView !=nullptr)
 		paintView->undo();
+}
+void ImpressionistUI::cb_custom_gradient(Fl_Widget*o,void* v) {
+	ImpressionistUI* pUI =((ImpressionistUI*)(o->user_data()));
+	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+
+	if (pUI->m_paintView->getGradientMode() == CUSTOM) {
+		pUI->m_paintView->setGradientMode(DEFUALT);
+		o->label("DEFAULT MODE");
+	}
+	else
+	{
+		if (pDoc->m_ucGradeint != nullptr) {
+			pUI->m_paintView->setGradientMode(CUSTOM);
+			o->label("CUSTOM GRADIENT MODE");
+		}
+		else {
+			fl_alert("Please load Gradient Image.");
+		}
+	}
+
 }
 string ImpressionistUI::pathToFileName(char* name) {
 	int i = 0;
@@ -504,12 +532,13 @@ void ImpressionistUI::setAngle(int angle) {
 }
 
 
-// Main menu definition
+// Main menu definition//cb_load_gradient_image
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&File", 0, 0, 0, FL_SUBMENU},
 	{"&Load Image...", FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image},
 	{"&Load Blending Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_blend_image},
 	{"&Load Alpha Mapped Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_alpha_image},
+	{"&Load Gradient Image...", FL_ALT + 'q', (Fl_Callback*)ImpressionistUI::cb_load_gradient_image},
 	{"&Save Image...", FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image},
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
@@ -577,7 +606,9 @@ void ImpressionistUI::initBrushDialog() {
 	m_UndoCanvasButton->user_data((void*)(this));
 	m_UndoCanvasButton->callback(cb_undo_canvas_button);
 
-
+	m_GradientButton = new Fl_Button(0, 300, 190, 25, "&Use Custom Gradient Image");
+	m_GradientButton->user_data((void*)(this));
+	m_GradientButton->callback(cb_custom_gradient);
 	// init values
 	m_nSize = 10;
 	m_nWidth = 1;

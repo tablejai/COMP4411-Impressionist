@@ -64,7 +64,7 @@ PaintView::PaintView(int			x,
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
 	initPaint = false;
-
+	gradientMode = DEFUALT;
    
 
 }
@@ -92,25 +92,7 @@ void PaintView::INIT_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, int 
 
 }
 
-void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w , int h, int a) {
-	if (w > 0 && h > 0) {
-		for (int j = 0;j < h;j++) {
-			int id = 0;
-			for (int i = 0; i < w * 4;i++) {
-				int index = i % 4;
-				if (index < 3)
-					Map4(RGBA, i, j, w) = Map(data, id, j, w);
-				else {
-					Map4(RGBA, i, j, w) = (char)a;
-					id--;
-				}
-				id++;
-			}
-		}
-	}
 
-
-}
 
 void PaintView::randomBrushDraw() {
 	
@@ -120,7 +102,12 @@ void PaintView::randomBrushDraw() {
 
 }
 
-
+GradientMode PaintView::getGradientMode() {
+	return  gradientMode;
+}
+void PaintView::setGradientMode(GradientMode mode) {
+	gradientMode = mode;
+}
 void PaintView::autoPaint() {
 	glDrawBuffer(GL_BACK);
 	auto seed = mt19937{ random_device()() };
@@ -156,23 +143,6 @@ void PaintView::autoPaint() {
 	glDrawBuffer(GL_BACK);
 	this->redraw();
 	m_pDoc->m_pCurrentBrush->setBrushMode(NORMALMODE);
-
-}
-void PaintView::RGBA_TO_RGB(GLvoid* data, unsigned char* RGB, int w, int h, int a) {
-	if (w > 0 && h > 0) {
-		for (int j = 0;j < h;j++) {
-			int id = 0;
-			for (int i = 0; i < w * 3;i++) {
-				int index = i % 3;
-				if (index == 2) {
-					Map(RGB, i, j, w) = Map4(data, id, j,w);
-					id++;
-				}
-				id++;
-			}
-		}
-	}
-
 
 }
 
@@ -452,7 +422,6 @@ if(m_pDoc->m_pCurrentBrush->bmode==NORMALMODE)
 			oldcoord = coord;
 
 		}
-
 		break;}
 	default:
 		return 0;

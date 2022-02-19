@@ -47,6 +47,7 @@ public:
 	Fl_Slider* m_BackGroundSlider;
 	Fl_Button *m_ClearCanvasButton;
 	Fl_Button* m_UndoCanvasButton;
+	Fl_Button* m_GradientButton;
 	Fl_Button* m_LoadButton1;
 	Fl_Button* m_LoadButton2;
 	Fl_Button* m_LoadEnter;
@@ -120,6 +121,8 @@ private:
 	static void cb_angleSlides(Fl_Widget* o, void* v);
 	static void cb_load_alpha_image(Fl_Menu_* , void* );
 	static void cb_AutoPaint(Fl_Menu_*, void*);
+	static void cb_load_gradient_image(Fl_Menu_* o, void* v);
+	static void cb_custom_gradient(Fl_Widget*,void*);
 	static std::string pathToFileName(char *);
 	void initBrushDialog(void);
 	void initColorDialog(void);

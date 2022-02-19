@@ -23,15 +23,16 @@ extern Point	oldcoord;
 extern Point    mouseVec;
 typedef enum {
 UNDO,
-CLEAR,
-LOAD,
-BLEND,
 DO
 } ReDrawState;
 typedef enum {
 NONCOVER,
 COVER
 } PaintMode;
+typedef enum {
+DEFUALT,
+CUSTOM
+} GradientMode;
 class PaintView : public Fl_Gl_Window
 {
 public:
@@ -57,12 +58,12 @@ public:
 	void resetBackGround(unsigned char* ptr=nullptr);
 	void resetBrush(unsigned char* ptr=nullptr);
 	void resetUndo(unsigned char* ptr = nullptr);
-
+	GradientMode getGradientMode();
+	void setGradientMode(GradientMode);
 	void autoPaint();
 	void updateBackGroundAlpha(float);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );
-	void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);
-	void RGBA_TO_RGB(GLvoid*, unsigned char*, int, int, int);
+	//void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);
 	void undo();
 	ImpressionistDoc *m_pDoc;
 	bool initPaint;
@@ -76,6 +77,7 @@ private:
 	GLvoid* m_pImageShawdow;
 	GLvoid* m_pUndoBitstart;
 	ReDrawState drawstate;
+	GradientMode gradientMode;
 	int m_nDrawWidth,
 		m_nDrawHeight,
 		m_nStartRow,

@@ -89,6 +89,7 @@ private:
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];
+	//static Fl_Menu_Item Functionitems[];
 	static Fl_Menu_Item brushTypeMenu[NUM_BRUSH_TYPE + 1];
 	static Fl_Menu_Item strokeDirectionMenu[NUM_STROKE_TYPE + 1];
 
@@ -117,6 +118,7 @@ private:
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_angleSlides(Fl_Widget* o, void* v);
 	static void cb_load_alpha_image(Fl_Menu_* , void* );
+	static void cb_AutoPaint(Fl_Menu_*, void*);
 	static std::string pathToFileName(char *);
 	void initBrushDialog(void);
 	void initColorDialog(void);

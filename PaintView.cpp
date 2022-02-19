@@ -10,6 +10,8 @@
 #include "paintview.h"
 #include "ImpBrush.h"
 #include <iostream>
+#include <random>
+#include  <unordered_map>
 using namespace std;
 
 
@@ -35,6 +37,7 @@ using namespace std;
 #define RIGHT_MOUSE_DOWN	4
 #define RIGHT_MOUSE_DRAG	5
 #define RIGHT_MOUSE_UP		6
+#define AUTO_PAINT          7
 
 
 #ifndef WIN32
@@ -108,6 +111,82 @@ void PaintView::RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w , int h, in
 
 
 }
+
+void PaintView::randomBrushDraw() {
+	
+	
+
+
+
+}
+
+void PaintView::autoPaint() {
+	glDrawBuffer(GL_BACK);
+
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	int length;
+	SynchronizeContentRGBA(rgbaBrush, m_pUndoBitstart);
+	RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
+	unordered_map<int,int> skippedPoint;
+   
+	for (int i = 0;i < m_nDrawHeight;i++) {
+		for (int j = 0;j < m_nDrawWidth;j++) {
+			if (!(abs((int)mt()) % 3)) {
+					skippedPoint.insert({ j,i });
+					continue;
+			}
+			Point source(j + m_nStartCol, m_nEndRow - i);
+			Point target(j, m_nWindowHeight - i);
+			glReadBuffer(GL_BACK);
+			glPixelStorei(GL_PACK_ALIGNMENT, 1);
+			glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+			unsigned char b[4];
+			glReadPixels(target.x,target.y,1,1,GL_RGBA,GL_UNSIGNED_BYTE,b);
+			if (b[3]>0) {
+				continue;
+			}
+			int midi = i;
+			int midj = j;
+			/*int endx = (abs((int)mt())%(m_nDrawWidth));
+			int endy = (abs((int)mt())%(m_nDrawHeight));
+			length = abs((int)mt())%3;*/
+			//float slope = (midj-endx)/(midi-endy);
+		    //int y_intercept = midj-slope* midi;
+			coord.x = j;
+			coord.y = i;
+			m_pDoc->m_pCurrentBrush->BrushBegin(source, target);//should draw to back
+			m_pDoc->m_pCurrentBrush->BrushMove(source, target);//should draw to back
+			m_pDoc->m_pCurrentBrush->BrushEnd(source, target);//should draw to back
+			/*this->redraw();
+			for (int l = 0;l < length;i++) {
+				target.x = ;
+				if (abs(coord.x - oldcoord.x) > 0 && abs(coord.y - oldcoord.y) > 0)
+				{
+						mouseVec.x = coord.x - oldcoord.x;
+						mouseVec.y = coord.y - oldcoord.y;
+						oldcoord = coord;
+				}
+				
+			}*/
+		}
+	}
+	for (auto& pt : skippedPoint) {
+		Point source = { pt.first+ m_nStartCol ,m_nEndRow - pt.second };
+		Point target(pt.first, m_nWindowHeight - pt.second);
+		m_pDoc->m_pCurrentBrush->BrushBegin(source, target);//should draw to back
+		m_pDoc->m_pCurrentBrush->BrushMove(source, target);//should draw to back
+		m_pDoc->m_pCurrentBrush->BrushEnd(source, target);//should draw to back
+	}
+	std::cout << m_pDoc->m_pCurrentBrush->BrushName()<<"bursh nm" << endl;
+	SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+	clearColorBuffer(GL_BACK);
+	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+	AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+	glFlush();
+	glDrawBuffer(GL_BACK);
+	this->redraw();
+}
 void PaintView::RGBA_TO_RGB(GLvoid* data, unsigned char* RGB, int w, int h, int a) {
 	if (w > 0 && h > 0) {
 		for (int j = 0;j < h;j++) {
@@ -180,7 +259,6 @@ void PaintView::draw()
 		}
 		else if(rgbaBitMap)
 			RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
-
 		if (!rgbaBrush && m_pDoc->m_rgbaBrush) {
 			rgbaBrush = m_pDoc->m_rgbaBrush + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 		}
@@ -191,12 +269,9 @@ void PaintView::draw()
 		if (m_pDoc->m_ucPainting && m_pDoc->m_rgbaBitMap && m_pDoc->m_rgbaBrush && isAnEvent)
 		{
 
-			// Clear it after processing.
 			isAnEvent = 0;
-
 			Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
 			Point target(coord.x, m_nWindowHeight - coord.y);
-			// This is the event handler
 			switch (eventToDo)
 			{
 			case LEFT_MOUSE_DOWN:
@@ -233,6 +308,7 @@ void PaintView::draw()
 				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 
 				break;
+
 			case RIGHT_MOUSE_DOWN:
 
 				break;
@@ -242,7 +318,10 @@ void PaintView::draw()
 			case RIGHT_MOUSE_UP:
 
 				break;
+			case AUTO_PAINT:
 
+
+				break;
 			default:
 				printf("Unknown event!!\n");
 				break;

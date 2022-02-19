@@ -294,6 +294,10 @@ void ImpressionistUI::cb_strokeChoice(Fl_Widget* o, void* v)
 		((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider*)o)->value());
 	}
 }
+void ImpressionistUI::cb_AutoPaint(Fl_Menu_*o, void*v) {
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_paintView->autoPaint();
+}
 
 //------------------------------------------------------------
 // Clears the paintview canvas.
@@ -501,15 +505,15 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 
 	{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
 	{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
-
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{0},
-
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
 	{0},
-
+	{"&Function", 0,0,0,FL_SUBMENU},
+	{"&Auto Draw...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_AutoPaint},
 	{0}};
+
 
 // Brush choice menu definition
 Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
@@ -665,6 +669,7 @@ ImpressionistUI::ImpressionistUI()
 	// install menu bar
 	m_menubar = new Fl_Menu_Bar(0, 0, 600, 25);
 	m_menubar->menu(menuitems);
+	//m_menubar->menu(Functionitems);
 
 	// Create a group that will hold two sub windows inside the main
 	// window

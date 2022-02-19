@@ -86,8 +86,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	glBegin(GL_POLYGON);
 	SetColor(source);
 
-	cout << angle << endl;
-	cout << source.x << "|" << source.y << endl;
+	//cout << angle << endl;
+	//cout << source.x << "|" << source.y << endl;
 	glVertex2d(- width/2, - height/2);
 	glVertex2d( - width / 2,  height / 2);
 	glVertex2d( + width / 2,  height / 2);

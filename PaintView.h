@@ -53,9 +53,11 @@ public:
 	void SynchronizeContentRGBA(GLvoid*, GLvoid*);
 	void RestorePreviousData(GLvoid*);
 	void RestoreContent(GLenum mode);
+	void randomBrushDraw();
 	void clearColorBuffer(GLenum);
 	void resetBackGround();
 	void resetBrush();
+	void autoPaint();
 	void updateBackGroundAlpha(float);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );
 	void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);

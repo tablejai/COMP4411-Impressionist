@@ -47,19 +47,25 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 	}
 	GLfloat x_pos, y_pos;
 	GLfloat angle;
-	SetColor(source);
 	int realRadius;
 	auto seed = mt19937{ random_device()() };
 	mt19937 mt(seed);
-	if (bmode == NORMALMODE)
+	int randNum;
+
+	if (bmode == NORMALMODE) {
 		realRadius = radius;
-	else
+		randNum = abs((int)mt()) % (2) + 2 / radius;
+
+	}
+	else {
 		realRadius = radius + ((int)mt()) % 4;
-	int randNum = rand() % (30) + 30/ realRadius;
+		randNum = 2;
+	}
 	for (int i = 0;i < randNum;i++) {
-		srand(target.x * target.y*time(NULL) % 40);
-		GLfloat xchange = (rand()*i+rand())%(realRadius)-realRadius / 2;
-		GLfloat ychange = (rand()*i+rand())%(realRadius)-realRadius / 2;
+		GLfloat xchange = ((int)(mt()*i+ mt()))%(realRadius)-realRadius / 2;
+		GLfloat ychange = ((int)(mt()*i+ mt()))%(realRadius)-realRadius / 2;
+		Point temp = {(int)(source.x+xchange),(int)(source.y+ychange )};
+		SetColor(temp);
 		x_pos = target.x + xchange;
 		y_pos = target.y + ychange;
 		circle(x_pos, y_pos, realRadius);
@@ -68,7 +74,7 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 
 void ScatterCircleBrush::BrushEnd(const Point source, const Point target)
 {
-	cout << "triggerend scattercircle" << endl;
+	//cout << "triggerend scattercircle" << endl;
 
 }
 

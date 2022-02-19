@@ -338,6 +338,7 @@ void PaintView::updateBackGroundAlpha(float alpha) {
 
 int PaintView::handle(int event)
 {
+if(m_pDoc->m_pCurrentBrush->bmode==NORMALMODE)
 	switch(event)
 	{
 	case FL_ENTER:

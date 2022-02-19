@@ -40,7 +40,6 @@ public:
 	int handle(int event);
 
 	void refresh();
-	//void clearView();
 	void resizeWindow(int width, int height);
 	void refreshPaintView();
 	void setstate(ReDrawState);
@@ -55,8 +54,10 @@ public:
 	void RestoreContent(GLenum mode);
 	void randomBrushDraw();
 	void clearColorBuffer(GLenum);
-	void resetBackGround();
-	void resetBrush();
+	void resetBackGround(unsigned char* ptr=nullptr);
+	void resetBrush(unsigned char* ptr=nullptr);
+	void resetUndo(unsigned char* ptr = nullptr);
+
 	void autoPaint();
 	void updateBackGroundAlpha(float);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );

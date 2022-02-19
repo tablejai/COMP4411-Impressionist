@@ -311,16 +311,23 @@ int ImpressionistDoc::clearCanvas()
 	if (m_rgbaBitMap) {
 		delete[] m_rgbaBitMap;
 		m_rgbaBitMap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 4];
+	
 		memset(m_rgbaBitMap, 0, m_nPaintWidth * m_nPaintHeight * 4);
-		m_pUI->m_paintView->refresh();
+		m_pUI->m_paintView->resetBackGround(m_rgbaBitMap);
 	}
 	if (m_rgbaBrush) {
 		delete[] m_rgbaBrush;
 		m_rgbaBrush = new unsigned char[m_nPaintWidth * m_nPaintHeight * 4];
 		memset(m_rgbaBrush, 0, m_nPaintWidth * m_nPaintHeight * 4);
-		m_pUI->m_paintView->refresh();
-
+		m_pUI->m_paintView->resetBrush(m_rgbaBrush);
 	}
+	if (m_undoBitMap) {
+		delete []m_undoBitMap;
+		m_undoBitMap = new  unsigned char[m_nPaintWidth * m_nPaintHeight * 4];
+		memset(m_undoBitMap, 0, m_nPaintWidth * m_nPaintHeight * 4);
+		m_pUI->m_paintView->resetUndo(m_undoBitMap);
+	}
+
 	if ( m_ucPainting ) 
 	{
 		delete [] m_ucPainting;
@@ -328,9 +335,9 @@ int ImpressionistDoc::clearCanvas()
 		m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
 		memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
 		// refresh paint view as well	
-		m_pUI->m_paintView->refresh();
 	}
-	
+	m_pUI->m_paintView->refresh();
+
 	return 0;
 }
 

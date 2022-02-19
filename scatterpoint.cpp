@@ -47,16 +47,22 @@ void ScatterPointBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-
-	int x_pos, y_pos;
-	GLfloat angle;
 	auto seed = mt19937{ random_device()() };
 	mt19937 mt(seed);
+	if (bmode == NORMALMODE) {
+		glPointSize((float)1.0);
+	}
+	else {
+		glPointSize((float)(abs((int)mt()) % 5));
+	}
+	int x_pos, y_pos;
+	GLfloat angle;
+
 	glBegin(GL_POINTS);
 	for (int i = -range;i <= range;i++) {
 		for (int j = -range;j <= range;j++) {
 			Point pt = {source.x+i,source.y+j};
-			SetColor(source);
+			SetColor(pt);
 			int display = (abs((int)mt())) % 10;
 			if (display<1) {
 				glVertex3f(target.x + i, target.y + j, 0.0f);

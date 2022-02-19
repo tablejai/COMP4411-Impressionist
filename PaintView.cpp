@@ -222,7 +222,7 @@ void PaintView::draw()
 		m_nStartCol = scrollpos.x;
 		m_nEndCol = m_nStartCol + drawWidth;
 
-		if (!rgbaBitMap&& m_pDoc->m_rgbaBitMap) {
+		if (!rgbaBitMap&& m_pDoc->m_rgbaBitMap) { //init load new image 
 			rgbaBitMap = m_pDoc->m_rgbaBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 			clearColorBuffer(GL_BACK);
 			RGB_TO_RGBA(m_pDoc->m_ucBitmap, rgbaBitMap, m_pDoc->m_nWidth, m_pDoc->m_nHeight, backgroundalpha * 255);
@@ -325,16 +325,19 @@ void PaintView::refreshPaintView() {
 	AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 }
 
-void PaintView::resetBackGround() {
-	rgbaBitMap = nullptr;
+void PaintView::resetBackGround(unsigned char* ptr) {
+	rgbaBitMap = ptr;
 }
-void PaintView::resetBrush() {
-	rgbaBrush = nullptr;
+void PaintView::resetBrush(unsigned char* ptr) {
+	rgbaBrush = ptr;
 }
-
+void PaintView::resetUndo(unsigned char* ptr) {
+	m_pUndoBitstart = ptr;
+}
 void PaintView::updateBackGroundAlpha(float alpha) {
 	backgroundalpha = alpha;
 }
+
 
 int PaintView::handle(int event)
 {
@@ -460,6 +463,7 @@ if(m_pDoc->m_pCurrentBrush->bmode==NORMALMODE)
 
 	return 1;
 }
+
 
 void PaintView::refresh()
 {

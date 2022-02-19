@@ -17,6 +17,7 @@
 #include "scatterpoint.h"
 #include "traingle.h"
 #include "starbrush.h"
+#include "BlurringBrush.h"
 #include "ImageCursor.h"
 #include "AlphaMapBrush.h"
 // Include individual brush headers here.
@@ -25,6 +26,25 @@
 using namespace std;
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
+void RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w, int h, int a) {
+	if (w > 0 && h > 0) {
+		for (int j = 0;j < h;j++) {
+			int id = 0;
+			for (int i = 0; i < w * 4;i++) {
+				int index = i % 4;
+				if (index < 3)
+					Map4(RGBA, i, j, w) = Map(data, id, j, w);
+				else {
+					Map4(RGBA, i, j, w) = (char)a;
+					id--;
+				}
+				id++;
+			}
+		}
+	}
+
+
+}
 
 ImpressionistDoc::ImpressionistDoc() 
 {
@@ -63,6 +83,10 @@ ImpressionistDoc::ImpressionistDoc()
 		= new TraingleBrush(this, "Traingle");
 	ImpBrush::c_pBrushes[BRUSH_ALPHAMAP]
 		= new AlphaBrush(this, "Alpha Map Brush");
+	ImpBrush::c_pBrushes[BRUSH_BLURRRING]
+		= new BlurringBrush(this, "Blurring");
+	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
+		= new TraingleBrush(this, "Sharpening");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";
@@ -130,6 +154,16 @@ GLfloat	ImpressionistDoc::getAlpha() {
 // This is called by the UI when the load image button is 
 // pressed.
 //---------------------------------------------------------
+void ImpressionistDoc::saveOldImage() {
+	if (temp_m_ucPainting) {
+		oldPaintWidth = m_nPaintWidth;
+		oldPaintHeight = m_nPaintHeight;
+		temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 4];
+		memcpy(temp_m_ucPainting, m_rgbaBrush, oldPaintWidth * oldPaintHeight * 4);
+	}
+}
+
+
 int ImpressionistDoc::loadImage(char *iname) 
 {
 	// try to open the image to read
@@ -143,22 +177,19 @@ int ImpressionistDoc::loadImage(char *iname)
 		return 0;
 	}
 
+
 	// reflect the fact of loading the new image
 	m_nWidth		= width;
 	m_nPaintWidth	= width;
 	m_nHeight		= height;
 	m_nPaintHeight	= height;
-
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
 	if ( m_ucPainting ) delete [] m_ucPainting;
 	if (m_rgbaBitMap) delete[] m_rgbaBitMap;
 	if (m_rgbaBrush) delete[] m_rgbaBrush;
 	if (m_undoBitMap) delete[] m_undoBitMap;
-
-
 	m_ucBitmap		= data;
-
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
 	memset(m_ucPainting, 0, width*height*3);
@@ -168,7 +199,11 @@ int ImpressionistDoc::loadImage(char *iname)
 	memset(m_rgbaBrush, 0, width * height * 4);
 	m_undoBitMap = new unsigned char[width * height * 4];
 	memset(m_undoBitMap, 0, width * height * 4);
-
+	if (loadingMuralImage) {
+		memcpy(m_rgbaBrush, temp_m_ucPainting, oldPaintHeight * oldPaintWidth * 4);/// PLease take a look for this should store things to m_rgbaBrush but may 
+		//need to fix width and height issue can check check 
+		loadingMuralImage = false;
+	}
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
 								width*2, 
@@ -177,7 +212,6 @@ int ImpressionistDoc::loadImage(char *iname)
 	// display it on origView
 	m_pUI->m_origView->resizeWindow(width, height);	
 	m_pUI->m_origView->state = NORMAL_VIEW;
-
 	m_pUI->m_origView->refresh();
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);	

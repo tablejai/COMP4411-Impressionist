@@ -22,6 +22,8 @@ typedef enum
 	BRUSH_TRAINGLE,
 	BRUSH_STAR,
 	BRUSH_ALPHAMAP,
+	BRUSH_BLURRRING,
+	BRUSH_SHARPENING,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 } BrushType;
 

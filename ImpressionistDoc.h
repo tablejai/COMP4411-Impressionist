@@ -27,7 +27,7 @@ typedef enum {
 #define Map(A,i,j,W)  *((char*)A+(i+ 3 * (W)*j))
 #define Map4(A,i,j,W)  *((char*)A+(i+ 4 * (W)*j))
 
-
+void RGB_TO_RGBA(GLvoid* data, unsigned char* RGBA, int w, int h, int a);
 class ImpressionistDoc 
 {
 public:
@@ -38,6 +38,7 @@ public:
 	int		loadImage(char *name);			// called by the UI to load image
 	int     loadAlphaImage(char* name);
 	int		loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth, int& mpheight);
+	void	saveOldImage(void);
 	int		blendImage(unsigned char* ,int,int,unsigned char* ,int ,int);
 	int		saveImage(char *iname);			// called by the UI to save image
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -60,6 +61,7 @@ public:
 	// Dimensions of original window.
 	int				m_nWidth, 
 					m_nHeight;
+	int oldPaintWidth, oldPaintHeight;
 	int				m_nWMap1, m_nHMap1;
 	int				m_nWMap2, m_nHMap2;
 	// Dimensions of the paint window.
@@ -77,6 +79,8 @@ public:
 	unsigned char* m_uctempBitmap2;
 	unsigned char* m_uAlphaMap;
 
+	unsigned char* temp_m_ucPainting;
+	bool loadingMuralImage = false;
 
 
 

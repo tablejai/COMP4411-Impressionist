@@ -185,6 +185,20 @@ void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 		pDoc->loadImage(newfile);
 	}
 }
+
+void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL)
+	{
+		pDoc->loadingMuralImage = true;
+		pDoc->saveOldImage();
+		pDoc->loadImage(newfile);
+	}
+}
+
 void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 	pDoc->clearImage(pDoc->m_uctempBitmap1);
@@ -503,13 +517,13 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Colors...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_colors},
 	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
 
-	{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
-	{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+	//{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
+	//{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas},
+	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image},
+
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
-	{0},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
-	{0},
 	{"&Function", 0,0,0,FL_SUBMENU},
 	{"&Auto Draw...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_AutoPaint},
 	{0}};
@@ -526,6 +540,8 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{"Star", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_STAR},
 	{"Traingle", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_TRAINGLE},
 	{"Alpha Map Brush", FL_ALT + 'g', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_ALPHAMAP},
+	{"Blurring", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_BLURRRING},
+	{"Sharpening", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_SHARPENING},
 	{0}};
 
 Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {
@@ -551,7 +567,7 @@ void ImpressionistUI::initBrushDialog() {
 	m_StrokeDirectionChoice = new Fl_Choice(115, 45, 150, 25, "&Stroke Direction");
 	m_StrokeDirectionChoice->user_data((void*)(this)); // record self to be used by static callback functions
 	m_StrokeDirectionChoice->menu(strokeDirectionMenu);
-	m_BrushTypeChoice->callback(cb_strokeChoice);
+	m_StrokeDirectionChoice->callback(cb_strokeChoice);
 
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void*)(this));

@@ -259,6 +259,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="BlurringBrush.cpp" />
     <ClCompile Include="ImageCursor.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
@@ -273,14 +274,17 @@
     <ClCompile Include="scattercircle.cpp" />
     <ClCompile Include="scatterpoint.cpp" />
     <ClCompile Include="AlphaMapBrush.cpp" />
+    <ClCompile Include="SharpeningBrush.cpp" />
     <ClCompile Include="traingle.cpp" />
     <ClCompile Include="starbrush.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
+    <ClInclude Include="BlurringBrush.h" />
     <ClInclude Include="circleBrush.h" />
     <ClInclude Include="AlphaMapBrush.h" />
     <ClInclude Include="ImageCursor.h" />
+    <ClInclude Include="SharpeningBrush.h" />
     <ClInclude Include="traingle.h" />
     <ClInclude Include="starbrush.h" />
     <ClInclude Include="scatterpoint.h" />

@@ -64,6 +64,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AlphaMapBrush.cpp">
+    <ClCompile Include="BlurringBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SharpeningBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -117,6 +121,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AlphaMapBrush.h">
+    <ClInclude Include="BlurringBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SharpeningBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

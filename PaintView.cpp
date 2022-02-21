@@ -102,6 +102,9 @@ void PaintView::randomBrushDraw() {
 
 }
 
+unsigned char* PaintView::getrgbaBrush() {
+	return rgbaBrush;
+}
 GradientMode PaintView::getGradientMode() {
 	return  gradientMode;
 }
@@ -170,7 +173,6 @@ void PaintView::draw()
 		Point scrollpos;// = GetScrollPosition();
 		scrollpos.x = 0;
 		scrollpos.y = 0;
-
 		m_nWindowWidth = w();
 		m_nWindowHeight = h();
 
@@ -209,7 +211,6 @@ void PaintView::draw()
 		}
 		if (m_pDoc->m_ucPainting && m_pDoc->m_rgbaBitMap && m_pDoc->m_rgbaBrush && isAnEvent)
 		{
-
 			isAnEvent = 0;
 			Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
 			Point target(coord.x, m_nWindowHeight - coord.y);
@@ -247,9 +248,7 @@ void PaintView::draw()
 				clearColorBuffer(GL_BACK);
 				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
 				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
-
 				break;
-
 			case RIGHT_MOUSE_DOWN:
 
 				break;
@@ -294,6 +293,7 @@ void PaintView::refreshPaintView() {
 	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
 	AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 }
+
 
 void PaintView::resetBackGround(unsigned char* ptr) {
 	rgbaBitMap = ptr;

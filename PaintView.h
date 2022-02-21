@@ -63,6 +63,7 @@ public:
 	void autoPaint();
 	void updateBackGroundAlpha(float);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );
+	unsigned char* getrgbaBrush();
 	//void RGB_TO_RGBA(GLvoid* , unsigned char*, int , int , int);
 	void undo();
 	ImpressionistDoc *m_pDoc;

@@ -139,7 +139,6 @@ void writeBMP(char*				iname,
 	fwrite( &(bmfh.bfReserved1), 2, 1, outFile); 
 	fwrite( &(bmfh.bfReserved2), 2, 1, outFile); 
 	fwrite( &(bmfh.bfOffBits), 4, 1, outFile); 
-
 	fwrite(&bmih, sizeof(BMP_BITMAPINFOHEADER), 1, outFile); 
 
 	bytes /= height;

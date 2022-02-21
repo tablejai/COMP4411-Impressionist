@@ -178,7 +178,6 @@ ImpressionistUI *ImpressionistUI::whoami(Fl_Menu_ *o)
 void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
-
 	char *newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
 	if (newfile != NULL)
 	{
@@ -206,6 +205,8 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 		pDoc->loadImage(newfile);
 	}
 }
+
+
 
 void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
@@ -262,7 +263,14 @@ void ImpressionistUI::cb_clear_canvas(Fl_Menu_ *o, void *v)
 
 	pDoc->clearCanvas();
 }
+void ImpressionistUI::cb_kernel(Fl_Menu_*o, void*v){
 
+	whoami(o)->m_kernelDialog->show();
+}
+void ImpressionistUI::cb_loadkernel(Fl_Widget*o,void*v) {
+
+
+}
 //------------------------------------------------------------
 // Causes the Impressionist program to exit
 // Called by the UI when the quit menu item is chosen
@@ -465,7 +473,6 @@ void ImpressionistUI::resize_windows(int w, int h)
 void ImpressionistUI::setDocument(ImpressionistDoc *doc)
 {
 	m_pDoc = doc;
-
 	m_origView->m_pDoc = doc;
 	m_paintView->m_pDoc = doc;
 }
@@ -542,6 +549,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Save Image...", FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image},
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+	{"&Apply Kernel...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_kernel},
 
 	{"&Colors...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_colors},
 	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
@@ -553,6 +561,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
+	{0},
 	{"&Function", 0,0,0,FL_SUBMENU},
 	{"&Auto Draw...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_AutoPaint},
 	{0}};
@@ -679,8 +688,21 @@ void ImpressionistUI::initBrushDialog() {
 	m_BackGroundSlider->align(FL_ALIGN_RIGHT);
 	m_BackGroundSlider->callback(cb_backgroundalphaSlides);
 
-
 	m_brushDialog->end();
+}
+
+void ImpressionistUI::initkernelDialog() {
+	m_kernelDialog = new Fl_Window(600, 600, "Kernel Dialog");
+	kernelValues = new int[9];
+	for (int i = 0;i < 3;i++) {
+		for (int j = 0;j < 3;j++) {
+			Fl_Input* temp = new Fl_Input(j * 100, i * 100, 100, 100, to_string(kernelValues[3*i+j]).c_str());
+			kernelInputs.push_back(temp);
+		}
+	}
+	m_loadkernel = new Fl_Button(0,320,100,50,"Load Kernel");
+	m_loadkernel->callback(cb_loadkernel);
+	m_kernelDialog->end();
 }
 
 void ImpressionistUI::initColorDialog(void) {
@@ -734,9 +756,9 @@ ImpressionistUI::ImpressionistUI()
 	group->end();
 	Fl_Group::current()->resizable(group);
 	m_mainWindow->end();
-
 	initBrushDialog();
 	initColorDialog();
 	initBlendDialog();
+	initkernelDialog();
 
 }

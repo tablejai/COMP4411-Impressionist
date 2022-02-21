@@ -84,7 +84,7 @@ public:
 	unsigned char* m_uctempBitmap2;
 	unsigned char* m_uAlphaMap;
 
-	unsigned char* temp_m_ucPainting;
+	unsigned char* temp_m_ucPainting = nullptr;
 	bool loadingMuralImage = false;
 
 

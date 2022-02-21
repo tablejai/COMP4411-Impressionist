@@ -172,12 +172,12 @@ GLfloat	ImpressionistDoc::getAlpha() {
 // pressed.
 //---------------------------------------------------------
 void ImpressionistDoc::saveOldImage() {
-	if (temp_m_ucPainting) {
-		oldPaintWidth = m_nPaintWidth;
-		oldPaintHeight = m_nPaintHeight;
-		temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 4];
-		memcpy(temp_m_ucPainting, m_rgbaBrush, oldPaintWidth * oldPaintHeight * 4);
-	}
+	oldPaintWidth = m_nPaintWidth;
+	oldPaintHeight = m_nPaintHeight;
+	if (temp_m_ucPainting == nullptr)
+		delete[] temp_m_ucPainting;
+	temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 4];
+	memcpy(temp_m_ucPainting, m_rgbaBrush, oldPaintWidth * oldPaintHeight * 4);
 }
 
 int ImpressionistDoc::loadGradientImage(char* name)

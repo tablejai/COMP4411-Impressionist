@@ -200,6 +200,17 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
 	if (newfile != NULL)
 	{
+		int newFileWidth;
+		int newFileHeight;
+		unsigned char* data;
+		if ((data = readBMP(newfile, newFileWidth, newFileHeight)) == NULL) {
+			fl_alert("Can't load bitmap file");
+			return;
+		}
+		if (newFileWidth != pDoc->m_nWidth || newFileHeight != pDoc->m_nHeight) {
+			fl_alert("Can't load bitmap file with different dimension");
+			return;
+		}
 		pDoc->loadingMuralImage = true;
 		pDoc->saveOldImage();
 		pDoc->loadImage(newfile);

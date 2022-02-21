@@ -68,12 +68,12 @@ public:
 	void undo();
 	ImpressionistDoc *m_pDoc;
 	bool initPaint;
+	unsigned char* rgbaBrush = nullptr;
 
 private:
 	GLvoid *m_pPaintBitstart;
 //	GLvoid* m_pBrushstart;
 	unsigned char* rgbaBitMap=nullptr;
-	unsigned char* rgbaBrush = nullptr;
 	float backgroundalpha;
 	GLvoid* m_pImageShawdow;
 	GLvoid* m_pUndoBitstart;

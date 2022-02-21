@@ -3,6 +3,7 @@
 #include "KernelBrush.h"
 #include "math.h"
 #include "time.h"
+#include <FL/fl_Color_Chooser.h>
 #include <iostream>
 
 #define MAX(a,b) a>b? b : a
@@ -18,7 +19,7 @@ void KernelBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 	size = pDoc->getSize();
-	alpha = pDoc->getAlpha() * pDoc->getAlpha() * pDoc->getAlpha();
+	alpha = pDoc->getAlpha();
 	BrushMove(source, target);
 }
 
@@ -47,7 +48,8 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 			Kernel(Point(x1, y1), Point(x2, y2));
 		}
 	}
-	dlg->m_paintView->RestoreContent(GL_BACK);
+	 dlg->m_paintView->RestorePreviousDataRGBA(dlg->m_paintView->rgbaBrush, GL_BACK);
+	 //dlg->m_paintView->RestoreContent(GL_BACK);
 }
 
 void KernelBrush::Kernel(const Point source, const Point target) {
@@ -78,7 +80,6 @@ void KernelBrush::Kernel(const Point source, const Point target) {
 
 		}
 	}
-	std::cout << rSum << " " << gSum << " " << bSum << std::endl;
 
 	KernelSetColor(target, rSum, gSum, bSum); 
 
@@ -91,9 +92,16 @@ void KernelBrush::KernelSetColor(const Point target, const int r, const int g, c
 	int w = pDoc->m_nPaintWidth;
 	int h = pDoc->m_nPaintHeight;
 
-	pDoc->m_ucPainting[(target.x + target.y * w) * 3] = MAX(MIN(r,0), 255);
-	pDoc->m_ucPainting[(target.x + target.y * w) * 3 + 1] = MAX(MIN(g,0), 255);
-	pDoc->m_ucPainting[(target.x + target.y * w) * 3 + 2] = MAX(MIN(b,0), 255);
+	Fl_Color_Chooser* colorChooser = dlg->m_ColorChooser;
+
+	int r_mult = colorChooser->r();
+	int g_mult = colorChooser->g();
+	int b_mult = colorChooser->b();
+
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4] = MAX(MIN(r,0), 255) * r_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 1] = MAX(MIN(g,0), 255) * g_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 2] = MAX(MIN(b,0), 255) * b_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 3] = alpha * 255;
 }
 
 

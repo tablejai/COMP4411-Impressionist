@@ -18,6 +18,7 @@
 #include "traingle.h"
 #include "starbrush.h"
 #include "BlurringBrush.h"
+#include "SharpeningBrush.h"
 #include "ImageCursor.h"
 #include "AlphaMapBrush.h"
 // Include individual brush headers here.
@@ -105,7 +106,7 @@ ImpressionistDoc::ImpressionistDoc()
 	ImpBrush::c_pBrushes[BRUSH_BLURRRING]
 		= new BlurringBrush(this, "Blurring");
 	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
-		= new TraingleBrush(this, "Sharpening");
+		= new SharpeningBrush(this, "Sharpening");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";
@@ -140,7 +141,6 @@ void ImpressionistDoc::setBrushType(int type)
 void ImpressionistDoc::setStrokeType(int type)
 {
 	c_pStrokes = (StrokeDir)type;
-	std::cout << "Stroke direction: "<< c_pStrokes << std::endl;
 }
 
 //---------------------------------------------------------
@@ -276,7 +276,6 @@ int ImpressionistDoc::loadAlphaImage(char* name) {
 
 
 void ImpressionistDoc::updateBackGroundAlpha() {
-	cout << "alpha" << m_pUI->getBackGroundAlpha() << endl;
 	m_pUI->m_paintView->updateBackGroundAlpha(m_pUI->getBackGroundAlpha());
 	m_pUI->m_paintView->refresh();
 }
@@ -299,7 +298,6 @@ int ImpressionistDoc::loadImagetoBitMap(char* iname, unsigned char*& bitmap, int
 	// reflect the fact of loading the new image
 	mpwidth = width;
 	mpheight = height;
-	cout << "the width and height:" << mpwidth << "," << mpheight<<"|" << (bitmap== m_uctempBitmap1) << endl;
 	// release old storage
 	if (bitmap) delete[] bitmap;
 	bitmap = data;
@@ -323,9 +321,6 @@ int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, uns
 	m_rgbaBrush = nullptr;
 	int width = m_nWidth;
 	int height = m_nHeight;
-
-	cout << "allocate w" << width1 << "allocate h" << height1 << endl;
-	cout << "allocate w2 " << width2 << "allocate h2 " << height2 << endl;
 
 	m_ucBitmap = new unsigned char[width * height * 3];
 	memset(m_ucBitmap, 0, width * height * 3);

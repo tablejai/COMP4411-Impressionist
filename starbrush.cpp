@@ -27,7 +27,6 @@ void StarBrush::BrushBegin(const Point source, const Point target)
 	alpha = pDoc->getAlpha();
 	glDisable(GL_POINT_SMOOTH);
 	glPointSize((float)size);
-	cout << "traingle brush" << endl;
 	BrushMove(source, target);
 }
 

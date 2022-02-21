@@ -412,7 +412,7 @@ if(m_pDoc->m_pCurrentBrush->bmode==NORMALMODE)
 			GL_RGB,
 			GL_UNSIGNED_BYTE,
 			b);
-		cout << (int)b[0] << "," << (int)b[1] << "," << (int)b[2] << "|" << endl;
+		//cout << (int)b[0] << "," << (int)b[1] << "," << (int)b[2] << "|" << endl;
 		/*DEBUG end*/
 		m_pDoc->m_pUI->m_origView->triggerupdate();
 		if (abs(coord.x - oldcoord.x) > 1 && abs(coord.y - oldcoord.y) > 1)
@@ -541,7 +541,6 @@ void PaintView::RestorePreviousData(GLvoid* data) {
 
 void PaintView::RestorePreviousDataRGBA(GLvoid* data,GLenum mode) {
 	glDrawBuffer(GL_BACK);
-	//	cout << "restore previous data" << endl;
 	//glClear(GL_COLOR_BUFFER_BIT);
 
 	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);

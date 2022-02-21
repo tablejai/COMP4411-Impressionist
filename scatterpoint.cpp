@@ -30,8 +30,6 @@ void ScatterPointBrush::BrushBegin(const Point source, const Point target)
 	glDisable(GL_POINT_SMOOTH);
 	range = pDoc->getSize();
 	alpha = pDoc->getAlpha();
-	cout << "trigger begin" << endl;
-	cout << alpha << endl;
 	glPointSize((float)1.0);
 	BrushMove(source, target);
 }

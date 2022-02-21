@@ -74,7 +74,6 @@ void ScatterCircleBrush::BrushMove(const Point source, const Point target)
 
 void ScatterCircleBrush::BrushEnd(const Point source, const Point target)
 {
-	//cout << "triggerend scattercircle" << endl;
 
 }
 

@@ -275,6 +275,7 @@
     <ClCompile Include="scatterpoint.cpp" />
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="SharpeningBrush.cpp" />
+    <ClCompile Include="KernelBrush.cpp" />
     <ClCompile Include="traingle.cpp" />
     <ClCompile Include="starbrush.cpp" />
   </ItemGroup>
@@ -284,6 +285,7 @@
     <ClInclude Include="circleBrush.h" />
     <ClInclude Include="AlphaMapBrush.h" />
     <ClInclude Include="ImageCursor.h" />
+    <ClInclude Include="KernelBrush.h" />
     <ClInclude Include="SharpeningBrush.h" />
     <ClInclude Include="traingle.h" />
     <ClInclude Include="starbrush.h" />

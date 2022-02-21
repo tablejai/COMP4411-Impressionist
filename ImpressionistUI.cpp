@@ -718,6 +718,7 @@ ImpressionistUI::ImpressionistUI()
 	m_menubar->menu(menuitems);
 	//m_menubar->menu(Functionitems);
 
+
 	// Create a group that will hold two sub windows inside the main
 	// window
 	Fl_Group *group = new Fl_Group(0, 25, 600, 275);

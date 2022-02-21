@@ -20,8 +20,9 @@
 #include "Impressionist.h"
 #include "OriginalView.h"
 #include "PaintView.h"
-
+#include <vector>
 #include "ImpBrush.h"
+using namespace std;
 
 class ImpressionistUI
 {
@@ -37,14 +38,17 @@ public:
 
 	// for brush dialog
 	Fl_Window *m_brushDialog;
+	Fl_Window* m_kernelDialog;
+
 	Fl_Choice *m_BrushTypeChoice;
 	Fl_Choice *m_StrokeDirectionChoice;
-
+	vector<Fl_Input*> kernelInputs;
 	Fl_Slider *m_BrushSizeSlider;
 	Fl_Slider *m_LineWidthSlider;
 	Fl_Slider *m_LineAngleSlider;
 	Fl_Slider *m_AlphaSlider;
 	Fl_Slider* m_BackGroundSlider;
+	Fl_Button* m_loadkernel;
 	Fl_Button *m_ClearCanvasButton;
 	Fl_Button* m_UndoCanvasButton;
 	Fl_Button* m_GradientButton;
@@ -78,6 +82,7 @@ public:
 	void setSize(int size);
 	void setAngle(int angle);
 	void setAlpha(float alpha);
+	void initkernelDialog();
 private:
 	ImpressionistDoc *m_pDoc; // pointer to document to communicate with the document
 
@@ -87,6 +92,7 @@ private:
 	int m_nAngle;
 	GLfloat m_nAlpha;
 	GLfloat m_nBackGroundAlpha;
+	int* kernelValues;
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];
@@ -123,6 +129,8 @@ private:
 	static void cb_AutoPaint(Fl_Menu_*, void*);
 	static void cb_load_gradient_image(Fl_Menu_* o, void* v);
 	static void cb_custom_gradient(Fl_Widget*,void*);
+	static void cb_kernel(Fl_Menu_*,void*);
+	static void cb_loadkernel(Fl_Widget*, void*);
 	static std::string pathToFileName(char *);
 	void initBrushDialog(void);
 	void initColorDialog(void);

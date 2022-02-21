@@ -346,10 +346,17 @@ int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, uns
 // This is called by the UI when the save image menu button is 
 // pressed.
 //----------------------------------------------------------------
+
+
+
+
 int ImpressionistDoc::saveImage(char *iname) 
 {
 
+	m_pUI->m_paintView->RestorePreviousDataRGBA(m_pUI->m_paintView->getrgbaBrush(), GL_BACK);
+	m_pUI->m_paintView->SaveCurrentContent(GL_BACK);
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
+
 
 	return 1;
 }

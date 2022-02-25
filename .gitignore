@@ -280,3 +280,5 @@ About
 .vscode/
 
 build/
+
+mosaic_image_pool/

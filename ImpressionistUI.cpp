@@ -384,6 +384,7 @@ void ImpressionistUI::cb_about(Fl_Menu_ *o, void *v)
 	fl_message("Impressionist FLTK version for CS341, Spring 2002");
 }
 
+
 //------- UI should keep track of the current for all the controls for answering the query from Doc ---------
 //-------------------------------------------------------------
 // Sets the type of brush to use to the one chosen in the brush
@@ -407,6 +408,40 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget *o, void *v)
 		pUI->m_LineWidthSlider->deactivate();
 	}
 }
+
+void ImpressionistUI::cb_mosaicPainting(Fl_Menu_* o, void* v) {
+	whoami(o)->m_mosaicDialog->show();
+
+}
+
+void ImpressionistUI::cb_load_mosaic_source(Fl_Widget* o, void* v) {
+	//ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	//ImpressionistDoc* pDoc = pUI->getDocument();
+
+	//char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	//cout << "open new file:" << newfile << endl;
+
+	//if (newfile != "")
+	//{		
+	//	char* fileName = new char[100];
+	//	strcpy(fileName, pathToFileName(newfile).c_str());
+	//	cout << fileName << endl;
+	//	((Fl_Widget*)o)->label(fileName);
+	//	pUI->mosaicPaintingEngine.loadOriginalImage(fileName);
+	//}
+	//else {
+	//	fl_alert("Image name cannot be blank");
+	//}
+	
+}
+
+void ImpressionistUI::cb_confirm_mosaic(Fl_Widget* o, void* v) {
+	//ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	//ImpressionistDoc* pDoc = pUI->getDocument();
+	//
+	//pUI->mosaicPaintingEngine.generateMosaic();
+}
+
 
 void ImpressionistUI::cb_strokeChoice(Fl_Widget* o, void* v)
 {
@@ -650,6 +685,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 
 	//{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
 	//{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas},
+	{"&Mosaic...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_mosaicPainting},
 	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image},
 
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
@@ -838,6 +874,19 @@ void ImpressionistUI::initBlendDialog(void) {
 	m_blendDialog->end();
 }
 
+void ImpressionistUI::initMosaicDialog(void) {
+	mosaicPaintingEngine->getAllFileNames();
+	//mosaicPaintingEngine->loadImages();
+	m_mosaicDialog = new Fl_Window(380, 300, "Mosaic Painting");
+	m_loadMosaicSourceButton = new Fl_Button(0, 0, 200, 50, "&Load Source Image");
+	m_loadMosaicSourceButton->user_data((void*)(this));
+	m_loadMosaicSourceButton->callback(cb_load_mosaic_source);
+	m_mosaicEnter = new Fl_Button(0, 120, 100, 50, "&Enter");
+	m_mosaicEnter->user_data((void*)(this));
+	m_mosaicEnter->callback(cb_confirm_mosaic);
+	m_mosaicDialog->end();
+}
+
 ImpressionistUI::ImpressionistUI()
 {
 	// Create the main window
@@ -869,5 +918,5 @@ ImpressionistUI::ImpressionistUI()
 	initColorDialog();
 	initBlendDialog();
 	initkernelDialog();
-
+	initMosaicDialog();
 }

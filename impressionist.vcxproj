@@ -284,8 +284,10 @@
     <ClInclude Include="BlurringBrush.h" />
     <ClInclude Include="circleBrush.h" />
     <ClInclude Include="AlphaMapBrush.h" />
+    <ClInclude Include="MosaicPainting.cpp" />
     <ClInclude Include="ImageCursor.h" />
     <ClInclude Include="KernelBrush.h" />
+    <ClInclude Include="MosaicPainting.h" />
     <ClInclude Include="SharpeningBrush.h" />
     <ClInclude Include="traingle.h" />
     <ClInclude Include="starbrush.h" />

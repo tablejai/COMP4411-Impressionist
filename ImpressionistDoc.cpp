@@ -81,7 +81,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_uctempBitmap1 = NULL;
 	m_uctempBitmap2 = NULL;
 	// create one instance of each brush
-	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
+	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE - 1;
 	ImpBrush::c_pBrushes	= new ImpBrush* [ImpBrush::c_nBrushCount];
 
 	ImpBrush::c_pBrushes[BRUSH_POINTS]	= new PointBrush( this, "Points" );
@@ -107,6 +107,9 @@ ImpressionistDoc::ImpressionistDoc()
 		= new BlurringBrush(this, "Blurring");
 	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
 		= new SharpeningBrush(this, "Sharpening");
+	ImpBrush::c_pBrushes[AUTO_KERNEL_BRUSH]
+		= new KernelBrush(this, "Auto Kernel Brush");
+
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";

@@ -10,9 +10,7 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
-#include <sstream>      // std::stringstream
-#include <string>
-#include <iostream>
+
 using namespace std;
 
 /*
@@ -278,9 +276,94 @@ void ImpressionistUI::cb_kernel(Fl_Menu_*o, void*v){
 
 	whoami(o)->m_kernelDialog->show();
 }
-void ImpressionistUI::cb_loadkernel(Fl_Widget*o,void*v) {
+
+void ImpressionistUI::tokenize(std::string const& str, const char delim,
+	std::vector<std::string>& out)
+{
+	// construct a stream from the string 
+	std::stringstream ss(str);
+
+	std::string s;
+	while (std::getline(ss, s, delim)) {
+		out.push_back(s);
+	}
+}
+
+void ImpressionistUI::cb_update_kernelSizeInput(Fl_Widget* o, void* v) {
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+
+	const char* sizeInput = ((Fl_Input*)o)->value();
+	strcpy(pUI->m_kernelSizeInputValue, sizeInput);
+}
+
+void ImpressionistUI::cb_update_kernelWeightInput(Fl_Widget* o, void* v) {
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+
+	const char* weightInput = ((Fl_Input*)o)->value();
+	strcpy(pUI->m_kernelWeightInputValue, weightInput);
+}
+
+void ImpressionistUI::cb_loadkernel(Fl_Widget* o,void* v) {
+	//const char* testInput = ((ImpressionistUI*)(o->user_data()))->m_kernelWeightInput->value();
+	//std::cout << testInput << std::endl;
+	// const char* weightInput_t = strcpy(m_kernelWeightInputValue;
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
 
 
+	const char* tempWeightInput = pUI->m_kernelWeightInputValue;
+	std::string weightInput(tempWeightInput);
+	std::vector<std::string> tokenizedWeight;
+	tokenize(weightInput, ' ', tokenizedWeight);
+
+	const char* tempSizeInput = pUI->m_kernelSizeInputValue;
+	int sizeInput = atoi(tempSizeInput);
+	if (sizeInput <= 0) {
+		fl_alert("Input Kernel Size Not Valid ");
+		return;
+	}
+	int numElements = tokenizedWeight.size();
+	if (numElements != (sizeInput * sizeInput)) {
+		fl_alert("Number of elements does not match kernel size");
+		return;
+	}
+	vector<vector<float>> kernelMatrix;
+	for (int i = 0; i < sizeInput; i++) {
+		vector<float> kernelRow;
+		for (int j = 0; j < sizeInput; j++) {
+			float input = std::stof(tokenizedWeight[i* sizeInput + j]);
+			kernelRow.push_back(input);
+		}
+		kernelMatrix.push_back(kernelRow);
+	}
+
+	std::cout << pUI->m_kernelNormalizeBox->value() << std::endl;
+	bool isNormalize = pUI->m_kernelNormalizeBox->value();
+
+	if (isNormalize) {
+		float denom = sizeInput * sizeInput;
+		for (int i = 0; i < sizeInput; i++) {
+			for (int j = 0; j < sizeInput; j++) {
+				kernelMatrix[i][j] /= denom;
+			}	
+		}
+	}
+
+	ImpBrush* originalBrush = pDoc->m_pCurrentBrush;
+	pDoc->setBrushType(AUTO_KERNEL_BRUSH);
+	int w = pUI->m_paintView->m_nDrawHeight;
+	int h = pUI->m_paintView->m_nDrawWidth;
+
+	((KernelBrush*)(pDoc->m_pCurrentBrush))->size = w > h? w : h;
+	((KernelBrush*)(pDoc->m_pCurrentBrush))->alpha = 1.0;
+	((KernelBrush*)(pDoc->m_pCurrentBrush))->kernel = kernelMatrix;
+
+	Point source(h/2 + pUI->m_paintView->m_nStartCol, pUI->m_paintView->m_nEndRow - w/2);
+	Point target(h/2, pUI->m_paintView->m_nWindowHeight - w/2);
+	pDoc->m_pCurrentBrush->BrushMove(source, target);
+
+	pUI->m_paintView->RestorePreviousDataRGBA(pUI->m_paintView->rgbaBrush, GL_BACK);
+	pDoc->m_pCurrentBrush = originalBrush;
 }
 //------------------------------------------------------------
 // Causes the Impressionist program to exit
@@ -579,7 +662,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 
 
 // Brush choice menu definition
-Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
+Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1 - 1] = {
 	{"Points", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_POINTS},
 	{"Lines", FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_LINES},
 	{"Circles", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CIRCLES},
@@ -703,16 +786,30 @@ void ImpressionistUI::initBrushDialog() {
 }
 
 void ImpressionistUI::initkernelDialog() {
-	m_kernelDialog = new Fl_Window(600, 600, "Kernel Dialog");
-	kernelValues = new int[9];
-	for (int i = 0;i < 3;i++) {
-		for (int j = 0;j < 3;j++) {
-			Fl_Input* temp = new Fl_Input(j * 100, i * 100, 100, 100, to_string(kernelValues[3*i+j]).c_str());
-			kernelInputs.push_back(temp);
-		}
-	}
-	m_loadkernel = new Fl_Button(0,320,100,50,"Load Kernel");
+	m_kernelWeightInputValue = new char[100];
+	memset(m_kernelWeightInputValue, 0, 100);
+	m_kernelSizeInputValue = new char[100];
+	memset(m_kernelSizeInputValue, 0, 100);
+
+	m_kernelDialog = new Fl_Window(500, 300, "Kernel Dialog");
+
+	m_kernelSizeInput = new Fl_Int_Input(200, 0, 50, 20, "Filter Size");
+	m_kernelSizeInput->value(m_kernelSizeInputValue);
+	m_kernelSizeInput->user_data((void*)(this));
+	m_kernelSizeInput->callback(cb_update_kernelSizeInput);
+
+	m_kernelWeightInput = new Fl_Input(200, 100, 150, 20, "Weight (split with white space");
+	m_kernelWeightInput->value(m_kernelWeightInputValue);
+	m_kernelWeightInput->user_data((void*)(this));
+	m_kernelWeightInput->callback(cb_update_kernelWeightInput);
+
+	m_kernelNormalizeBox = new Fl_Check_Button(50, 200, 50, 50, "Normalized");
+	m_kernelNormalizeBox->user_data((void*)(this));
+
+	m_loadkernel = new Fl_Button(200,200,100,50,"Apply");
 	m_loadkernel->callback(cb_loadkernel);
+	m_loadkernel->user_data((void*)(this));
+
 	m_kernelDialog->end();
 }
 

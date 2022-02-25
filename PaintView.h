@@ -69,6 +69,14 @@ public:
 	ImpressionistDoc *m_pDoc;
 	bool initPaint;
 	unsigned char* rgbaBrush = nullptr;
+	int m_nDrawWidth,
+		m_nDrawHeight,
+		m_nStartRow,
+		m_nEndRow,
+		m_nStartCol,
+		m_nEndCol,
+		m_nWindowWidth,
+		m_nWindowHeight;
 
 private:
 	GLvoid *m_pPaintBitstart;
@@ -79,14 +87,7 @@ private:
 	GLvoid* m_pUndoBitstart;
 	ReDrawState drawstate;
 	GradientMode gradientMode;
-	int m_nDrawWidth,
-		m_nDrawHeight,
-		m_nStartRow,
-		m_nEndRow,
-		m_nStartCol,
-		m_nEndCol,
-		m_nWindowWidth,
-		m_nWindowHeight;
+
 };
 
 

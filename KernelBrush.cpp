@@ -45,6 +45,7 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 			if (x1 > (w - 1) || x2 < 0 || y1 >(h - 1) || y2 < 0) {
 				continue;
 			}
+			//std::cout << x2 << " " << y2 << std::endl;
 			Kernel(Point(x1, y1), Point(x2, y2));
 		}
 	}

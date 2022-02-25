@@ -9,7 +9,7 @@
 void MosaicPainting::loadOriginalImage(char* fname) {
     int width, height;
     originalImage = readBMP(fname, width, height);
-    if ((image = readBMP(fname, width, height)) == NULL)
+    if ((originalImage = readBMP(fname, width, height)) == NULL)
     {
         fl_alert("Can't load bitmap file");
         return;
@@ -45,10 +45,11 @@ vector<float> MosaicPainting::getGridAvgColor(int x, int y, int width, int heigh
             b += originalImage[startPt + j + i * originalImageWidth];
         }
     }
+
     vector<float> partialGridAvgColors;
-    partialGridAvgColors.push_back(r / mosaicSize * mosaicSize);
-    partialGridAvgColors.push_back(g / mosaicSize * mosaicSize);
-    partialGridAvgColors.push_back(b / mosaicSize * mosaicSize);
+    partialGridAvgColors.push_back(r / mosaicSize / mosaicSize);
+    partialGridAvgColors.push_back(g / mosaicSize / mosaicSize);
+    partialGridAvgColors.push_back(b / mosaicSize / mosaicSize);
     return partialGridAvgColors;
 }
 
@@ -91,7 +92,16 @@ int MosaicPainting::findBestMosaicImage(vector<float> inputAvgColors) {
     for (auto avgColor: testAvgColors) {
         distanceVector.push_back(abs(avgColor[0] - inputAvgColors[0]) + abs(avgColor[1] - inputAvgColors[1]) + abs(avgColor[2] - inputAvgColors[2]));
     }
-    return *min_element(distanceVector.begin(), distanceVector.end());
+
+    int minIndex = -1;
+    float minValue = 1000000;
+    for (int i = 0; i < distanceVector.size(); i++) {
+        if (distanceVector[i] < minValue) {
+            minValue = distanceVector[i];
+            minIndex = i;
+        }
+    }
+    return minIndex;
 }
 
 void MosaicPainting::generateMosaic() {
@@ -131,19 +141,19 @@ void MosaicPainting::getImagesAvgColor() {
 }
 
 void MosaicPainting::getAllFileNames() {
-    //fileNames.clear();
-    //string dir{ imagePoolDir };
-    //string search_path = dir + "*.*";
-    //WIN32_FIND_DATA fd;
-    //HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
-    //if (hFind != INVALID_HANDLE_VALUE) {
-    //    do {
-    //        // read all (real) files in current folder
-    //        // , delete '!' read other 2 default folder . and ..
-    //        if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-    //            fileNames.push_back(fd.cFileName);
-    //        }
-    //    } while (::FindNextFile(hFind, &fd));
-    //    ::FindClose(hFind);
-    //}
+    fileNames.clear();
+    string dir{ imagePoolDir };
+    string search_path = dir + "*.jpg";
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            // read all (real) files in current folder
+            // , delete '!' read other 2 default folder . and ..
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                fileNames.push_back(fd.cFileName);
+            }
+        } while (::FindNextFile(hFind, &fd));
+        ::FindClose(hFind);
+    }
 }

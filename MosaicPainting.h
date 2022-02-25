@@ -14,7 +14,7 @@ using namespace std;
  class MosaicPainting {
 
 public:
-	char* imagePoolDir = "mosaic_image_pool/";
+	char* imagePoolDir = "image_pool/";
 	int mosaicSize = 30;
 	void resizeImage();
 	void loadOriginalImage(char* fname);

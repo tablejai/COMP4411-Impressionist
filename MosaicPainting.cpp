@@ -8,7 +8,13 @@
 
 void MosaicPainting::loadOriginalImage(char* fname) {
     int width, height;
-    unsigned char* image = readBMP(fname, width, height);
+    originalImage = readBMP(fname, width, height);
+    if ((image = readBMP(fname, width, height)) == NULL)
+    {
+        fl_alert("Can't load bitmap file");
+        return;
+    }
+
     originalImageWidth = width;
     originalImageHeight = height;
     outputImage = new unsigned char[width * height *3];

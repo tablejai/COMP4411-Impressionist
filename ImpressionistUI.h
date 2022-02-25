@@ -34,6 +34,8 @@
 
 using namespace std;
 
+class MosaicPainting;
+
 class ImpressionistUI
 {
 public:

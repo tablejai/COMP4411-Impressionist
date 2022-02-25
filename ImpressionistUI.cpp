@@ -450,31 +450,31 @@ void ImpressionistUI::cb_mosaicPainting(Fl_Menu_* o, void* v) {
 }
 
 void ImpressionistUI::cb_load_mosaic_source(Fl_Widget* o, void* v) {
-	//ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
-	//ImpressionistDoc* pDoc = pUI->getDocument();
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
 
-	//char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
-	//cout << "open new file:" << newfile << endl;
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	cout << "open new file:" << newfile << endl;
 
-	//if (newfile != "")
-	//{		
-	//	char* fileName = new char[100];
-	//	strcpy(fileName, pathToFileName(newfile).c_str());
-	//	cout << fileName << endl;
-	//	((Fl_Widget*)o)->label(fileName);
-	//	pUI->mosaicPaintingEngine.loadOriginalImage(fileName);
-	//}
-	//else {
-	//	fl_alert("Image name cannot be blank");
-	//}
+	if (newfile != "")
+	{		
+		char* fileName = new char[100];
+		strcpy(fileName, pathToFileName(newfile).c_str());
+		cout << fileName << endl;
+		((Fl_Widget*)o)->label(fileName);
+		pUI->mosaicPaintingEngine.loadOriginalImage(fileName);
+	}
+	else {
+		fl_alert("Image name cannot be blank");
+	}
 	
 }
 
 void ImpressionistUI::cb_confirm_mosaic(Fl_Widget* o, void* v) {
-	//ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
-	//ImpressionistDoc* pDoc = pUI->getDocument();
-	//
-	//pUI->mosaicPaintingEngine.generateMosaic();
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
+	
+	pUI->mosaicPaintingEngine.generateMosaic();
 }
 
 
@@ -1022,8 +1022,8 @@ void ImpressionistUI::initPaintlyDialog(void) {
 void ImpressionistUI::initMosaicDialog(void) {
 	mosaicPaintingEngine = new MosaicPainting();
 
-	//mosaicPaintingEngine->getAllFileNames();
-	//mosaicPaintingEngine->loadImages();
+	mosaicPaintingEngine->getAllFileNames();
+	mosaicPaintingEngine->loadImages();
 	m_mosaicDialog = new Fl_Window(380, 300, "Mosaic Painting");
 	m_loadMosaicSourceButton = new Fl_Button(0, 0, 200, 50, "&Load Source Image");
 	m_loadMosaicSourceButton->user_data((void*)(this));

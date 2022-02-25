@@ -6,9 +6,9 @@
 
 class KernelBrush : public ImpBrush
 {
-	int size = 10;
 
 public:
+	int size = 10;
 	std::vector<std::vector<float>> kernel;
 	KernelBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
 	void BrushBegin(const Point source, const Point target);

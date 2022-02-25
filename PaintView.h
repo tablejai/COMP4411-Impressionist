@@ -137,6 +137,7 @@ public:
 		m_nEndCol,
 		m_nWindowWidth,
 		m_nWindowHeight;
+
 };
 
 

@@ -16,12 +16,20 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Light_Button.H>
 #include <FL/fl_Color_Chooser.h>
+#include <FL/Fl_Check_Button.h>
 #include <string>
 #include "Impressionist.h"
 #include "OriginalView.h"
 #include "PaintView.h"
 #include <vector>
 #include "ImpBrush.h"
+#include <FL/Fl_Input.h>
+#include <FL/Fl_Int_Input.h>
+#include <sstream>      // std::stringstream
+#include <string>
+#include <iostream>
+#include <algorithm>
+#include "KernelBrush.h"
 using namespace std;
 
 class ImpressionistUI
@@ -40,6 +48,8 @@ public:
 	Fl_Window *m_brushDialog;
 	Fl_Window* m_kernelDialog;
 	Fl_Button* paintlyButton;
+
+
 	Fl_Choice *m_BrushTypeChoice;
 	Fl_Choice* m_paintlyTypeChoice;
 	Fl_Choice *m_StrokeDirectionChoice;
@@ -49,7 +59,6 @@ public:
 	Fl_Slider *m_LineAngleSlider;
 	Fl_Slider *m_AlphaSlider;
 	Fl_Slider* m_BackGroundSlider;
-	Fl_Button* m_loadkernel;
 	Fl_Button *m_ClearCanvasButton;
 	Fl_Button* m_UndoCanvasButton;
 	Fl_Button* m_GradientButton;
@@ -67,6 +76,17 @@ public:
 	Fl_Slider* m_minStrokeLength;
 	Fl_Color_Chooser* m_ColorChooser;
 
+
+	Fl_Color_Chooser* m_ColorChooser;
+
+
+	// for kernel dialog
+	Fl_Window* m_kernelDialog;
+	Fl_Check_Button* m_kernelNormalizeBox;
+	Fl_Button* m_loadkernel;
+	Fl_Int_Input* m_kernelSizeInput;
+	Fl_Input* m_kernelWeightInput;
+
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);
 	ImpressionistDoc *getDocument();
@@ -79,6 +99,7 @@ public:
 	int getSize();
 	int getWidth();
 	int getAngle();
+
 	GLfloat getAlpha();
 	GLfloat getBackGroundAlpha();
 	void setBackGroundAlpha(float alpha);
@@ -96,14 +117,15 @@ private:
 	int m_nSize;
 	int m_nWidth;
 	int m_nAngle;
+	char* m_kernelWeightInputValue;
+	char* m_kernelSizeInputValue;
 	GLfloat m_nAlpha;
 	GLfloat m_nBackGroundAlpha;
-	int* kernelValues;
 
 	// Static class members
 	static Fl_Menu_Item menuitems[];
 	//static Fl_Menu_Item Functionitems[];
-	static Fl_Menu_Item brushTypeMenu[NUM_BRUSH_TYPE + 1];
+	static Fl_Menu_Item brushTypeMenu[NUM_BRUSH_TYPE + 1 - 1];
 	static Fl_Menu_Item strokeDirectionMenu[NUM_STROKE_TYPE + 1];
 	static Fl_Menu_Item m_paintlyMenu[NumOfPaintly + 1];
 
@@ -111,6 +133,8 @@ private:
 
 	// All callbacks here.  Callbacks are declared
 	// static
+	static void tokenize(std::string const& str, const char delim,
+		std::vector<std::string>& out);
 	static void cb_load_image(Fl_Menu_ *o, void *v);
 	static void cb_load_blend_image(Fl_Menu_* o, void* v);
 	static void cb_load_mural_image(Fl_Menu_* o, void* v);
@@ -136,6 +160,8 @@ private:
 	static void cb_AutoPaint(Fl_Menu_*, void*);
 	static void cb_load_gradient_image(Fl_Menu_* o, void* v);
 	static void cb_custom_gradient(Fl_Widget*,void*);
+	static void cb_update_kernelWeightInput(Fl_Widget*, void*);
+	static void cb_update_kernelSizeInput(Fl_Widget*, void*);
 	static void cb_kernel(Fl_Menu_*,void*);
 	static void cb_loadkernel(Fl_Widget*, void*);
 	static std::string pathToFileName(char *);

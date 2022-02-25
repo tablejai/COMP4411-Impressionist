@@ -82,7 +82,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_uctempBitmap1 = NULL;
 	m_uctempBitmap2 = NULL;
 	// create one instance of each brush
-	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
+	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE - 1;
 	ImpBrush::c_pBrushes	= new ImpBrush* [ImpBrush::c_nBrushCount];
 
 	ImpBrush::c_pBrushes[BRUSH_POINTS]	= new PointBrush( this, "Points" );
@@ -110,6 +110,9 @@ ImpressionistDoc::ImpressionistDoc()
 		= new SharpeningBrush(this, "Sharpening");
 	ImpBrush::c_pBrushes[BRUSH_CURVE]
 		= new CurveBrush(this, "CruveBrush");
+	ImpBrush::c_pBrushes[AUTO_KERNEL_BRUSH]
+		= new KernelBrush(this, "Auto Kernel Brush");
+
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";
@@ -175,12 +178,12 @@ GLfloat	ImpressionistDoc::getAlpha() {
 // pressed.
 //---------------------------------------------------------
 void ImpressionistDoc::saveOldImage() {
-	if (temp_m_ucPainting) {
-		oldPaintWidth = m_nPaintWidth;
-		oldPaintHeight = m_nPaintHeight;
-		temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 4];
-		memcpy(temp_m_ucPainting, m_rgbaBrush, oldPaintWidth * oldPaintHeight * 4);
-	}
+	oldPaintWidth = m_nPaintWidth;
+	oldPaintHeight = m_nPaintHeight;
+	if (temp_m_ucPainting == nullptr)
+		delete[] temp_m_ucPainting;
+	temp_m_ucPainting = new unsigned char[oldPaintWidth * oldPaintHeight * 4];
+	memcpy(temp_m_ucPainting, m_rgbaBrush, oldPaintWidth * oldPaintHeight * 4);
 }
 
 int ImpressionistDoc::loadGradientImage(char* name)

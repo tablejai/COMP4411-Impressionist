@@ -11,7 +11,7 @@ void MosaicPainting::loadOriginalImage(char* fname) {
     unsigned char* image = readBMP(fname, width, height);
     originalImageWidth = width;
     originalImageHeight = height;
-    outputImage = new[width * height *3];
+    outputImage = new unsigned char[width * height *3];
 }
 
 void MosaicPainting::loadImages() {
@@ -47,7 +47,6 @@ vector<float> MosaicPainting::getGridAvgColor(int x, int y, int width, int heigh
 }
 
 void MosaicPainting::processRemainGrid(int x, int y, bool last_col, bool last_row) {
-    vector<float> partialGridAvgColors;
     int searchWidth, searchHeight;
     if (last_col && !last_row) {
         searchWidth = remainCol, searchHeight = mosaicSize;

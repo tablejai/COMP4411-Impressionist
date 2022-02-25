@@ -1021,7 +1021,9 @@ void ImpressionistUI::initPaintlyDialog(void) {
 
 }
 void ImpressionistUI::initMosaicDialog(void) {
-	mosaicPaintingEngine->getAllFileNames();
+	mosaicPaintingEngine = new MosaicPainting();
+
+	//mosaicPaintingEngine->getAllFileNames();
 	//mosaicPaintingEngine->loadImages();
 	m_mosaicDialog = new Fl_Window(380, 300, "Mosaic Painting");
 	m_loadMosaicSourceButton = new Fl_Button(0, 0, 200, 50, "&Load Source Image");
@@ -1060,6 +1062,7 @@ ImpressionistUI::ImpressionistUI()
 	group->end();
 	Fl_Group::current()->resizable(group);
 	m_mainWindow->end();
+
 	initBrushDialog();
 	initColorDialog();
 	initBlendDialog();

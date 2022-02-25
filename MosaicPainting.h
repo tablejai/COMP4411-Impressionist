@@ -11,7 +11,7 @@
 class ImpressionistDoc;
 using namespace std;
 
-class MosaicPainting {
+ class MosaicPainting {
 
 public:
 	char* imagePoolDir = "mosaic_image_pool/";

@@ -78,12 +78,7 @@ public:
 	Fl_Slider* m_minStrokeLength;
 	Fl_Color_Chooser* m_ColorChooser;
 
-
-	Fl_Color_Chooser* m_ColorChooser;
-
-
 	// for kernel dialog
-	Fl_Window* m_kernelDialog;
 	Fl_Check_Button* m_kernelNormalizeBox;
 	Fl_Button* m_loadkernel;
 	Fl_Int_Input* m_kernelSizeInput;
@@ -93,7 +88,7 @@ public:
 	Fl_Window* m_mosaicDialog;
 	Fl_Button* m_loadMosaicSourceButton;
 	Fl_Button* m_mosaicEnter;
-	static MosaicPainting* mosaicPaintingEngine;
+    MosaicPainting* mosaicPaintingEngine;
 
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);

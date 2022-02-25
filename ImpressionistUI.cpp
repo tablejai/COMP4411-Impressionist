@@ -722,7 +722,6 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
-	{0},
 	{"&Function", 0,0,0,FL_SUBMENU},
 	{"&Auto Draw...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_AutoPaint},
 	{0}};

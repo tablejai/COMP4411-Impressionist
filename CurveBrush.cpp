@@ -40,8 +40,12 @@ void CurveBrush::BrushBegin(const Point source, const Point target)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	initReverseData();
-	glPointSize((float)size);
+	glPointSize((float)3);
+	maxStrokeLength = size;
+	minStrokeLength = size/2;
+
 	BrushMove(source, target);
+
 }
 void CurveBrush::updateReverData() {
 	/*for (int i = -size;i < size;i++) {
@@ -131,9 +135,9 @@ void CurveBrush::BrushMove(const Point source, const Point target)
 	auto seed = mt19937{ random_device()() };
 	mt19937 mt(seed);
 	if (bmode == NORMALMODE)
-		glPointSize((float)size);
+		glPointSize((float)3);
 	else
-		glPointSize((float)size + ((int)mt()) % 4);
+		glPointSize((float)3 + ((int)mt()) % 4);
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
@@ -145,6 +149,7 @@ void CurveBrush::BrushMove(const Point source, const Point target)
 	int targety = target.y;
 	float radius = 2;
 	float fc = 1.0f;
+
 	BrushStroke b = PaintStroke(targetx, targety, dlg->m_paintView->rgbaBrush, dlg->m_paintView->m_nDrawWidth, dlg->m_paintView->m_nDrawHeight, radius, dlg->m_paintView->rgbaBitMap, fc);
 	for (auto& pt : b.pts) {
 		//	glEnable(GL_POINT_SMOOTH);

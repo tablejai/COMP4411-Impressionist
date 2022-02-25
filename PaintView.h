@@ -110,13 +110,13 @@ public:
 	bool initPaint;
 	unsigned char* rgbaBrush = nullptr;
 	unsigned char* rgbaBitMap = nullptr;
-	float blurrSize = 0.5f;
-	float fc = 0.25f;
-	float fg = 1;
-	float a = 0.7;
-	float threshold = 50;
-	int maxStrokeLength = 16;
-	int minStrokeLength = 10;
+	float blurrSize ;
+	float fc ;
+	float fg;
+	float a ;
+	float threshold ;
+	int maxStrokeLength ;
+	int minStrokeLength ;
 	PaintlyMode paintlymode;
 private:
 	GLvoid *m_pPaintBitstart;

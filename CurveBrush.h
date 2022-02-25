@@ -13,7 +13,7 @@ class CurveBrush : public ImpBrush
 {
 	int size = 0;
 	int maxStrokeLength;
-	int 	minStrokeLength;
+	int minStrokeLength;
 
 public:
 	CurveBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);

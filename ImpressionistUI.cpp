@@ -457,6 +457,8 @@ void ImpressionistUI::cb_load_mosaic_source(Fl_Widget* o, void* v) {
 	if (newfile != NULL) {
 		((Fl_Widget*)o)->label(newfile);
 		pUI->mosaicPaintingEngine->loadOriginalImage(newfile);
+		pDoc->loadImage(newfile);
+
 	}
 }
 
@@ -1012,8 +1014,11 @@ void ImpressionistUI::initPaintlyDialog(void) {
 void ImpressionistUI::initMosaicDialog(void) {
 	mosaicPaintingEngine = new MosaicPainting();
 
+	mosaicPaintingEngine->m_pDoc = m_pDoc;
+	mosaicPaintingEngine->m_pUI = (this);
 	mosaicPaintingEngine->getAllFileNames();
 	mosaicPaintingEngine->loadImages();
+	mosaicPaintingEngine->getImagesAvgColor();
 	m_mosaicDialog = new Fl_Window(380, 300, "Mosaic Painting");
 	m_loadMosaicSourceButton = new Fl_Button(0, 0, 200, 50, "&Load Source Image");
 	m_loadMosaicSourceButton->user_data((void*)(this));

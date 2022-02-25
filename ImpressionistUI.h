@@ -30,6 +30,8 @@
 #include <iostream>
 #include <algorithm>
 #include "KernelBrush.h"
+#include "MosaicPainting.h"
+
 using namespace std;
 
 class ImpressionistUI
@@ -86,6 +88,12 @@ public:
 	Fl_Button* m_loadkernel;
 	Fl_Int_Input* m_kernelSizeInput;
 	Fl_Input* m_kernelWeightInput;
+
+	// for mosaic painting
+	Fl_Window* m_mosaicDialog;
+	Fl_Button* m_loadMosaicSourceButton;
+	Fl_Button* m_mosaicEnter;
+	static MosaicPainting* mosaicPaintingEngine;
 
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);
@@ -164,6 +172,9 @@ private:
 	static void cb_update_kernelSizeInput(Fl_Widget*, void*);
 	static void cb_kernel(Fl_Menu_*,void*);
 	static void cb_loadkernel(Fl_Widget*, void*);
+	static void cb_mosaicPainting(Fl_Menu_*, void*);
+	static void cb_load_mosaic_source(Fl_Widget*, void*);
+	static void cb_confirm_mosaic(Fl_Widget*, void*);
 	static std::string pathToFileName(char *);
 	static void cb_paintly(Fl_Menu_* ,void*);
 	static void cb_updatePaintly(Fl_Widget* o, void* v);
@@ -177,6 +188,7 @@ private:
 	void initBrushDialog(void);
 	void initColorDialog(void);
 	void initBlendDialog(void);
+	void initMosaicDialog(void);
 
 };
 

@@ -48,5 +48,7 @@
     <ClInclude Include="GlobalFunction.h" />
     <ClInclude Include="BrushStroke.h" />
     <ClInclude Include="CurveBrush.h" />
+    <ClInclude Include="MosaicPainting.h" />
+    <ClInclude Include="MosaicPainting.cpp" />
   </ItemGroup>
 </Project>

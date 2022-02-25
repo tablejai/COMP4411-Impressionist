@@ -57,6 +57,7 @@ double LineBrush::meanfilter(const Point source) {
 	return meanintensity / 9;
 
 }
+
 double LineBrush::getGradientAngle(const Point source) {
 	ImpressionistDoc* pDoc = GetDocument();
 	Point tempR(source.x+1,source.y);
@@ -95,7 +96,6 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		realheight = height + (abs((int)mt())) % (temp);
 		angledelta = ((int)mt()) % (40);
 	}
-
 	glPushMatrix();
 	glTranslatef(target.x, target.y, 0.0f);
 	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
@@ -104,7 +104,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 				(45 < angle && angle < 135) ? 90:
 			    (135 < angle && angle < 225) ? 180:
 				(225 < angle && angle < 315) ? 270:0;
-		;
+		
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 

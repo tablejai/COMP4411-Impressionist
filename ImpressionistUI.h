@@ -39,8 +39,9 @@ public:
 	// for brush dialog
 	Fl_Window *m_brushDialog;
 	Fl_Window* m_kernelDialog;
-
+	Fl_Button* paintlyButton;
 	Fl_Choice *m_BrushTypeChoice;
+	Fl_Choice* m_paintlyTypeChoice;
 	Fl_Choice *m_StrokeDirectionChoice;
 	vector<Fl_Input*> kernelInputs;
 	Fl_Slider *m_BrushSizeSlider;
@@ -55,13 +56,16 @@ public:
 	Fl_Button* m_LoadButton1;
 	Fl_Button* m_LoadButton2;
 	Fl_Button* m_LoadEnter;
-	// for color dialog
 	Fl_Window* m_colorDialog;
 	Fl_Window* m_blendDialog;
-
-
+	Fl_Window* m_paintlyDialog;
+	Fl_Slider* alpha;
+	Fl_Slider*m_threshold;
+	Fl_Slider* m_blurrfactor;
+	Fl_Slider* m_curvefactor;
+	Fl_Slider* m_maxStrokeLength;
+	Fl_Slider* m_minStrokeLength;
 	Fl_Color_Chooser* m_ColorChooser;
-
 
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);
@@ -83,6 +87,8 @@ public:
 	void setAngle(int angle);
 	void setAlpha(float alpha);
 	void initkernelDialog();
+	void initPaintlyDialog();
+
 private:
 	ImpressionistDoc *m_pDoc; // pointer to document to communicate with the document
 
@@ -99,6 +105,7 @@ private:
 	//static Fl_Menu_Item Functionitems[];
 	static Fl_Menu_Item brushTypeMenu[NUM_BRUSH_TYPE + 1];
 	static Fl_Menu_Item strokeDirectionMenu[NUM_STROKE_TYPE + 1];
+	static Fl_Menu_Item m_paintlyMenu[NumOfPaintly + 1];
 
 	static ImpressionistUI *whoami(Fl_Menu_ *o);
 
@@ -132,6 +139,15 @@ private:
 	static void cb_kernel(Fl_Menu_*,void*);
 	static void cb_loadkernel(Fl_Widget*, void*);
 	static std::string pathToFileName(char *);
+	static void cb_paintly(Fl_Menu_* ,void*);
+	static void cb_updatePaintly(Fl_Widget* o, void* v);
+	static void cb_threshold(Fl_Widget* o, void* v);
+	static void cb_blurrSize(Fl_Widget* o, void* v);
+	static void cb_factorC(Fl_Widget* o, void* v);
+	static void cb_alpha(Fl_Widget* o, void* v);
+	static void cb_maxStrokeLength(Fl_Widget* o, void* v);
+	static void cb_minStrokeLength(Fl_Widget* o, void* v);
+	static void cb_doPaintly(Fl_Widget* o, void* v);
 	void initBrushDialog(void);
 	void initColorDialog(void);
 	void initBlendDialog(void);

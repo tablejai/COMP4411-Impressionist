@@ -20,6 +20,7 @@
 #include "BlurringBrush.h"
 #include "SharpeningBrush.h"
 #include "ImageCursor.h"
+#include "CurveBrush.h"
 #include "AlphaMapBrush.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
@@ -107,6 +108,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new BlurringBrush(this, "Blurring");
 	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
 		= new SharpeningBrush(this, "Sharpening");
+	ImpBrush::c_pBrushes[BRUSH_CURVE]
+		= new CurveBrush(this, "CruveBrush");
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 	char name[50] = "ImageCursor";

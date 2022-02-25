@@ -9,9 +9,12 @@
 #include "impressionistUI.h"
 #include "paintview.h"
 #include "ImpBrush.h"
+#include "GlobalFunction.h"
 #include <iostream>
 #include <random>
+#include "BrushStroke.h"
 #include  <unordered_map>
+#include "math.h"
 using namespace std;
 
 
@@ -39,7 +42,6 @@ using namespace std;
 #define RIGHT_MOUSE_UP		6
 #define AUTO_PAINT          7
 
-
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
 #define max(a, b)	( ( (a)>(b) ) ? (a) : (b) )
@@ -50,8 +52,19 @@ static int		isAnEvent=0;
 Point	coord;
 Point	oldcoord;
 Point mouseVec;
+#define setParameter(mode,factorR,factorc,alpha,factorg,t,mx,mn,jr,jg,jb)  PaintParameter{mode,factorR,factorc,factorg,alpha,t, jr, jg, jb, mx, mn}
+PaintlyMode mode;
+
+//PaintParameter{ mode = Mode,blurrSize = factorR,fc = factorc,fg = factorg,a = alpha,threshold = t, maxStrokeLength = mx,minStrokeLength = mn, jr = kr,jg = kg,jb = kb };
 
 
+extern PaintParameter paintModes[4] = {
+	setParameter(Impressionist,0.5f,1,1,1,100,16,4,0,0,0),
+	setParameter(Expressionist,0.5f,0.25f,0.7f,1,50,16,10,0,0,0),
+    setParameter(Pointillist,0.5f,0.25f,0.5f,1,200,16,4,0.3,0.3,0.3),
+	setParameter(Psychedelic,0.5f,0.5f,0.7f,1,50,16,10,0,0,0)
+};
+int  radiusNum = 3;
 PaintView::PaintView(int			x, 
 					 int			y, 
 					 int			w, 
@@ -65,8 +78,27 @@ PaintView::PaintView(int			x,
 	m_nWindowHeight	= h;
 	initPaint = false;
 	gradientMode = DEFUALT;
-   
-
+	radiusNum = 2;
+	int r1 = 2;
+	brushRadii = vector<int>(radiusNum,0);
+	brushRadii[0] = r1;
+	for (int i =1;i <radiusNum ;i++){
+		brushRadii[i] = 2*brushRadii[i-1];
+	}
+	sort(brushRadii.begin(), brushRadii.end(), greater<int>());
+	paintlymode = Impressionist;
+	updatePaintlyPara();
+}
+void PaintView::updatePaintlyPara() {
+	if (paintlymode != Custom) {
+		blurrSize = paintModes[paintlymode].blurrSize;
+		fc = paintModes[paintlymode].fc;
+		fg = paintModes[paintlymode].fg;
+		a = paintModes[paintlymode].a;
+		threshold = paintModes[paintlymode].threshold;
+		maxStrokeLength = paintModes[paintlymode].maxStrokeLength;
+		minStrokeLength = paintModes[paintlymode].minStrokeLength;
+	}
 }
 void PaintView::INIT_RGBA(GLvoid* data, unsigned char*& RGBA, int w, int h, int a) {
 
@@ -117,27 +149,29 @@ void PaintView::autoPaint() {
 	mt19937 mt(seed);
 	int length;
 	m_pDoc->clearCanvas();
+
 	SynchronizeContentRGBA(rgbaBrush, m_pUndoBitstart);
 	RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
 	vector<Point> points;
 	m_pDoc->m_pCurrentBrush->setBrushMode(RANDOMMODE);
 	for (int i = 0;i < m_nDrawHeight;i++) {
 		for (int j = 0;j < m_nDrawWidth;j++) {
-			points.push_back(Point{j,i});
+			points.push_back(Point{ j,i });
 		}
 	}
 	random_shuffle(points.begin(), points.end());
-	for(int k=0;k<points.size();k++){
-		    int i = points[k].y, j = points[k].x;
-			Point source(j + m_nStartCol, m_nEndRow - i);
-			Point target(j, m_nWindowHeight - i);
-			coord.x = j;
-			coord.y = i;
-			m_pDoc->m_pCurrentBrush->BrushBegin(source, target);//should draw to back
-			m_pDoc->m_pCurrentBrush->BrushMove(source, target);//should draw to back
-			m_pDoc->m_pCurrentBrush->BrushEnd(source, target);//should draw to back
+	for (int k = 0;k < points.size();k++) {
+		int i = points[k].y, j = points[k].x;
+		Point source(j + m_nStartCol, m_nEndRow - i);
+		Point target(j, m_nWindowHeight - i);
+		coord.x = j;
+		coord.y = i;
+		m_pDoc->m_pCurrentBrush->BrushBegin(source, target);//should draw to back
+		m_pDoc->m_pCurrentBrush->BrushMove(source, target);//should draw to back
+		m_pDoc->m_pCurrentBrush->BrushEnd(source, target);//should draw to back
 	}
-	std::cout << m_pDoc->m_pCurrentBrush->BrushName()<<"bursh nm" << endl;
+	std::cout << m_pDoc->m_pCurrentBrush->BrushName() << "bursh nm" << endl;
+
 	SavePreviousDataRGBA(rgbaBrush, GL_BACK);
 	clearColorBuffer(GL_BACK);
 	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
@@ -147,9 +181,326 @@ void PaintView::autoPaint() {
 	this->redraw();
 	m_pDoc->m_pCurrentBrush->setBrushMode(NORMALMODE);
 
+
+}
+
+void PaintView::drawPaintly() {
+	glDrawBuffer(GL_BACK);
+	auto seed = mt19937{ random_device()() };
+	mt19937 mt(seed);
+	int length;
+	m_pDoc->clearCanvas();
+	SynchronizeContentRGBA(rgbaBrush, m_pUndoBitstart);
+	int r1 = 2;
+	brushRadii = vector<int>(radiusNum, 0);
+	brushRadii[0] = r1;
+	for (int i = 1;i < radiusNum;i++) {
+		brushRadii[i] = 2 * brushRadii[i - 1];
+	}
+	sort(brushRadii.begin(), brushRadii.end(), greater<int>());
+	Paint(true);
+	SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+	clearColorBuffer(GL_BACK);
+	AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+	AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+	glFlush();
+	glDrawBuffer(GL_BACK);
+	this->redraw();
+	m_pDoc->m_pCurrentBrush->setBrushMode(NORMALMODE);
+}
+void PaintView::blurrPointOrigin(unsigned char * ptr,const Point source,const Point target,int paintWidth,int paintHeight,const vector<vector<double>>& kernel) {
+	int rSum = 0, gSum = 0,bSum = 0;
+	int kernelSize = kernel.size();
+	for (int i = 0; i < kernelSize; i++) {
+		for (int j = 0; j < kernelSize; j++) {
+			int srcX = source.x + i - kernelSize / 2;
+			int srcY = source.y + j - kernelSize / 2;
+			//	cout << srcX << "," << srcY << endl;
+			if (srcX >= (paintWidth - 1 - 1) || srcX < 0 || srcY >= (paintHeight - 1 - 1) || srcY < 0) {
+				continue;
+			}
+			GLubyte srcColor[3];
+			memcpy(srcColor, m_pDoc->GetOriginalPixel(Point(srcX, srcY)), 3);
+
+			float kernelVal = kernel[i][j];
+			rSum += srcColor[0] * kernelVal;
+			gSum += srcColor[1] * kernelVal;
+			bSum += srcColor[2] * kernelVal;
+			KernelSetColor(ptr, target, rSum, gSum, bSum, 255);
+
+		}
+	}
+
+
+}
+void PaintView::blurrPoint(unsigned char* sourceptr, unsigned char* ptr, const Point source, const Point target, int paintWidth, int paintHeight, const vector<vector<double>>& kernel) {
+	int rSum = 0, gSum = 0, bSum = 0;
+	int kernelSize = kernel.size();
+	for (int i = 0; i < kernelSize; i++) {
+		for (int j = 0; j < kernelSize; j++) {
+			int srcX = target.x + i - kernelSize / 2;
+			int srcY = target.y + j - kernelSize / 2;
+			//	cout << srcX << "," << srcY << endl;
+			if (srcX >= (paintWidth - 1 - 1) || srcX < 0 || srcY >= (paintHeight - 1 - 1) || srcY < 0) {
+				continue;
+			}
+			GLubyte srcColor[3];
+			srcColor[0] = Map4(sourceptr,4* srcX, srcY, paintWidth);
+			srcColor[1] = Map4(sourceptr, 4 * srcX+1, srcY, paintWidth);
+			srcColor[2] = Map4(sourceptr, 4 * srcX+2, srcY, paintWidth);
+
+			float kernelVal = kernel[i][j];
+			rSum += srcColor[0] * kernelVal;
+			gSum += srcColor[1] * kernelVal;
+			bSum += srcColor[2] * kernelVal;
+			KernelSetColor(ptr, target, rSum, gSum, bSum, 255);
+
+		}
+	}
+
+
+}
+void PaintView::KernelSetColor(unsigned char* ptr,const Point target, const int r, const int g, const int b,const int alpha) {
+	ImpressionistDoc* pDoc = m_pDoc;
+	ImpressionistUI* dlg = pDoc->m_pUI;
+	int w = pDoc->m_nPaintWidth;
+	int h = pDoc->m_nPaintHeight;
+	Fl_Color_Chooser* colorChooser = dlg->m_ColorChooser;
+	int r_mult = colorChooser->r();
+	int g_mult = colorChooser->g();
+	int b_mult = colorChooser->b();
+	ptr[(target.x + target.y * w) * 4] = min(max(r, 0), 255) * r_mult;
+	ptr[(target.x + target.y * w) * 4 + 1] = min(max(g, 0), 255) * g_mult;
+	ptr[(target.x + target.y * w) * 4 + 2] = min(max(b, 0), 255) * b_mult;
+	ptr[(target.x + target.y * w) * 4 + 3] = alpha;
+}
+
+void PaintView::blurr(unsigned char * sourceMap,unsigned char * targetMap,float blursize) {
+	/*vector<vector<float>> kernel = { {1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0},
+			   {1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0},
+			   {1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0},
+				{1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0},
+				{1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0, 1.0 / 25.0}, };*/
+	double sigma = blursize;
+	int W = 5;
+	vector<vector<double>> kernel(W,vector<double>(W,0));
+	double mean = W / 2;
+	double sum = 0.0; // For accumulating the kernel values
+	for (int x = 0; x < W; ++x)
+		for (int y = 0; y < W; ++y) {
+			kernel[x][y] = exp(-0.5 * (pow((x - mean) / sigma, 2.0) + pow((y - mean) / sigma, 2.0)))
+				/ (2 * M_PI * sigma * sigma);
+			sum += kernel[x][y];
+		}
+
+	// Normalize the kernel
+	for (int x = 0; x < W; ++x)
+		for (int y = 0; y < W; ++y)
+			kernel[x][y] /= sum;
+	int kernelSize = kernel.size();
+	for (int j = 0;j < m_nDrawHeight;j++) {
+		for (int i = 0;i < m_nDrawWidth;i++) {
+			Point source(i + m_nStartCol, m_nEndRow - j);
+			Point target(i, m_nDrawHeight - j);
+			if (sourceMap == nullptr)
+				blurrPointOrigin(targetMap, source, target, m_nDrawWidth, m_nDrawHeight, kernel);
+			else
+			blurrPoint(sourceMap,targetMap, target,target, m_nDrawWidth, m_nDrawHeight,kernel);
+		}
+	}
 }
 
 
+double PaintView::vectorDistance(const vector<int>& v1, const vector<int>& v2) {
+	int dist = 0;
+	for (int i = 0;i<v1.size();i++) {
+		dist += (v1[i] - v2[i])*(v1[i] - v2[i]);
+	}
+	return sqrt(dist);
+}
+
+BrushStroke PaintView::PaintStroke(int targetx, int targety, unsigned char* canvas,int w, int h,int radius, unsigned char* target ,float kernel) {
+
+vector<unsigned char> color(4,0);
+BrushStroke paintstroke;
+
+//init K
+//add
+if (maxStrokeLength == 0)
+maxStrokeLength = 1;
+ vector<Point> points(maxStrokeLength, { 0,0 });
+ vector<Point> pointsChange(maxStrokeLength, { 0,0 });
+ paintstroke.color.push_back(Map4(target, 4 * targetx, targety, w));
+ paintstroke.color.push_back(Map4(target, 4 * targetx+1, targety, w));
+ paintstroke.color.push_back(Map4(target, 4 * targetx+2, targety, w));
+ paintstroke.color.push_back(Map4(target, 4 * targetx+3, targety, w));
+
+Point pts = { targetx, targety};
+points[0] = pts;
+paintstroke.pts.push_back(points[0]);
+for (int i = 1;i < maxStrokeLength;i++) {
+	if (!(points[i - 1].x-2 >= 0 && points[i - 1].x+2 < w && points[i - 1].y - 2 >= 0 && points[i - 1].y + 2 < h))
+		return paintstroke;
+	vector<double> GXY = {255* getGradientX(points[i-1],target,w,h), 255*getGradientY(points[i-1],target,w,h)};
+	if (radius*sqrt(GXY[0]* GXY[0]+ GXY[1]* GXY[1])>=1 ) {
+		pointsChange[i] = Point{ (int)-GXY[1],(int)GXY[0] };
+		if (i > 1 && pointsChange[i - 1].x * pointsChange[i].x + pointsChange[i - 1].y * pointsChange[i].y < 0) {
+			pointsChange[i] = { (int)(-pointsChange[i].x),(int)(-pointsChange[i].y)};
+		}
+		pointsChange[i] = Point{ (int)(kernel* pointsChange[i].x+(1-kernel)* pointsChange[i-1].x ), (int)(kernel * pointsChange[i].y + (1 - kernel) * pointsChange[i-1].y )};
+	}
+	else {
+		if (i > 1) {
+		pointsChange[i] = Point{ (int)(pointsChange[i - 1].x),(int)(pointsChange[i - 1].y)};
+		}
+		else{
+			return paintstroke;
+		}
+		
+	}
+	int xcahnge = pointsChange[i].x;
+	int ychange = pointsChange[i].y;
+	points[i] = Point{ (int)(points[i - 1].x + radius * xcahnge / sqrt(xcahnge * xcahnge + ychange * ychange)), (int)(points[i - 1].y + radius * ychange / sqrt(xcahnge * xcahnge + ychange * ychange)) };
+	if (i > minStrokeLength ) {
+		if (4 * points[i].x<0||4 * points[i].x >= 4*(w-2) || points[i].y >= h||points[i].y<0) {
+			return paintstroke;
+		}
+		try {
+			vector<int> v1(3, 0);
+			vector<int> v2(3, 0);
+			v1[0] = Map4(canvas, 4 * points[i].x, points[i].y, w);
+			v1[1] = Map4(canvas, 4 * points[i].x + 1, points[i].y, w);
+			v1[2] = Map4(canvas, 4 * points[i].x + 2, points[i].y, w);
+			v2[0] = Map4(target, 4 * points[i].x, points[i].y, w);
+			v2[1] = Map4(target, 4 * points[i].x + 1, points[i].y, w);
+			v2[2] = Map4(target, 4 * points[i].x + 2, points[i].y, w);
+			vector<int> v3(3,0);
+			v3[0] = (UINT)color[0];
+			v3[1] = (UINT)color[1];v3[2]= (UINT)color[2];
+			if (vectorDistance(v1, v2) < vectorDistance(v1, v3)) {
+
+				return paintstroke;
+			}
+		}
+		catch(exception e){
+			cout << 4*points[i].x + 2 << "," << points[i].y <<w<<" "<<h << endl;
+		}
+
+	}
+	paintstroke.pts.push_back(points[i]);
+}
+//cout << targetx << "||" << targety << endl;
+return paintstroke;
+}
+
+
+
+
+
+
+void PaintView::Paint(bool fristFrame){
+	GLvoid* src = m_pPaintBitstart;
+
+	bool refersh = fristFrame;
+	vector<unsigned char*> Ips;
+	unsigned char* canvas = new unsigned char[m_nDrawWidth * m_nDrawHeight * 4];
+	unsigned char* temp = new unsigned char[m_nDrawWidth * m_nDrawHeight * 4];
+	unsigned char* blurrtemp = new unsigned char[m_nDrawWidth * m_nDrawHeight * 4];
+
+	memset(canvas, m_nDrawWidth* m_nDrawHeight*4,0);
+	cout << brushRadii.size()<<"size";
+	unsigned char* blurred;
+	blurred = new unsigned char[m_nDrawWidth * m_nDrawHeight * 4];
+//	cout << m_nDrawWidth << "," << m_nDrawWidth << endl;
+	RestorePreviousDataRGBA(canvas, GL_BACK);
+	RGB_TO_RGBA(m_pDoc->m_ucBitmap,temp, m_nDrawWidth, m_nDrawHeight,255);
+	//blurr(temp, blurrtemp, 0.5f);
+
+  for(auto& radius:brushRadii){
+	  memset(blurred, m_nDrawWidth * m_nDrawHeight * 4, 0);
+	 blurr(temp, blurred, blurrSize * radius);
+	//cout << "radius" << radius << endl;
+	float grid = radius;
+	RestorePreviousDataRGBA(canvas, GL_BACK);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		for (int j = grid / 2;j < m_nDrawHeight;j += grid) {
+			for (int i = grid / 2;i < m_nDrawWidth;i += grid) {
+				double areaError = 0;
+				int mxdist = INT_MIN;
+				int targetx = 0;
+				int targety = 0;
+				glClear(GL_DEPTH_BUFFER_BIT);
+				if (j - grid / 2 >= 0 && j + grid / 2 < m_nDrawHeight - 1 && i - grid / 2 >= 0 && i + grid / 2 < m_nDrawWidth - 1) {
+					for (int ky = j - grid / 2;ky <= j + grid / 2;ky++) {
+						for (int k = i - grid / 2;k <= i + grid / 2;k++) {
+							vector<int> rgb = { Map4(blurred,4 * k,ky,m_nDrawWidth),
+							Map4(blurred,4 * k + 1,ky,m_nDrawWidth),
+							Map4(blurred,4 * k + 2,ky,m_nDrawWidth) };
+							vector<int> rgb2 = { Map4(canvas,4 * k,ky,m_nDrawWidth),
+							Map4(canvas,4 * k + 1,ky,m_nDrawWidth),
+							Map4(canvas,4 * k + 2,ky,m_nDrawWidth) };
+							double dist = vectorDistance(rgb, rgb2);
+							areaError += dist;
+							if (dist > mxdist)
+							{
+								targetx = k;
+								targety = ky;
+								mxdist = dist;
+							}
+						}
+					}
+					if (refersh || areaError > threshold) {
+						//cout << "in here"<< areaError << endl;
+						//cout << "xxxxxx" << endl;i
+						if (targetx == 0 && targety == 0)
+							cout << i << "," << j << "," << targetx << "," << targety << endl;
+						BrushStroke b = PaintStroke(targetx, targety, canvas, m_nDrawWidth, m_nDrawHeight, radius, blurred, fc);
+						auto seed = mt19937{ random_device()() };
+						mt19937 mt(seed);
+						for (auto& pt : b.pts) {
+							glPointSize((float)radius);
+						//	glEnable(GL_POINT_SMOOTH);
+							glBegin(GL_POINTS);
+							int colorrand = (abs((int)mt()) % 2);
+							float addr=0;
+							float addg=0;
+							float addb=0; 
+							if (paintlymode != CUSTOM) {
+								addg = colorrand * paintModes[paintlymode].jg;
+								addr = colorrand * paintModes[paintlymode].jr;
+								addb = colorrand * paintModes[paintlymode].jb;
+							}
+							
+							float red = ((float)(UINT)b.color[0] / 225.0f + addr > 1.0f) ? 1 : (float)(UINT)b.color[0] / 225.0f + addr ;
+							float green = ((float)(UINT)b.color[1] / 225.0f + addg > 1.0f) ? 1 : (float)(UINT)b.color[1] / 225.0f + addg ;
+							float blue = ((float)((UINT)b.color[2])/ 225.0f + addb >1.0f) ? 1 : (float)(UINT)b.color[2] / 225.0f + addb ;
+							glColor4f(red, green, blue, a);
+							glVertex3d(pt.x, pt.y, abs((int)mt())%radiusNum);
+							glEnd();
+						//	glDisable(GL_POINT_SMOOTH);
+
+
+						}
+					}
+				}
+			}
+			refersh = false;
+		}
+		SavePreviousDataRGBA(canvas, GL_BACK);
+
+
+	}
+  //RestorePreviousDataRGBA(temp, GL_BACK);
+  //AddPreviousDataRGBA(canvas, GL_BACK,NONCOVER);
+  
+	delete[]blurred;
+
+
+
+
+
+}
 
 void PaintView::draw()
 {
@@ -193,7 +544,6 @@ void PaintView::draw()
 		m_nEndRow = startrow + drawHeight;
 		m_nStartCol = scrollpos.x;
 		m_nEndCol = m_nStartCol + drawWidth;
-
 		if (!rgbaBitMap&& m_pDoc->m_rgbaBitMap) { //init load new image 
 			rgbaBitMap = m_pDoc->m_rgbaBitMap + 4 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 			clearColorBuffer(GL_BACK);
@@ -627,3 +977,4 @@ void PaintView::SynchronizeContentRGBA(GLvoid* source, GLvoid* target) {
 		}
 	}
 }
+

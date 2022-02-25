@@ -32,10 +32,8 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-
 	int w = pDoc->m_nPaintWidth;
 	int h = pDoc->m_nPaintHeight;
-
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			int x1 = source.x + i - size / 2;
@@ -97,15 +95,16 @@ void KernelBrush::KernelSetColor(const Point target, const int r, const int g, c
 	int r_mult = colorChooser->r();
 	int g_mult = colorChooser->g();
 	int b_mult = colorChooser->b();
-
-	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4] = MAX(MIN(r,0), 255) * r_mult;
-	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 1] = MAX(MIN(g,0), 255) * g_mult;
-	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 2] = MAX(MIN(b,0), 255) * b_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4] = min(max(r,0), 255) * r_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 1] = min(max(g,0), 255) * g_mult;
+	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 2] = min(max(b,0), 255) * b_mult;
 	dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 3] = alpha * 255;
 }
 
 
+
 void KernelBrush::BrushEnd(const Point source, const Point target)
 {
+
 }
 

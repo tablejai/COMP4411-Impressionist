@@ -16,8 +16,9 @@ ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
-					m_pBrushName(name), bmode(NORMALMODE)
+					m_pBrushName(name), bmode(NORMALMODE),alpha(0)
 {
+
 }
 
 //---------------------------------------------------

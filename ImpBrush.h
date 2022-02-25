@@ -24,6 +24,7 @@ typedef enum
 	BRUSH_ALPHAMAP,
 	BRUSH_BLURRRING,
 	BRUSH_SHARPENING,
+	BRUSH_CURVE,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 } BrushType;
 
@@ -91,7 +92,7 @@ public:
 	static int c_nBrushCount;	  // How many brushes we have,
 	static ImpBrush **c_pBrushes; // and what they are.
 
-	GLfloat alpha = 0;
+	GLfloat alpha=0;
 	BrushMode bmode;
 
 private:

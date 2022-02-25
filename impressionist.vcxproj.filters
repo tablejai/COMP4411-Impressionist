@@ -21,6 +21,8 @@
     <ClCompile Include="traingle.cpp" />
     <ClCompile Include="starbrush.cpp" />
     <ClCompile Include="KernelBrush.cpp" />
+    <ClCompile Include="GlobalFunction.cpp" />
+    <ClCompile Include="CurveBrush.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
@@ -43,5 +45,8 @@
     <ClInclude Include="PaintView.h" />
     <ClInclude Include="PointBrush.h" />
     <ClInclude Include="KernelBrush.h" />
+    <ClInclude Include="GlobalFunction.h" />
+    <ClInclude Include="BrushStroke.h" />
+    <ClInclude Include="CurveBrush.h" />
   </ItemGroup>
 </Project>

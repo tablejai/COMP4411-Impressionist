@@ -13,6 +13,7 @@
 #include <sstream>      // std::stringstream
 #include <string>
 #include <iostream>
+
 using namespace std;
 
 /*
@@ -207,7 +208,10 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 }
 
 
-
+void ImpressionistUI::cb_paintly(Fl_Menu_* o, void* v) {
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_paintlyDialog->show();
+}
 void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 	pDoc->clearImage(pDoc->m_uctempBitmap1);
@@ -313,6 +317,35 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget *o, void *v)
 		pUI->m_LineWidthSlider->deactivate();
 	}
 }
+void ImpressionistUI::cb_updatePaintly(Fl_Widget* o, void* v) {
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	pUI->m_paintView->paintlymode = (PaintlyMode)((size_t)v);
+	if (pUI->m_paintView->paintlymode != Custom) {
+		pUI->m_paintView->updatePaintlyPara();
+		pUI->m_threshold->value(pUI->m_paintView->threshold);
+		pUI->m_threshold->deactivate();
+		pUI->m_curvefactor->value(pUI->m_paintView->fc);
+		pUI->m_curvefactor->deactivate();
+		pUI->m_blurrfactor->value(pUI->m_paintView->blurrSize);
+		pUI->m_blurrfactor->deactivate();
+		pUI->m_maxStrokeLength->value(pUI->m_paintView->maxStrokeLength);
+		pUI->m_maxStrokeLength->deactivate();
+		pUI->m_minStrokeLength->value(pUI->m_paintView->minStrokeLength);
+		pUI->m_minStrokeLength->deactivate();
+		pUI->alpha->value(pUI->m_paintView->a);
+		pUI->alpha->deactivate();
+	}
+	else {
+		pUI->m_paintView->updatePaintlyPara();
+		pUI->m_threshold->activate();
+		pUI->m_curvefactor->activate();
+		pUI->m_blurrfactor->activate();
+		pUI->m_maxStrokeLength->activate();
+		pUI->m_minStrokeLength->activate();
+		pUI->alpha->activate();
+	}
+	cout << pUI->m_paintView->paintlymode << endl;
+}
 
 void ImpressionistUI::cb_strokeChoice(Fl_Widget* o, void* v)
 {
@@ -347,7 +380,6 @@ void ImpressionistUI::cb_undo_canvas_button(Fl_Widget* o, void* v) {
 void ImpressionistUI::cb_custom_gradient(Fl_Widget*o,void* v) {
 	ImpressionistUI* pUI =((ImpressionistUI*)(o->user_data()));
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
-
 	if (pUI->m_paintView->getGradientMode() == CUSTOM) {
 		pUI->m_paintView->setGradientMode(DEFUALT);
 		o->label("DEFAULT MODE");
@@ -550,14 +582,11 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
 	{"&Apply Kernel...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_kernel},
-
 	{"&Colors...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_colors},
-	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
-
+	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_paintly},
 	//{"&Load Edge Image...", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushes},
 	//{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas},
 	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image},
-
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
@@ -580,7 +609,16 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{"Alpha Map Brush", FL_ALT + 'g', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_ALPHAMAP},
 	{"Blurring", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_BLURRRING},
 	{"Sharpening", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_SHARPENING},
+	{"CurveBrush", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_CURVE},
 	{0}};
+
+Fl_Menu_Item ImpressionistUI::m_paintlyMenu[NumOfPaintly + 1] = {
+	{"Impressionist", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_updatePaintly, (void*)Impressionist},
+	{"Expressionist", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_updatePaintly, (void*)Expressionist},
+	{"Pointillist", FL_ALT + 'q', (Fl_Callback*)ImpressionistUI::cb_updatePaintly, (void*)Pointillist},
+	{"Psychedelic", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_updatePaintly, (void*)Psychedelic},
+	{"Custom", FL_ALT + 's', (Fl_Callback*)ImpressionistUI::cb_updatePaintly, (void*)Custom},
+	{0} };
 
 Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[NUM_STROKE_TYPE + 1] = {
 	{"Slider/Right Mouse", FL_ALT + 's', (Fl_Callback*)ImpressionistUI::cb_strokeChoice, (void*)STROKE_SLIDER_OR_RIGHT_MOUSE},
@@ -703,15 +741,14 @@ void ImpressionistUI::initkernelDialog() {
 	m_loadkernel = new Fl_Button(0,320,100,50,"Load Kernel");
 	m_loadkernel->callback(cb_loadkernel);
 	m_kernelDialog->end();
+
 }
 
 void ImpressionistUI::initColorDialog(void) {
 	// color dialog definition
 	m_colorDialog = new Fl_Window(380, 300, "Color Selection");
-
 	m_ColorChooser = new Fl_Color_Chooser(0, 0, 200, 225, "Color Blending");
 	m_ColorChooser->rgb(1.0, 1.0, 1.0);
-
 	m_colorDialog->end();
 }
 
@@ -730,6 +767,113 @@ void ImpressionistUI::initBlendDialog(void) {
 	m_blendDialog->end();
 }
 
+void ImpressionistUI::cb_threshold(Fl_Widget* o, void* v) {
+		((ImpressionistUI*)(o->user_data()))->m_paintView->threshold= int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_blurrSize(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->blurrSize = int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_factorC(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->fc = int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_alpha(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->a = int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_maxStrokeLength(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->maxStrokeLength = int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_minStrokeLength(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->minStrokeLength = int(((Fl_Slider*)o)->value());
+}
+void ImpressionistUI::cb_doPaintly(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_paintView->drawPaintly();
+}
+void ImpressionistUI::initPaintlyDialog(void) {
+
+	int row = 10;
+     #define NextRow row+=20
+	m_paintlyDialog = new Fl_Window(400,400,"Paintly Window");
+	
+	m_paintlyTypeChoice = new Fl_Choice(50, NextRow, 150, 25, "&Paintly");
+	m_paintlyTypeChoice->user_data((void*)(this)); // record self to be used by static callback functions
+	m_paintlyTypeChoice->menu(m_paintlyMenu);
+	m_threshold = new Fl_Value_Slider(10, NextRow, 300, 20, "Threshold");
+	m_threshold->user_data((void*)(this));
+	m_threshold->type(FL_HOR_NICE_SLIDER);
+	m_threshold->labelfont(FL_COURIER);
+	m_threshold->labelsize(12);
+	m_threshold->minimum(0.0);
+	m_threshold->maximum(100.0);
+	m_threshold->step(0.01);
+	m_threshold->value(this->m_paintView->threshold);
+	m_threshold->align(FL_ALIGN_RIGHT);
+	m_threshold->callback(cb_threshold);
+	m_threshold->deactivate();
+	m_curvefactor = new Fl_Value_Slider(10, NextRow, 300, 20, "Curve Factor");
+	m_curvefactor->user_data((void*)(this));
+	m_curvefactor->type(FL_HOR_NICE_SLIDER);
+	m_curvefactor->labelfont(FL_COURIER);
+	m_curvefactor->labelsize(12);
+	m_curvefactor->minimum(0.01);
+	m_curvefactor->maximum(1.0);
+	m_curvefactor->step(0.01);
+	m_curvefactor->value(this->m_paintView->fc);
+	m_curvefactor->align(FL_ALIGN_RIGHT);
+	m_curvefactor->deactivate();
+	m_curvefactor->callback(cb_factorC);
+	m_blurrfactor = new Fl_Value_Slider(10, NextRow, 300, 20, "Blurr Factor");
+	m_blurrfactor->user_data((void*)(this));
+	m_blurrfactor->type(FL_HOR_NICE_SLIDER);
+	m_blurrfactor->labelfont(FL_COURIER);
+	m_blurrfactor->labelsize(12);
+	m_blurrfactor->minimum(1.0);
+	m_blurrfactor->maximum(20.0);
+	m_blurrfactor->step(0.01);
+	m_blurrfactor->value(this->m_paintView->blurrSize);
+	m_blurrfactor->align(FL_ALIGN_RIGHT);
+	m_blurrfactor->deactivate();
+	m_blurrfactor->callback(cb_blurrSize);
+	m_maxStrokeLength = new Fl_Value_Slider(10, NextRow,300,20,"Max Stroke Length");
+	m_maxStrokeLength->user_data((void*)(this));
+	m_maxStrokeLength->type(FL_HOR_NICE_SLIDER);
+	m_maxStrokeLength->labelfont(FL_COURIER);
+	m_maxStrokeLength->labelsize(12);
+	m_maxStrokeLength->minimum(5);
+	m_maxStrokeLength->maximum(16.0);
+	m_maxStrokeLength->step(0.01);
+	m_maxStrokeLength->value(this->m_paintView->maxStrokeLength);
+	m_maxStrokeLength->callback(cb_maxStrokeLength);
+	m_maxStrokeLength->align(FL_ALIGN_RIGHT);
+	m_maxStrokeLength->deactivate();
+	m_minStrokeLength = new Fl_Value_Slider(10, NextRow, 300, 20, "Min Stroke Length");
+	m_minStrokeLength->user_data((void*)(this));
+	m_minStrokeLength->type(FL_HOR_NICE_SLIDER);
+	m_minStrokeLength->labelfont(FL_COURIER);
+	m_minStrokeLength->labelsize(12);
+	m_minStrokeLength->minimum(0);
+	m_minStrokeLength->maximum(4);
+	m_minStrokeLength->step(0.01);
+	m_minStrokeLength->value(this->m_paintView->minStrokeLength);
+	m_minStrokeLength->align(FL_ALIGN_RIGHT);
+	m_minStrokeLength->callback(ImpressionistUI::cb_minStrokeLength);
+	m_minStrokeLength->deactivate();
+	alpha = new Fl_Value_Slider(10, NextRow, 300, 20, "Alpha");
+	alpha->user_data((void*)(this));
+	alpha->type(FL_HOR_NICE_SLIDER);
+	alpha->labelfont(FL_COURIER);
+	alpha->minimum(0.0);
+	alpha->maximum(1.0);
+	alpha->step(0.01);
+	alpha->value(this->m_paintView->a);
+	alpha->align(FL_ALIGN_RIGHT);
+	alpha->deactivate();
+	paintlyButton = new Fl_Button(10, NextRow, 300, 20, "Load Paintly");
+	paintlyButton->user_data((void*)(this));
+	paintlyButton->callback(cb_doPaintly);
+	m_paintlyDialog->end();
+	
+
+}
 ImpressionistUI::ImpressionistUI()
 {
 	// Create the main window
@@ -761,5 +905,5 @@ ImpressionistUI::ImpressionistUI()
 	initColorDialog();
 	initBlendDialog();
 	initkernelDialog();
-
+	initPaintlyDialog();
 }

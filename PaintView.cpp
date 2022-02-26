@@ -670,6 +670,7 @@ void PaintView::draw()
 			drawstate = DO;
 		}
 
+
 		glFlush();
 
 #ifndef MESA
@@ -895,6 +896,24 @@ void PaintView::SavePreviousData(GLvoid* data) {
 		data);
 
 }
+void PaintView::SavePreviousData(GLvoid* data, GLenum mode) {
+	if (data == nullptr) {
+		cout << "isnull" << endl;
+		return;
+	}
+	cout << "save previous data" << endl;
+	glReadBuffer(mode);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glReadPixels(0,
+		m_nWindowHeight - m_nDrawHeight,
+		m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		data);
+
+}
 void PaintView::SavePreviousDataRGBA(GLvoid* data,GLenum mode) {
 	if (data == nullptr) {
 		cout << "isnull" << endl;
@@ -1021,4 +1040,5 @@ void PaintView::SynchronizeContentRGBA(GLvoid* source, GLvoid* target) {
 		}
 	}
 }
+
 

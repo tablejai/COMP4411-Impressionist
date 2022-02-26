@@ -406,9 +406,12 @@ void ImpressionistDoc::transformEdgeToBinary(void) {
 
 int ImpressionistDoc::saveImage(char *iname) 
 {
-
+	m_pUI->m_paintView->clearColorBuffer(GL_BACK);
 	m_pUI->m_paintView->RestorePreviousDataRGBA(m_pUI->m_paintView->getrgbaBrush(), GL_BACK);
-	m_pUI->m_paintView->SaveCurrentContent(GL_BACK);
+	m_pUI->m_paintView->SavePreviousData(m_ucPainting, GL_BACK);
+	m_pUI->m_paintView->clearColorBuffer(GL_BACK);
+	m_pUI->m_paintView->AddPreviousDataRGBA(m_pUI->m_paintView->rgbaBitMap, GL_BACK, NONCOVER);
+	m_pUI->m_paintView->AddPreviousDataRGBA(m_pUI->m_paintView->rgbaBrush, GL_BACK, NONCOVER);
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
 
 

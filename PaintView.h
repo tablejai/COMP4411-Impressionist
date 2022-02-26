@@ -78,6 +78,7 @@ public:
 	void SaveCurrentContent(GLenum mode);
 	void SavePreviousDataRGBA(GLvoid*, GLenum);
 	void SavePreviousData(GLvoid*);
+	void SavePreviousData(GLvoid*, GLenum);
 	void RestorePreviousDataRGBA(GLvoid* ,GLenum);
 	void AddPreviousDataRGBA(GLvoid*, GLenum, PaintMode);
 	void SynchronizeContent(GLvoid*, GLvoid*);

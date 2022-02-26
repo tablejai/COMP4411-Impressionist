@@ -84,6 +84,7 @@ public:
 	// according to the source image and the position, determine the draw color
 	void SetColor(const Point source);
 
+
 	// get Doc to communicate with it
 	ImpressionistDoc *GetDocument(void);
 	void initReverseData();
@@ -96,6 +97,7 @@ public:
 
 	GLfloat alpha=0;
 	BrushMode bmode;
+	bool clip = false;
 
 private:
 	ImpressionistDoc *m_pDoc;

@@ -9,6 +9,7 @@
 #include "impressionistUI.h"
 #include "paintview.h"
 #include "ImpBrush.h"
+#include "linebrush.h"
 #include "GlobalFunction.h"
 #include <iostream>
 #include <random>
@@ -514,7 +515,7 @@ void PaintView::draw()
 		// To avoid flicker on some machines.
 		glDrawBuffer(GL_FRONT_AND_BACK);
 #endif // !MESA
-
+		static Point rightClickDownPt;
 		if (!valid())
 		{
 
@@ -605,18 +606,55 @@ void PaintView::draw()
 				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
 				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 				break;
-			case RIGHT_MOUSE_DOWN:
 
+#define BRUSH_IS_STROKE (strcmp(m_pDoc->m_pCurrentBrush->BrushName(), "Lines")==0 || strcmp(m_pDoc->m_pCurrentBrush->BrushName(), "Scattered Lines")==0)
+			case RIGHT_MOUSE_DOWN:
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE)
+					rightClickDownPt = source;
 				break;
 			case RIGHT_MOUSE_DRAG:
 
+				//SavePreviousDataRGBA(rgbaBrush, GL_BACK);
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE)
+				{
+					clearColorBuffer(GL_BACK);
+					AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+					AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+					glBegin(GL_LINES);
+					glVertex2d(rightClickDownPt.x, rightClickDownPt.y);
+					glVertex2d(target.x, target.y);
+				
+				}
+				glEnd();
+
 				break;
 			case RIGHT_MOUSE_UP:
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE) {
+					RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
+					{
+						float angle;
+						if ((target.x - rightClickDownPt.x) == 0) {
+							angle = 0;
+						}
+						else {
+#define PI 3.14159265358979
+							angle = atan2((target.y - rightClickDownPt.y), (target.x - rightClickDownPt.x)) * 180 / PI;
+#undef PI
+						}
+						ImpressionistUI* dlg = m_pDoc->m_pUI;
+						dlg->m_nAngle = angle;
+						std::cout << angle << std::endl;
 
+						std::cout << m_pDoc->getAngle() << std::endl;
+					}
+					clearColorBuffer(GL_BACK);
+					AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
+					AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
+
+				}
 				break;
+#undef BRUSH_IS_STROKE
 			case AUTO_PAINT:
-
-
 				break;
 			default:
 				printf("Unknown event!!\n");

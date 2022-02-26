@@ -3,6 +3,7 @@
 
 #include "ImpBrush.h"
 #include <vector>
+using namespace std;
 
 class KernelBrush : public ImpBrush
 {
@@ -14,9 +15,11 @@ public:
 	void BrushBegin(const Point source, const Point target);
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);
-	void Kernel(const Point source, const Point target);
-	void KernelSetColor(const Point target, const int r, const int g, const int b);
+	vector<int> Kernel(const Point source, const Point target);
+	void KernelSetColor(const Point target, const int r, const int g, const int b, unsigned char* ,bool);
+	void SobelOperator(const Point, const Point);
 	char* BrushName(void);
+	void transformEdgeToBinary(void);
 };
 
 #endif

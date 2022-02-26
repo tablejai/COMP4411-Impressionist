@@ -14,8 +14,8 @@ using namespace std;
  class MosaicPainting {
 
 public:
-	char* imagePoolDir = "mosaic_image_pool/";
-	int mosaicSize = 30;
+	const char* imagePoolDir = "image_pool/";
+	int mosaicSize = 10;
 	void resizeImage();
 	void loadOriginalImage(char* fname);
 	void loadImages();
@@ -27,6 +27,8 @@ public:
 	vector<float> getGridAvgColor(int, int, int, int);
 	int findBestMosaicImage(vector<float>);
 	void fillMosaicImage(int, int, int, int, int);
+	ImpressionistDoc* GetDocument(void);
+	ImpressionistUI* GetUI(void);
 
 
 	unsigned char* originalImage;
@@ -37,10 +39,12 @@ public:
 	int numMosaicCol;
 	int remainRow;
 	int remainCol;
+	ImpressionistDoc* m_pDoc;
+	ImpressionistUI* m_pUI;
 
 	vector<unsigned char*> images;
 	vector<vector<float>> imageAvgColors;
-	vector<char *> fileNames;
+	vector<std::string> fileNames;
 	vector<int> fileWidth;
 	vector<int> fileHeight;
 };

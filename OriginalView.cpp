@@ -100,8 +100,10 @@ void OriginalView::draw()
 		if ( startrow < 0 ) 
 			startrow = 0;
 
-
-		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);		
+		if (showEdge)
+			bitstart = m_pDoc->m_edgeView + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
+		else
+			bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
 		if (state==BLEND_VIEW) {
 			blendImage();
 		}

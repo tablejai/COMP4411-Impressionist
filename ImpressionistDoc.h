@@ -64,6 +64,7 @@ public:
 	// Dimensions of original window.
 	int				m_nWidth, 
 					m_nHeight;
+	int				m_edgeThreshold = 100;
 	int oldPaintWidth, oldPaintHeight;
 	int				m_nWMap1, m_nHMap1;
 	int				m_nWMap2, m_nHMap2;
@@ -76,6 +77,7 @@ public:
 	int				m_nGradientHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
+	unsigned char* m_edgeView = nullptr;
 	unsigned char*	m_ucPainting;
 	unsigned char* m_ucGradeint;
 	unsigned char* m_rgbaBitMap;
@@ -84,6 +86,7 @@ public:
 	unsigned char* m_uctempBitmap1;
 	unsigned char* m_uctempBitmap2;
 	unsigned char* m_uAlphaMap;
+	int* m_edgeBinView = nullptr;
 
 	unsigned char* temp_m_ucPainting = nullptr;
 	bool loadingMuralImage = false;
@@ -92,7 +95,7 @@ public:
 
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;	
-	StrokeDir         c_pStrokes;
+	StrokeDir         c_pStrokes = STROKE_SLIDER_OR_RIGHT_MOUSE;
 	ImageCursor*        m_pCursor;
 	std::vector<ColorData> reverseData;
 	// Size of the brush.
@@ -100,11 +103,13 @@ public:
 	ImpressionistUI*	m_pUI;
 // Operations
 public:
+	void ImpressionistDoc::transformEdgeToBinary(void);
 	void clearImage(unsigned char*&);
 	// Get the color of the original picture at the specified coord
 	GLubyte* GetOriginalPixel( int x, int y );   
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );  
+	bool isEdge(const Point);
 
 
 private:

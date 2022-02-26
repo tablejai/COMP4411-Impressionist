@@ -48,6 +48,7 @@ public:
 
 	Blend state;
 	ImpressionistDoc *m_pDoc;
+	bool showEdge= false;
 
 private:
 	int m_nWindowWidth,

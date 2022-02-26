@@ -12,7 +12,7 @@
 #include <FL/Fl.h>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
-#include <Windows.h>
+
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 

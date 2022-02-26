@@ -13,21 +13,7 @@ Warp::Warp(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
 }
-vector<vector<double>> Warp::getGkernel(float sig, int size)
-{
-    vector<vector<double>> kernel;
-	for (int i = 0; i < size; i++) {
-		vector<double> kernelrow;
-		for (int j = 0; j < size; j++) {
-			int xpos = i - size / 2;
-			int ypos = j - size / 2;
-			float vpos = (1 / (2 * M_PI * sig)) * exp(-(xpos * xpos + ypos * ypos) / (2 * sig));
-			kernelrow.push_back(vpos);
-		}
-		kernel.push_back(kernelrow);
-	}
-	return kernel;
-}
+
 void Warp::BrushBegin(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();

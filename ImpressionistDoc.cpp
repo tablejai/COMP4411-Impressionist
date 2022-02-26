@@ -373,7 +373,6 @@ bool ImpressionistDoc::isEdge(const Point pt) {
 	}
 }
 
-
 void ImpressionistDoc::transformEdgeToBinary(void) {
 	if (m_edgeBinView != nullptr) {
 		delete[] m_edgeBinView;

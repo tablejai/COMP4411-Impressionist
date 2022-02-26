@@ -38,6 +38,7 @@ public:
 
 	int		loadImage(char *name);			// called by the UI to load image
 	int     loadAlphaImage(char* name);
+	int     loadEdgeImage(char* name);
 	int		loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth, int& mpheight);
 	void	saveOldImage(void);
 	int		blendImage(unsigned char* ,int,int,unsigned char* ,int ,int);

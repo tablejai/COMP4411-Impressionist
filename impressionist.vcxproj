@@ -278,10 +278,10 @@
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="SharpeningBrush.cpp" />
     <ClCompile Include="KernelBrush.cpp" />
+    <ClCompile Include="Bayesian.cpp" />
     <ClCompile Include="traingle.cpp" />
     <ClCompile Include="starbrush.cpp" />
     <ClCompile Include="MosaicPainting.cpp" />
-
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
@@ -291,6 +291,7 @@
     <ClInclude Include="AlphaMapBrush.h" />
     <ClInclude Include="GlobalFunction.h" />
     <ClInclude Include="CurveBrush.h" />
+    <ClInclude Include="Bayesian.h" />
     <ClInclude Include="ImageCursor.h" />
     <ClInclude Include="KernelBrush.h" />
     <ClInclude Include="MosaicPainting.h" />

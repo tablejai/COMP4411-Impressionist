@@ -295,11 +295,34 @@ int ImpressionistDoc::loadAlphaImage(char* name) {
 
 }
 
-
-
 void ImpressionistDoc::updateBackGroundAlpha() {
 	m_pUI->m_paintView->updateBackGroundAlpha(m_pUI->getBackGroundAlpha());
 	m_pUI->m_paintView->refresh();
+}
+
+void ImpressionistDoc::updateEdgeImage() {
+	int w = m_nWidth;
+	int h = m_nHeight;
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			int red = m_rawEdgeView[(i * h + j) * 3];
+			int green = m_rawEdgeView[(i * h + j) * 3 + 1];
+			int blue = m_rawEdgeView[(i * h + j) * 3 + 2];
+			int intensity = RGB_TO_INTENSITY(red, green, blue);
+			if (intensity >= m_pUI->m_nEdgeThresholdValue) {
+				m_edgeView[(i * h + j) * 3] = 255;
+				m_edgeView[(i * h + j) * 3 + 1] = 255;
+				m_edgeView[(i * h + j) * 3 + 2] = 255;
+			}
+			else {
+				m_edgeView[(i * h + j) * 3] = 0;
+				m_edgeView[(i * h + j) * 3 + 1] = 0;
+				m_edgeView[(i * h + j) * 3 + 2] = 0;
+			}
+		}
+	}
+	m_pUI->m_origView->showEdge = true;
+	m_pUI->m_origView->refresh();
 }
 
 void ImpressionistDoc::clearImage(unsigned char*& img) {

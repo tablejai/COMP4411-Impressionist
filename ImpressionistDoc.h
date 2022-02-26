@@ -52,6 +52,7 @@ public:
 	int		getWidth();
 	int		getAngle();
 	void   updateBackGroundAlpha();
+	void   updateEdgeImage();
 	GLfloat		getAlpha();
 	void	setWidth(int width);
 	void	setSize(int size);
@@ -79,6 +80,7 @@ public:
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
 	unsigned char* m_edgeView = nullptr;
+	unsigned char* m_rawEdgeView = nullptr;
 	unsigned char*	m_ucPainting;
 	unsigned char* m_ucGradeint;
 	unsigned char* m_rgbaBitMap;

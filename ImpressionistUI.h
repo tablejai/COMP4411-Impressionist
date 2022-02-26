@@ -41,6 +41,8 @@ class ImpressionistUI
 public:
 	ImpressionistUI();
 	int m_nAngle;
+	GLfloat m_nEdgeThresholdValue;
+
 
 
 	// The FLTK widgets
@@ -61,6 +63,7 @@ public:
 	Fl_Choice *m_StrokeDirectionChoice;
 	vector<Fl_Input*> kernelInputs;
 	Fl_Slider *m_BrushSizeSlider;
+	Fl_Slider* m_EdgeThresholdSlider;
 	Fl_Slider *m_LineWidthSlider;
 	Fl_Slider *m_LineAngleSlider;
 	Fl_Slider *m_AlphaSlider;
@@ -162,6 +165,7 @@ private:
 	static void cb_undo_canvas_button(Fl_Widget* o, void* v);
 	static void cb_sizeSlides(Fl_Widget *o, void *v);
 	static void cb_backgroundalphaSlides(Fl_Widget* o, void* v);
+	static void cb_edgeThresholdSlides(Fl_Widget* o, void* v);
 	static void cb_widthSlides(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_angleSlides(Fl_Widget* o, void* v);

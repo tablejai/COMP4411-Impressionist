@@ -106,9 +106,9 @@ void KernelBrush::KernelSetColor(const Point target, const int r, const int g, c
 		dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 3] = alpha * 255;
 	}
 	else if(tarArr == 1) {
-		pDoc->m_edgeView[(target.x + target.y * w) * 3] = min(max(r, 0), 255) * r_mult;
-		pDoc->m_edgeView[(target.x + target.y * w) * 3 + 1] = min(max(g, 0), 255) * g_mult;
-		pDoc->m_edgeView[(target.x + target.y * w) * 3 + 2] = min(max(b, 0), 255) * b_mult;
+		pDoc->m_rawEdgeView[(target.x + target.y * w) * 3] = min(max(r, 0), 255) * r_mult;
+		pDoc->m_rawEdgeView[(target.x + target.y * w) * 3 + 1] = min(max(g, 0), 255) * g_mult;
+		pDoc->m_rawEdgeView[(target.x + target.y * w) * 3 + 2] = min(max(b, 0), 255) * b_mult;
 	}
 	else if (tarArr == 2) {
 		denoisedImg[(target.x + target.y * w) * 3] = min(max(r, 0), 255);
@@ -127,6 +127,11 @@ void KernelBrush::SobelOperator(const Point source, const Point target) {
 	if (pDoc->m_edgeView != nullptr) {
 		delete [] pDoc->m_edgeView;
 	}
+
+	if (pDoc->m_rawEdgeView != nullptr) {
+		delete[] pDoc->m_rawEdgeView;
+	}
+	pDoc->m_rawEdgeView = new unsigned char[h * w * 3];
 	pDoc->m_edgeView = new unsigned char[w * h * 4];
 	Denoise(source, target);
 
@@ -161,8 +166,8 @@ void KernelBrush::SobelOperator(const Point source, const Point target) {
 			KernelSetColor(Point(x2, y2), setVal[0], setVal[1], setVal[2], 1, false);
 		}
 	}
-	dlg->m_origView->showEdge = true;
-	dlg->m_origView->refresh();
+	pDoc->updateEdgeImage();
+
 }
 
 void KernelBrush::Denoise(const Point source, const Point target) {

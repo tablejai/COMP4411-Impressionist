@@ -305,19 +305,19 @@ void ImpressionistDoc::updateEdgeImage() {
 	int h = m_nHeight;
 	for (int i = 0; i < h; i++) {
 		for (int j = 0; j < w; j++) {
-			int red = m_rawEdgeView[(i * h + j) * 3];
-			int green = m_rawEdgeView[(i * h + j) * 3 + 1];
-			int blue = m_rawEdgeView[(i * h + j) * 3 + 2];
+			int red = m_rawEdgeView[(i * w + j) * 3];
+			int green = m_rawEdgeView[(i * w + j) * 3 + 1];
+			int blue = m_rawEdgeView[(i * w + j) * 3 + 2];
 			int intensity = RGB_TO_INTENSITY(red, green, blue);
 			if (intensity >= m_pUI->m_nEdgeThresholdValue) {
-				m_edgeView[(i * h + j) * 3] = 255;
-				m_edgeView[(i * h + j) * 3 + 1] = 255;
-				m_edgeView[(i * h + j) * 3 + 2] = 255;
+				m_edgeView[(i * w + j) * 3] = 255;
+				m_edgeView[(i * w + j) * 3 + 1] = 255;
+				m_edgeView[(i * w + j) * 3 + 2] = 255;
 			}
 			else {
-				m_edgeView[(i * h + j) * 3] = 0;
-				m_edgeView[(i * h + j) * 3 + 1] = 0;
-				m_edgeView[(i * h + j) * 3 + 2] = 0;
+				m_edgeView[(i * w + j) * 3] = 0;
+				m_edgeView[(i * w + j) * 3 + 1] = 0;
+				m_edgeView[(i * w + j) * 3 + 2] = 0;
 			}
 			//m_edgeView[(i * h + j) * 3] = 0;
 			//m_edgeView[(i * h + j) * 3 + 1] = 0;

@@ -123,26 +123,28 @@ int MosaicPainting::findBestMosaicImage(vector<float> inputAvgColors) {
 }
 
 void MosaicPainting::generateMosaic() {
+    ImpressionistDoc* pDoc = GetDocument();
+    ImpressionistUI* dlg = GetUI();
+
     numMosaicCol = ceil(originalImageWidth / mosaicSize);
     numMosaicRow = ceil(originalImageHeight / mosaicSize);
     remainCol = originalImageWidth % mosaicSize;
-    remainRow = originalImageHeight % mosaicSize;
+    remainRow = originalImageHeight %  mosaicSize;
 
     for (int i = 0; i < numMosaicCol; i++) {
         for (int j = 0; j < numMosaicRow; j++) {
             std::cout << "Now processing grid: " << i << " " << j << std::endl;
-            if ((i == numMosaicCol - 1 && remainCol != 0) || (j == numMosaicRow - 1 && remainRow !=0)) {
-                processRemainGrid(i * mosaicSize, j * mosaicSize, i == numMosaicCol - 1 && remainCol != 0, j == numMosaicRow - 1 && remainRow != 0);
+            if ((j == numMosaicCol - 1 && remainCol != 0) || (i == numMosaicRow - 1 && remainRow !=0)) {
+                processRemainGrid(i * mosaicSize, j * mosaicSize, j == numMosaicCol - 1 && remainCol != 0, i == numMosaicRow - 1 && remainRow != 0);
             }
             else {
                 processPartialGrid(i * mosaicSize, j * mosaicSize);
             }
         }
     }
-    ImpressionistDoc* pDoc = GetDocument();
-    ImpressionistUI* dlg = GetUI();
-
     dlg->m_paintView->RestorePreviousDataRGBA(dlg->m_paintView->rgbaBrush, GL_BACK);
+
+
 }
 
 void MosaicPainting::getImagesAvgColor() {

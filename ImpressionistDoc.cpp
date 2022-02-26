@@ -319,6 +319,9 @@ void ImpressionistDoc::updateEdgeImage() {
 				m_edgeView[(i * h + j) * 3 + 1] = 0;
 				m_edgeView[(i * h + j) * 3 + 2] = 0;
 			}
+			//m_edgeView[(i * h + j) * 3] = 0;
+			//m_edgeView[(i * h + j) * 3 + 1] = 0;
+			//m_edgeView[(i * h + j) * 3 + 2] = 0;
 		}
 	}
 	m_pUI->m_origView->showEdge = true;

@@ -433,8 +433,10 @@ void ImpressionistUI::cb_showEdgeImage(Fl_Menu_* o, void* v) {
 	Point target(h / 2, pUI->m_paintView->m_nWindowHeight - w / 2);
 
 	((KernelBrush*)(pDoc->m_pCurrentBrush))->SobelOperator(source, target);
+
 	pUI->m_paintView->RestorePreviousDataRGBA(pUI->m_paintView->rgbaBrush, GL_BACK);
 	pDoc->m_pCurrentBrush = originalBrush;
+	pUI->m_EdgeThresholdSlider->activate();
 
 }
 
@@ -961,6 +963,7 @@ void ImpressionistUI::initBrushDialog() {
 	m_EdgeThresholdSlider->value(m_nEdgeThresholdValue);
 	m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
 	m_EdgeThresholdSlider->callback(cb_edgeThresholdSlides);
+	m_EdgeThresholdSlider->deactivate();
 
 
 	m_brushDialog->end();

@@ -113,7 +113,9 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 
-		angle = getGradientAngle(source)/M_PI*180+90+angledelta;
+		angle = getGradientAngle(source)/M_PI*180+90;
+		glRotatef(angle + angledelta, 0.0, 0.0, 1.0);
+
 	} 
 	else{
 		angle = pDoc->getAngle();

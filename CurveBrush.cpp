@@ -73,7 +73,7 @@ BrushStroke CurveBrush::PaintStroke(int targetx, int targety, unsigned char* can
 	for (int i = 1;i < maxStrokeLength;i++) {
 		if (!(points[i - 1].x - 2 >= 0 && points[i - 1].x + 2 < w && points[i - 1].y - 2 >= 0 && points[i - 1].y + 2 < h))
 			return paintstroke;
-		vector<double> GXY = { 255 * getGradientX(points[i - 1],target,w,h), 255 * getGradientY(points[i - 1],target,w,h) };
+		vector<double> GXY = {- 255 * getGradientY(points[i - 1],target,w,h), 255 * getGradientX(points[i - 1],target,w,h) };
 		if (radius * sqrt(GXY[0] * GXY[0] + GXY[1] * GXY[1]) >= 1) {
 			pointsChange[i] = Point{ (int)-GXY[1],(int)GXY[0] };
 			if (i > 1 && pointsChange[i - 1].x * pointsChange[i].x + pointsChange[i - 1].y * pointsChange[i].y < 0) {

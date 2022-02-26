@@ -40,6 +40,8 @@ class ImpressionistUI
 {
 public:
 	ImpressionistUI();
+	int m_nAngle;
+
 
 	// The FLTK widgets
 	Fl_Window *m_mainWindow;
@@ -121,7 +123,6 @@ private:
 	// All attributes here
 	int m_nSize;
 	int m_nWidth;
-	int m_nAngle;
 	char* m_kernelWeightInputValue;
 	char* m_kernelSizeInputValue;
 	GLfloat m_nAlpha;

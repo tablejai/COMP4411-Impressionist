@@ -7,10 +7,11 @@
 #include "ImpBrush.h"
 class LineBrush : public ImpBrush
 {
+
+public:
 	double width = 10;
 	double height = 1;
 	GLfloat angle = 0;
-public:
 	LineBrush(ImpressionistDoc* pDoc = NULL, char* name = NULL);
 	double meanfilter(const Point source);
 	double getGradientAngle(const Point source);

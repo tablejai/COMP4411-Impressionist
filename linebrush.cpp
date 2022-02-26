@@ -27,7 +27,9 @@ void LineBrush::BrushBegin(const Point source, const Point target)
     this->width = pDoc->getSize();
 	this->height = pDoc->getWidth();
 	this->alpha = pDoc->getAlpha();
-	this->angle = pDoc->getAngle();
+	angle = pDoc->getAngle();
+	std::cout << "Angle in function" << angle << std::endl;
+
 	BrushMove(source, target);
 
 	
@@ -109,11 +111,12 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 
 		angle = getGradientAngle(source)/M_PI*180+90+angledelta;
+	} 
+	else{
+		angle = pDoc->getAngle();
+		glRotatef(angle + angledelta, 0.0, 0.0, 1.0);
+
 	}
-	else {
-		angle = angledelta;
-	}
-	glRotatef(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_POLYGON);
 	SetColor(source);
 

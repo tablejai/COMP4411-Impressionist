@@ -211,6 +211,24 @@ void ImpressionistUI::cb_load_gradient_image(Fl_Menu_* o, void* v) {
 	}
 }
 
+void ImpressionistUI::cb_load_edge_image(Fl_Menu_* o, void* v) {
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	ImpressionistUI* pUI = whoami(o);
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	pUI->m_origView->showEdge = false;
+
+	if (newfile != NULL)
+	{
+		pDoc->loadImage(newfile);
+		if (pDoc->m_edgeView != nullptr) {
+			delete[] pDoc->m_edgeView;
+		}
+		pDoc->m_edgeView = new unsigned char[pDoc->m_nWidth * pDoc->m_nHeight * 3];
+		memcpy(pDoc->m_edgeView, pDoc->m_ucBitmap, pDoc->m_nWidth * pDoc->m_nHeight * 3);
+	}
+}
+
 void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
@@ -776,6 +794,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	//{"&Load Another Image...", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_clear_canvas},
 	{"&Mosaic...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_mosaicPainting},
 	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image},
+	{"&Load Edge Image...", FL_ALT + 'b', (Fl_Callback*)ImpressionistUI::cb_load_edge_image},
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},

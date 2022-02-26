@@ -433,8 +433,10 @@ void ImpressionistUI::cb_showEdgeImage(Fl_Menu_* o, void* v) {
 	Point target(h / 2, pUI->m_paintView->m_nWindowHeight - w / 2);
 
 	((KernelBrush*)(pDoc->m_pCurrentBrush))->SobelOperator(source, target);
+
 	pUI->m_paintView->RestorePreviousDataRGBA(pUI->m_paintView->rgbaBrush, GL_BACK);
 	pDoc->m_pCurrentBrush = originalBrush;
+	pUI->m_EdgeThresholdSlider->activate();
 
 }
 
@@ -667,6 +669,11 @@ void ImpressionistUI::cb_backgroundalphaSlides(Fl_Widget* o, void* v) {
 
 }
 
+void ImpressionistUI::cb_edgeThresholdSlides(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_nEdgeThresholdValue = GLfloat(((Fl_Slider*)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_pDoc->updateEdgeImage();
+}
+
 void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider*)o)->value());
@@ -873,6 +880,7 @@ void ImpressionistUI::initBrushDialog() {
 	m_nAngle = 0;
 	m_nAlpha = 1.0;
 	m_nBackGroundAlpha = 0.5;
+	m_nEdgeThresholdValue = 100;
 
 	// Add brush size slider to the dialog
 	m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
@@ -943,6 +951,20 @@ void ImpressionistUI::initBrushDialog() {
 	m_BackGroundSlider->value(m_nBackGroundAlpha);
 	m_BackGroundSlider->align(FL_ALIGN_RIGHT);
 	m_BackGroundSlider->callback(cb_backgroundalphaSlides);
+
+	m_EdgeThresholdSlider = new Fl_Value_Slider(10, 240, 300, 20, "Edge Threshold");
+	m_EdgeThresholdSlider->user_data((void*)(this)); // record self to be used by static callback functions
+	m_EdgeThresholdSlider->type(FL_HOR_NICE_SLIDER);
+	m_EdgeThresholdSlider->labelfont(FL_COURIER);
+	m_EdgeThresholdSlider->labelsize(12);
+	m_EdgeThresholdSlider->minimum(0.0);
+	m_EdgeThresholdSlider->maximum(255.0);
+	m_EdgeThresholdSlider->step(1.0);
+	m_EdgeThresholdSlider->value(m_nEdgeThresholdValue);
+	m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
+	m_EdgeThresholdSlider->callback(cb_edgeThresholdSlides);
+	m_EdgeThresholdSlider->deactivate();
+
 
 	m_brushDialog->end();
 }

@@ -61,7 +61,9 @@ void Warp::BrushMove(const Point source, const Point target)
 	wrapfunc(prev_pos, source, kernelSize);
 	prev_pos.x = source.x;
 	prev_pos.y = source.y;
+	warpkernel.clear();
 }
+
 
 void Warp::BrushEnd(const Point source, const Point target)
 {

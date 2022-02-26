@@ -65,7 +65,7 @@ public:
 	// Dimensions of original window.
 	int				m_nWidth, 
 					m_nHeight;
-	int				m_edgeThreshold = 100;
+	int				m_edgeThreshold = 50;
 	int oldPaintWidth, oldPaintHeight;
 	int				m_nWMap1, m_nHMap1;
 	int				m_nWMap2, m_nHMap2;

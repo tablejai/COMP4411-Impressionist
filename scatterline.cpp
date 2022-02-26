@@ -96,15 +96,21 @@ void ScatterLineBrush::BrushMove(const Point source, const Point target)
 	glTranslatef(target.x, target.y, 0.0f);
 	if (pDoc->c_pStrokes == STROKE_BRUSH_DIRECTION) {
 		angle = -((atan((double)mouseVec.y / mouseVec.x)) / M_PI * 180)+ angledelta;
+		glRotatef(angle, 0.0, 0.0, 1.0);
+
+
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {
 
-		angle = getGradientAngle(source) / M_PI * 180 + 90+ angledelta;
+		angle = getGradientAngle(source) / M_PI * 180 + 90;
+		glRotatef(angle + angledelta, 0.0, 0.0, 1.0);
+
 	}
 	else {
-		angle = angledelta;
+		angle = pDoc->getAngle();
+		glRotatef(angle + angledelta, 0.0, 0.0, 1.0);
+
 	}
-	glRotatef(angle, 0.0, 0.0, 1.0);
 
 	for (int i = 0;i < randNum;i++) {
 		srand(target.x*target.y%400);

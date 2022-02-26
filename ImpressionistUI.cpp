@@ -863,9 +863,10 @@ void ImpressionistUI::initBrushDialog() {
 	m_UndoCanvasButton->user_data((void*)(this));
 	m_UndoCanvasButton->callback(cb_undo_canvas_button);
 
-	m_GradientButton = new Fl_Button(0, 300, 190, 25, "&Use Custom Gradient Image");
+	m_GradientButton = new Fl_Button(0, 300, 190, 25, "DEFAULT_MODE");
 	m_GradientButton->user_data((void*)(this));
 	m_GradientButton->callback(cb_custom_gradient);
+	m_paintView->setGradientMode(DEFUALT);
 	// init values
 	m_nSize = 10;
 	m_nWidth = 1;

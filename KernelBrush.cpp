@@ -61,7 +61,6 @@ vector<int> KernelBrush::Kernel(const Point source, const Point target) {
 
 	int w = pDoc->m_nPaintWidth;
 	int h = pDoc->m_nPaintHeight;
-
 	int kernelSize = kernel.size();
 	for (int i = 0; i < kernelSize; i++) {
 		for (int j = 0; j < kernelSize; j++) {

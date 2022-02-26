@@ -544,6 +544,7 @@ void ImpressionistUI::cb_confirm_mosaic(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = pUI->getDocument();
 	
 	pUI->mosaicPaintingEngine->generateMosaic();
+	pUI->m_paintView->redraw();
 }
 
 

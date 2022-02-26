@@ -16,10 +16,9 @@ public:
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);
 	vector<int> Kernel(const Point source, const Point target);
-	void KernelSetColor(const Point target, const int r, const int g, const int b, unsigned char* ,bool);
+	void KernelSetColor(const Point target, const int r, const int g, const int b, bool ,bool);
 	void SobelOperator(const Point, const Point);
 	char* BrushName(void);
-	void transformEdgeToBinary(void);
 };
 
 #endif

@@ -36,6 +36,7 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 	}
 	int w = pDoc->m_nPaintWidth;
 	int h = pDoc->m_nPaintHeight;
+	std::cout << "Size: " << size << std::endl;
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			int x1 = source.x + i - size / 2;
@@ -47,7 +48,7 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 			}
 			//std::cout << x2 << " " << y2 << std::endl;
 			vector<int> outputVal = Kernel(Point(x1, y1), Point(x2, y2));
-			KernelSetColor(target, outputVal[0], outputVal[1], outputVal[2], dlg->m_paintView->rgbaBrush, true);
+			KernelSetColor(Point(x2,y2), outputVal[0], outputVal[1], outputVal[2], false, true);
 		}
 	}
 	 dlg->m_paintView->RestorePreviousDataRGBA(dlg->m_paintView->rgbaBrush, GL_BACK);
@@ -86,7 +87,7 @@ vector<int> KernelBrush::Kernel(const Point source, const Point target) {
 
 }
 
-void KernelBrush::KernelSetColor(const Point target, const int r, const int g, const int b, unsigned char* output, bool has_alpha) {
+void KernelBrush::KernelSetColor(const Point target, const int r, const int g, const int b, bool dealWithEdge, bool has_alpha) {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
@@ -98,16 +99,16 @@ void KernelBrush::KernelSetColor(const Point target, const int r, const int g, c
 	int r_mult = colorChooser->r();
 	int g_mult = colorChooser->g();
 	int b_mult = colorChooser->b();
-	if (has_alpha) {
-		output[(target.x + target.y * w) * 4] = min(max(r, 0), 255) * r_mult;
-		output[(target.x + target.y * w) * 4 + 1] = min(max(g, 0), 255) * g_mult;
-		output[(target.x + target.y * w) * 4 + 2] = min(max(b, 0), 255) * b_mult;
-		output[(target.x + target.y * w) * 4 + 3] = alpha * 255;
+	if (!dealWithEdge) {
+		dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4] = min(max(r, 0), 255) * r_mult;
+		dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 1] = min(max(g, 0), 255) * g_mult;
+		dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 2] = min(max(b, 0), 255) * b_mult;
+		dlg->m_paintView->rgbaBrush[(target.x + target.y * w) * 4 + 3] = alpha * 255;
 	}
 	else {
-		output[(target.x + target.y * w) * 3] = min(max(r, 0), 255) * r_mult;
-		output[(target.x + target.y * w) * 3 + 1] = min(max(g, 0), 255) * g_mult;
-		output[(target.x + target.y * w) * 3 + 2] = min(max(b, 0), 255) * b_mult;
+		pDoc->m_edgeView[(target.x + target.y * w) * 3] = min(max(r, 0), 255) * r_mult;
+		pDoc->m_edgeView[(target.x + target.y * w) * 3 + 1] = min(max(g, 0), 255) * g_mult;
+		pDoc->m_edgeView[(target.x + target.y * w) * 3 + 2] = min(max(b, 0), 255) * b_mult;
 
 	}
 }
@@ -152,7 +153,7 @@ void KernelBrush::SobelOperator(const Point source, const Point target) {
 			setVal[1] = min(max(setVal[1], 0), 255);
 			setVal[2] = min(max(setVal[2], 0), 255);
 
-			KernelSetColor(Point(x2, y2), setVal[0], setVal[1], setVal[2], pDoc->m_edgeView, false);
+			KernelSetColor(Point(x2, y2), setVal[0], setVal[1], setVal[2], true, false);
 		}
 	}
 	pDoc->transformEdgeToBinary();

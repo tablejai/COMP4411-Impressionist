@@ -157,7 +157,6 @@ void KernelBrush::SobelOperator(const Point source, const Point target) {
 			KernelSetColor(Point(x2, y2), setVal[0], setVal[1], setVal[2], true, false);
 		}
 	}
-	pDoc->transformEdgeToBinary();
 	dlg->m_origView->showEdge = true;
 	dlg->m_origView->refresh();
 }

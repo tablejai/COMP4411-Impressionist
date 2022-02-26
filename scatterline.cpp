@@ -112,12 +112,42 @@ void ScatterLineBrush::BrushMove(const Point source, const Point target)
 		double ychange = rand()%(int)realwidth - realwidth / 2;
 		glBegin(GL_POLYGON);
 		SetColor(source);
-		glVertex2d( xchange - realwidth / 2,  ychange - realheight / 2);
-		glVertex2d( xchange - realwidth / 2,  ychange + realheight / 2);
-		glVertex2d( xchange + realwidth / 2,  ychange+ realheight / 2);
-		glVertex2d( xchange + realwidth / 2,  ychange - realheight / 2);
-		glEnd();
+
+		int w = dlg->m_paintView->m_nDrawHeight;
+		int h = dlg->m_paintView->m_nDrawWidth;
+		if (clip) {
+			float startWidth = width / 2, endWidth = width / 2;
+			for (int i = 0; i < (width / 2); i++) {
+				Point startPt = Point(target.x + xchange + i * cos(angle), target.y +ychange + i * sin(angle));
+
+				if (startPt.x < 0 || startPt.x > w - 1 || startPt.y < 0 || startPt.y > h - 1 || pDoc->isEdge(startPt)) {
+					startWidth = i;
+					break;
+				}
+			}
+
+			for (int i = 0; i < (width / 2); i++) {
+				Point endPt = Point(target.x +xchange + i * cos(angle + M_PI), target.y + ychange+i * sin(angle + M_PI));
+
+				if (endPt.x < 0 || endPt.x > w - 1 || endPt.y < 0 || endPt.y > h - 1 || pDoc->isEdge(endPt)) {
+					endWidth = i;
+					break;
+				}
+			}
+			glVertex2d(xchange -startWidth / 2,ychange -realheight / 2);
+			glVertex2d(xchange -startWidth / 2, ychange +realheight / 2);
+			glVertex2d(xchange +endWidth / 2, ychange +realheight / 2);
+			glVertex2d(xchange +endWidth / 2, ychange -realheight / 2);
+
+		}
+		else {
+			glVertex2d(xchange - realwidth / 2, ychange - realheight / 2);
+			glVertex2d(xchange - realwidth / 2, ychange + realheight / 2);
+			glVertex2d(xchange + realwidth / 2, ychange + realheight / 2);
+			glVertex2d(xchange + realwidth / 2, ychange - realheight / 2);
+		}
 	}
+	glEnd();
 	glPopMatrix();
 
 }

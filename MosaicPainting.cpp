@@ -143,8 +143,6 @@ void MosaicPainting::generateMosaic() {
         }
     }
     dlg->m_paintView->RestorePreviousDataRGBA(dlg->m_paintView->rgbaBrush, GL_BACK);
-
-
 }
 
 void MosaicPainting::getImagesAvgColor() {

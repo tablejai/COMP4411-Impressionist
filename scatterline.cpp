@@ -119,8 +119,8 @@ void ScatterLineBrush::BrushMove(const Point source, const Point target)
 		glBegin(GL_POLYGON);
 		SetColor(source);
 
-		int w = dlg->m_paintView->m_nDrawHeight;
-		int h = dlg->m_paintView->m_nDrawWidth;
+		int w = dlg->m_paintView->m_nDrawWidth;
+		int h = dlg->m_paintView->m_nDrawHeight;
 		if (clip) {
 			float startWidth = width / 2, endWidth = width / 2;
 			for (int i = 0; i < (width / 2); i++) {

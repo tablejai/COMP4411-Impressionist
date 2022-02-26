@@ -65,7 +65,7 @@ public:
 	// Dimensions of original window.
 	int				m_nWidth, 
 					m_nHeight;
-	int				m_edgeThreshold = 50;
+	int				m_edgeThreshold = 40;
 	int oldPaintWidth, oldPaintHeight;
 	int				m_nWMap1, m_nHMap1;
 	int				m_nWMap2, m_nHMap2;
@@ -87,7 +87,7 @@ public:
 	unsigned char* m_uctempBitmap1;
 	unsigned char* m_uctempBitmap2;
 	unsigned char* m_uAlphaMap;
-	int* m_edgeBinView = nullptr;
+	unsigned char* m_edgeBinView = nullptr;
 
 	unsigned char* temp_m_ucPainting = nullptr;
 	bool loadingMuralImage = false;

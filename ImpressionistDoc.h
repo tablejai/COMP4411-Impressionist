@@ -91,7 +91,7 @@ public:
 
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;	
-	StrokeDir         c_pStrokes;
+	StrokeDir         c_pStrokes = STROKE_SLIDER_OR_RIGHT_MOUSE;
 	ImageCursor*        m_pCursor;
 	std::vector<ColorData> reverseData;
 	// Size of the brush.

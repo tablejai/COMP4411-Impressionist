@@ -71,6 +71,7 @@ ImpressionistDoc::ImpressionistDoc()
 	// Set NULL image name as init. 
 	m_imageName[0]	='\0';	
 
+
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
@@ -84,6 +85,7 @@ ImpressionistDoc::ImpressionistDoc()
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE - 1;
 	ImpBrush::c_pBrushes	= new ImpBrush* [ImpBrush::c_nBrushCount];
+	c_pStrokes = STROKE_SLIDER_OR_RIGHT_MOUSE;
 
 	ImpBrush::c_pBrushes[BRUSH_POINTS]	= new PointBrush( this, "Points" );
 

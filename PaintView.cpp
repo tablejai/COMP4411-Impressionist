@@ -600,14 +600,16 @@ void PaintView::draw()
 				AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
 				AddPreviousDataRGBA(rgbaBrush, GL_BACK, NONCOVER);
 				break;
+
+#define BRUSH_IS_STROKE (strcmp(m_pDoc->m_pCurrentBrush->BrushName(), "Lines")==0 || strcmp(m_pDoc->m_pCurrentBrush->BrushName(), "Scattered Lines")==0)
 			case RIGHT_MOUSE_DOWN:
-				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE)
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE)
 					rightClickDownPt = source;
 				break;
 			case RIGHT_MOUSE_DRAG:
 
 				//SavePreviousDataRGBA(rgbaBrush, GL_BACK);
-				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE)
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE)
 				{
 					clearColorBuffer(GL_BACK);
 					AddPreviousDataRGBA(rgbaBitMap, GL_BACK, NONCOVER);
@@ -621,7 +623,7 @@ void PaintView::draw()
 
 				break;
 			case RIGHT_MOUSE_UP:
-				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE) {
+				if (m_pDoc->c_pStrokes == STROKE_SLIDER_OR_RIGHT_MOUSE && BRUSH_IS_STROKE) {
 					RestorePreviousDataRGBA(rgbaBrush, GL_BACK);
 					{
 						float angle;
@@ -645,6 +647,7 @@ void PaintView::draw()
 
 				}
 				break;
+#undef BRUSH_IS_STROKE
 			case AUTO_PAINT:
 				break;
 			default:

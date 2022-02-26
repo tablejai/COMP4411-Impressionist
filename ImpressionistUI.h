@@ -93,7 +93,7 @@ public:
 	Fl_Window* m_mosaicDialog;
 	Fl_Button* m_loadMosaicSourceButton;
 	Fl_Button* m_mosaicEnter;
-    MosaicPainting* mosaicPaintingEngine;
+    //MosaicPainting *  mosaicPaintingEngine;
 
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);
@@ -143,6 +143,7 @@ private:
 	static void tokenize(std::string const& str, const char delim,
 		std::vector<std::string>& out);
 	static void cb_load_image(Fl_Menu_ *o, void *v);
+	static void cb_load_video(Fl_Menu_* o, void* v);
 	static void cb_load_blend_image(Fl_Menu_* o, void* v);
 	static void cb_load_edge_image(Fl_Menu_* o, void* v);
 	static void cb_load_mural_image(Fl_Menu_* o, void* v);

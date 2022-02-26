@@ -107,6 +107,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 				(45 < angle && angle < 135) ? 90:
 			    (135 < angle && angle < 225) ? 180:
 				(225 < angle && angle < 315) ? 270:0;
+		glRotatef(angle, 0.0, 0.0, 1.0);
+
 		
 	}
 	else if (pDoc->c_pStrokes == STROKE_GRADIENT) {

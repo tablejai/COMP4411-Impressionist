@@ -278,7 +278,7 @@
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="SharpeningBrush.cpp" />
     <ClCompile Include="KernelBrush.cpp" />
-    <ClCompile Include="Bayesian.cpp" />
+    <ClCompile Include="Warp.cpp" />
     <ClCompile Include="traingle.cpp" />
     <ClCompile Include="starbrush.cpp" />
     <ClCompile Include="MosaicPainting.cpp" />
@@ -309,6 +309,8 @@
     <ClInclude Include="OriginalView.h" />
     <ClInclude Include="PaintView.h" />
     <ClInclude Include="PointBrush.h" />
+    <ClInclude Include="VideoReader.h" />
+    <ClInclude Include="Warp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

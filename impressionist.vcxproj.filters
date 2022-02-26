@@ -24,6 +24,7 @@
     <ClCompile Include="GlobalFunction.cpp" />
     <ClCompile Include="CurveBrush.cpp" />
     <ClCompile Include="MosaicPainting.cpp" />
+    <ClCompile Include="Warp.cpp" />
     <ClCompile Include="Bayesian.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +52,7 @@
     <ClInclude Include="BrushStroke.h" />
     <ClInclude Include="CurveBrush.h" />
     <ClInclude Include="MosaicPainting.h" />
+    <ClInclude Include="Warp.h" />
     <ClInclude Include="Bayesian.h" />
   </ItemGroup>
 </Project>

@@ -94,6 +94,7 @@ public:
 	void autoPaint();
 	void Paint(bool );
 	void updateBackGroundAlpha(float);
+	void VideoPlay();
 	void blurr(unsigned char* , unsigned char* ,float);
 	double vectorDistance(const vector<int>& v1, const vector<int>& v2);
 	void INIT_RGBA(GLvoid* , unsigned char*&  , int , int , int );

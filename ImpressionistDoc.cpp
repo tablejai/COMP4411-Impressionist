@@ -6,7 +6,7 @@
 //
 
 #include <FL/fl_ask.H>
-
+#include "VideoReader.h"
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "linebrush.h"
@@ -22,6 +22,7 @@
 #include "ImageCursor.h"
 #include "CurveBrush.h"
 #include "AlphaMapBrush.h"
+#include "Warp.h"
 // Include individual brush headers here.
 #include "PointBrush.h"
 #include <iostream>
@@ -112,6 +113,7 @@ ImpressionistDoc::ImpressionistDoc()
 		= new SharpeningBrush(this, "Sharpening");
 	ImpBrush::c_pBrushes[BRUSH_CURVE]
 		= new CurveBrush(this, "CruveBrush");
+	ImpBrush::c_pBrushes[BRUSH_WARP] = new Warp(this, "WarpBrush");
 	ImpBrush::c_pBrushes[AUTO_KERNEL_BRUSH]
 		= new KernelBrush(this, "Auto Kernel Brush");
 
@@ -257,6 +259,18 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->resetBackGround();
 	m_pUI->m_paintView->resetBrush();
 	m_pUI->m_paintView->refresh();
+	return 1;
+}
+int ImpressionistDoc::loadVideo(char* iname)
+{
+	// try to open the image to read
+	unsigned char* data;
+	int				width,height;
+	//if (readVideo(iname, width, height) == NULL)
+	//{
+	//	fl_alert("Can't load bitmap file");
+	//	return 0;
+	//}
 	return 1;
 }
 

@@ -7,8 +7,7 @@
 #include <iostream>
 using namespace std;
 
-#define MAX(a,b) a>b? b : a
-#define MIN(a,b) a<b? b : a
+
 #define PYTHAGOREAN(a,b) sqrt(a*a + b*b)
 
 KernelBrush::KernelBrush(ImpressionistDoc* pDoc, char* name) :
@@ -29,6 +28,7 @@ void KernelBrush::BrushMove(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
+	
 
 	if (pDoc == NULL) {
 		printf("PointBrush::BrushMove  document is NULL\n");

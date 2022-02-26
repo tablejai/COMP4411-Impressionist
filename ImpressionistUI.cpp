@@ -796,6 +796,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Load Mural Image...", FL_ALT + 'j', (Fl_Callback*)ImpressionistUI::cb_load_mural_image},
 	{"&Load Edge Image...", FL_ALT + 'b', (Fl_Callback*)ImpressionistUI::cb_load_edge_image},
 	{"&Quit", FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit},
+	{0},
 	{"&Help", 0, 0, 0, FL_SUBMENU},
 	{"&About", FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about},
 	{"&Function", 0,0,0,FL_SUBMENU},

@@ -24,7 +24,8 @@
     <ClCompile Include="GlobalFunction.cpp" />
     <ClCompile Include="CurveBrush.cpp" />
     <ClCompile Include="MosaicPainting.cpp" />
-
+    <ClCompile Include="VideoReader.cpp" />
+    <ClCompile Include="Warp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="BrushStroke.h" />
     <ClInclude Include="CurveBrush.h" />
     <ClInclude Include="MosaicPainting.h" />
-
+    <ClInclude Include="VideoReader.h" />
+    <ClInclude Include="Warp.h" />
   </ItemGroup>
 </Project>

@@ -233,6 +233,12 @@ void PaintView::blurrPointOrigin(unsigned char * ptr,const Point source,const Po
 
 
 }
+
+
+
+void PaintView::VideoPlay() {
+
+}
 void PaintView::blurrPoint(unsigned char* sourceptr, unsigned char* ptr, const Point source, const Point target, int paintWidth, int paintHeight, const vector<vector<double>>& kernel) {
 	int rSum = 0, gSum = 0, bSum = 0;
 	int kernelSize = kernel.size();

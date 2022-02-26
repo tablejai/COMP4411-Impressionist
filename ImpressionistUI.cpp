@@ -12,6 +12,7 @@
 #include "impressionistDoc.h"
 #include <sstream>      // std::stringstream
 #include <string>
+#include <vfw.h>
 #include <iostream>
 
 using namespace std;
@@ -183,6 +184,15 @@ void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 	if (newfile != NULL)
 	{
 		pDoc->loadImage(newfile);
+	}
+}
+void ImpressionistUI::cb_load_video(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	char* newfile = fl_file_chooser("Open File?", "*.avi", pDoc->getImageName());
+	if (newfile != NULL)
+	{
+		pDoc->loadVideo(newfile);
 	}
 }
 void ImpressionistUI::cb_load_gradient_image(Fl_Menu_* o, void* v) {
@@ -706,6 +716,7 @@ void ImpressionistUI::setAngle(int angle) {
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&File", 0, 0, 0, FL_SUBMENU},
 	{"&Load Image...", FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image},
+	{"Load Video",FL_ALT +'q',(Fl_Callback*)ImpressionistUI::cb_load_video},
 	{"&Load Blending Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_blend_image},
 	{"&Load Alpha Mapped Image...", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_alpha_image},
 	{"&Load Gradient Image...", FL_ALT + 'q', (Fl_Callback*)ImpressionistUI::cb_load_gradient_image},
@@ -741,6 +752,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1 - 1] = {
 	{"Blurring", FL_ALT + 'e', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_BLURRRING},
 	{"Sharpening", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_SHARPENING},
 	{"CurveBrush", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_CURVE},
+   {"WarpBrush", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_WARP},
 	{0}};
 
 Fl_Menu_Item ImpressionistUI::m_paintlyMenu[NumOfPaintly + 1] = {
@@ -1020,7 +1032,7 @@ void ImpressionistUI::initPaintlyDialog(void) {
 
 }
 void ImpressionistUI::initMosaicDialog(void) {
-	mosaicPaintingEngine = new MosaicPainting();
+	//mosaicPaintingEngine = new MosaicPainting();
 
 	//mosaicPaintingEngine->getAllFileNames();
 	//mosaicPaintingEngine->loadImages();

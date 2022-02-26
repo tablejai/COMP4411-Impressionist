@@ -37,6 +37,7 @@ public:
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
 
 	int		loadImage(char *name);			// called by the UI to load image
+	int     loadVideo(char* name);
 	int     loadAlphaImage(char* name);
 	int		loadImagetoBitMap(char* iname, unsigned char*& bitmap, int& mpwidth, int& mpheight);
 	void	saveOldImage(void);

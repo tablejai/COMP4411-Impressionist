@@ -93,7 +93,7 @@ public:
 	Fl_Window* m_mosaicDialog;
 	Fl_Button* m_loadMosaicSourceButton;
 	Fl_Button* m_mosaicEnter;
-    //MosaicPainting *  mosaicPaintingEngine;
+    MosaicPainting *  mosaicPaintingEngine;
 
 	// Member functions
 	void setDocument(ImpressionistDoc *doc);

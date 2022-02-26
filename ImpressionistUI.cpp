@@ -456,12 +456,16 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget *o, void *v)
 
 	pDoc->setBrushType(type);
 	if (type == 1 || type== 4) {
+
 		pUI->m_LineAngleSlider->activate();
 		pUI->m_LineWidthSlider->activate();
+		pUI->m_StrokeDirectionChoice->activate();
 	}
 	else {
 		pUI->m_LineAngleSlider->deactivate();
 		pUI->m_LineWidthSlider->deactivate();
+		pUI->m_StrokeDirectionChoice->deactivate();
+
 	}
 }
 void ImpressionistUI::cb_updatePaintly(Fl_Widget* o, void* v) {
@@ -829,6 +833,7 @@ void ImpressionistUI::initBrushDialog() {
 	m_StrokeDirectionChoice->user_data((void*)(this)); // record self to be used by static callback functions
 	m_StrokeDirectionChoice->menu(strokeDirectionMenu);
 	m_StrokeDirectionChoice->callback(cb_strokeChoice);
+	m_StrokeDirectionChoice->deactivate();
 
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void*)(this));
@@ -1086,7 +1091,7 @@ void ImpressionistUI::initPaintlyDialog(void) {
 
 }
 void ImpressionistUI::initMosaicDialog(void) {
-	//mosaicPaintingEngine = new MosaicPainting();
+	mosaicPaintingEngine = new MosaicPainting();
 
 	mosaicPaintingEngine->m_pDoc = m_pDoc;
 	mosaicPaintingEngine->m_pUI = (this);

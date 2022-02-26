@@ -179,7 +179,11 @@ ImpressionistUI *ImpressionistUI::whoami(Fl_Menu_ *o)
 void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
 	char *newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
 	if (newfile != NULL)
 	{
 		pDoc->loadImage(newfile);
@@ -188,6 +192,9 @@ void ImpressionistUI::cb_load_image(Fl_Menu_ *o, void *v)
 void ImpressionistUI::cb_load_gradient_image(Fl_Menu_* o, void* v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
+
 	if (newfile != NULL)
 	{
 		pDoc->loadGradientImage(newfile);
@@ -199,6 +206,9 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
+
 	if (newfile != NULL)
 	{
 		int newFileWidth;
@@ -221,10 +231,15 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 
 void ImpressionistUI::cb_paintly(Fl_Menu_* o, void* v) {
 	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
+
 	pUI->m_paintlyDialog->show();
 }
 void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
+
 	pDoc->clearImage(pDoc->m_uctempBitmap1);
 	pDoc->clearImage(pDoc->m_uctempBitmap2);
 	whoami(o)->m_blendDialog->show();
@@ -233,6 +248,9 @@ void ImpressionistUI::cb_load_blend_image(Fl_Menu_*o,void*v) {
 void ImpressionistUI::cb_load_alpha_image(Fl_Menu_* o, void* v) {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	ImpressionistUI* pUI = whoami(o);
+	pUI->m_origView->showEdge = false;
+
 	if (newfile != NULL)
 	{
 		pDoc->loadAlphaImage(newfile);
@@ -371,6 +389,28 @@ void ImpressionistUI::cb_loadkernel(Fl_Widget* o,void* v) {
 	pUI->m_paintView->RestorePreviousDataRGBA(pUI->m_paintView->rgbaBrush, GL_BACK);
 	pDoc->m_pCurrentBrush = originalBrush;
 }
+
+void ImpressionistUI::cb_showEdgeImage(Fl_Menu_* o, void* v) {
+
+	ImpressionistUI* pUI = whoami(o);
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+
+	ImpBrush* originalBrush = pDoc->m_pCurrentBrush;
+	pDoc->setBrushType(AUTO_KERNEL_BRUSH);
+	int w = pUI->m_paintView->m_nDrawHeight;
+	int h = pUI->m_paintView->m_nDrawWidth;
+	((KernelBrush*)(pDoc->m_pCurrentBrush))->size = w > h ? w : h;
+	Point source(h / 2 + pUI->m_paintView->m_nStartCol, pUI->m_paintView->m_nEndRow - w / 2);
+	Point target(h / 2, pUI->m_paintView->m_nWindowHeight - w / 2);
+
+	((KernelBrush*)(pDoc->m_pCurrentBrush))->SobelOperator(source, target);
+	pUI->m_paintView->RestorePreviousDataRGBA(pUI->m_paintView->rgbaBrush, GL_BACK);
+	pDoc->m_pCurrentBrush = originalBrush;
+
+}
+
+
 //------------------------------------------------------------
 // Causes the Impressionist program to exit
 // Called by the UI when the quit menu item is chosen
@@ -449,11 +489,14 @@ void ImpressionistUI::cb_mosaicPainting(Fl_Menu_* o, void* v) {
 
 }
 
+
 void ImpressionistUI::cb_load_mosaic_source(Fl_Widget* o, void* v) {
 	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
 	ImpressionistDoc* pDoc = pUI->getDocument();
 
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	pUI->m_origView->showEdge = false;
+
 	if (newfile != NULL) {
 		((Fl_Widget*)o)->label(newfile);
 		pUI->mosaicPaintingEngine->loadOriginalImage(newfile);
@@ -532,6 +575,9 @@ string ImpressionistUI::pathToFileName(char* name) {
 void ImpressionistUI::cb_load_blend_doc1(Fl_Widget* o, void* v) {
 	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	pUI->m_origView->showEdge = false;
+
 	cout << "open new file:" << newfile << endl;
 
 	if(newfile!="")
@@ -550,6 +596,9 @@ void ImpressionistUI::cb_load_blend_doc2(Fl_Widget* o, void* v) {
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
 //	((Fl_Widget*)o)->label(newfile);
 	cout << "open new file:" << newfile << endl;
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+	pUI->m_origView->showEdge = false;
+
 	if (newfile != "")
 	pDoc->loadImagetoBitMap(newfile, pDoc->m_uctempBitmap2, pDoc->m_nWMap2, pDoc->m_nHMap2);
 	char* fileName = new char[100];
@@ -704,6 +753,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{"&Save Image...", FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image},
 	{"&Brushes...", FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes},
 	{"&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER},
+	{"&Show Edge Image...", FL_ALT + 'n', (Fl_Callback*)ImpressionistUI::cb_showEdgeImage},
 	{"&Apply Kernel...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_kernel},
 	{"&Colors...", FL_ALT + 'k', (Fl_Callback*)ImpressionistUI::cb_colors},
 	{"&Paintly...", FL_ALT + 'p', (Fl_Callback*)ImpressionistUI::cb_paintly},
@@ -837,6 +887,13 @@ void ImpressionistUI::initBrushDialog() {
 	m_AlphaSlider->align(FL_ALIGN_RIGHT);
 	m_AlphaSlider->callback(cb_alphaSlides);
 
+	m_strokeClipBox = new Fl_Check_Button(200, 300, 10, 10, "Clip");
+	m_strokeClipBox->user_data((void*)(this)); // record self to be used by static
+	m_strokeClipBox->labelfont(FL_COURIER);
+	m_strokeClipBox->labelsize(12);
+	m_strokeClipBox->callback(cb_strokeClilpBox);
+
+
 	m_BackGroundSlider = new Fl_Value_Slider(10, 210, 300, 20, "BackGround Alpha");
 	m_BackGroundSlider->user_data((void*)(this)); // record self to be used by static callback functions
 	m_BackGroundSlider->type(FL_HOR_NICE_SLIDER);
@@ -910,6 +967,11 @@ void ImpressionistUI::cb_threshold(Fl_Widget* o, void* v) {
 void ImpressionistUI::cb_blurrSize(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_paintView->blurrSize = int(((Fl_Slider*)o)->value());
 }
+
+void ImpressionistUI::cb_strokeClilpBox(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->getDocument()->m_pCurrentBrush->clip = (((Fl_Check_Button*)o)->value());
+}
+
 void ImpressionistUI::cb_factorC(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_paintView->fc = int(((Fl_Slider*)o)->value());
 }

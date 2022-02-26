@@ -355,8 +355,41 @@ int ImpressionistDoc::blendImage(unsigned char* img1,int width1,int height1, uns
 // pressed.
 //----------------------------------------------------------------
 
+#define RGB_TO_INTENSITY(R,G,B)  ( 0.299*R + 0.587*G + 0.144*B)
+
+bool ImpressionistDoc::isEdge(const Point pt) {
+	int j = pt.x;
+	int i = pt.y;
+
+	int r = m_edgeView[i * m_nPaintHeight + j];
+	int g = m_edgeView[i * m_nPaintHeight + j + 1];
+	int b = m_edgeView[i * m_nPaintHeight + j + 2];
+
+	if (RGB_TO_INTENSITY(r,g,b) >= m_edgeThreshold) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
+void ImpressionistDoc::transformEdgeToBinary(void) {
+	if (m_edgeBinView != nullptr) {
+		delete[] m_edgeBinView;
+	}
+	m_edgeBinView = new int[m_nHeight * m_nWidth];
+	for (int i = 0; i < m_nHeight; i++) {
+		for (int j = 0; j < m_nWidth; j++) {
+			if (m_edgeView[i * m_nHeight + j] >= m_edgeThreshold && m_edgeView[i * m_nHeight + j + 1] >= m_edgeThreshold && m_edgeView[i * m_nHeight + j + 2] >= m_edgeThreshold) {
+				m_edgeBinView[i * m_nHeight + j] = 1;
+			}
+			else {
+				m_edgeBinView[i * m_nHeight + j] = 0;
+			}
+		}
+	}
+}
 
 int ImpressionistDoc::saveImage(char *iname) 
 {

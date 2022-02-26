@@ -80,8 +80,9 @@ public:
 	Fl_Slider* m_curvefactor;
 	Fl_Slider* m_maxStrokeLength;
 	Fl_Slider* m_minStrokeLength;
+	Fl_Check_Button* m_strokeClipBox;
 	Fl_Color_Chooser* m_ColorChooser;
-
+	
 	// for kernel dialog
 	Fl_Check_Button* m_kernelNormalizeBox;
 	Fl_Button* m_loadkernel;
@@ -169,6 +170,7 @@ private:
 	static void cb_update_kernelWeightInput(Fl_Widget*, void*);
 	static void cb_update_kernelSizeInput(Fl_Widget*, void*);
 	static void cb_kernel(Fl_Menu_*,void*);
+	static void cb_showEdgeImage(Fl_Menu_*, void*);
 	static void cb_loadkernel(Fl_Widget*, void*);
 	static void cb_mosaicPainting(Fl_Menu_*, void*);
 	static void cb_load_mosaic_source(Fl_Widget*, void*);
@@ -178,6 +180,7 @@ private:
 	static void cb_updatePaintly(Fl_Widget* o, void* v);
 	static void cb_threshold(Fl_Widget* o, void* v);
 	static void cb_blurrSize(Fl_Widget* o, void* v);
+	static void cb_strokeClilpBox(Fl_Widget* o, void* v);
 	static void cb_factorC(Fl_Widget* o, void* v);
 	static void cb_alpha(Fl_Widget* o, void* v);
 	static void cb_maxStrokeLength(Fl_Widget* o, void* v);

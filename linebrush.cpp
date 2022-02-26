@@ -14,6 +14,7 @@
 #include <random>
 using namespace std;
 
+
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) : ImpBrush(pDoc, name)
 {
 }
@@ -122,10 +123,42 @@ void LineBrush::BrushMove(const Point source, const Point target)
 
 	//cout << angle << endl;
 	//cout << source.x << "|" << source.y << endl;
-	glVertex2d(-realwidth /2, -realheight /2);
-	glVertex2d( -realwidth / 2, realheight / 2);
-	glVertex2d( +realwidth / 2, realheight / 2);
-	glVertex2d( +realwidth / 2,  -realheight / 2);
+
+	int w = dlg->m_paintView->m_nDrawHeight;
+	int h = dlg->m_paintView->m_nDrawWidth;
+	if (clip) {
+		float startWidth = width/2, endWidth = width/2;
+		for (int i = 0; i < (width / 2 ); i++) {
+			Point startPt = Point(target.x + i * cos(angle), target.y + i * sin(angle));
+
+			if (startPt.x < 0 || startPt.x > w - 1 || startPt.y < 0 || startPt.y > h - 1 || pDoc->isEdge(startPt)) {
+				startWidth = i;
+				break;
+			}
+		}
+
+		for (int i = 0; i < (width / 2); i++) {
+			Point endPt = Point(target.x + i * cos(angle + M_PI), target.y + i * sin(angle + M_PI));
+
+			if (endPt.x < 0 || endPt.x > w - 1 || endPt.y < 0 || endPt.y > h - 1 || pDoc->isEdge(endPt)) {
+				endWidth = i;
+				break;
+			}
+		}
+		cout << realwidth << " " << startWidth << " " << endWidth << endl;
+		glVertex2d(-startWidth / 2, -realheight / 2);
+		glVertex2d(-startWidth / 2, realheight / 2);
+		glVertex2d(+endWidth / 2, realheight / 2);
+		glVertex2d(+endWidth / 2, -realheight / 2);
+
+	}
+	else {
+		glVertex2d(-realwidth / 2, -realheight / 2);
+		glVertex2d(-realwidth / 2, realheight / 2);
+		glVertex2d(+realwidth / 2, realheight / 2);
+		glVertex2d(+realwidth / 2, -realheight / 2);
+	}
+
 
 	glEnd();
 	glPopMatrix();
